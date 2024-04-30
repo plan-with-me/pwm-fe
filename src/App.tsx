@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Reset } from "styled-reset";
+import "./App.css";
 import Login from "pages/Login";
 import Home from "pages/Home";
 
@@ -11,7 +11,6 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <Reset />
       <RouterProvider router={router} />
     </>
   );
