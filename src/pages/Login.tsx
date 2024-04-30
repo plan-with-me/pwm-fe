@@ -59,7 +59,10 @@ export default function Login() {
     const authResponse = await api.post(`/auth?social_type=google`, {
       id_token: credentialResponse.credential,
     });
-    console.log(authResponse)
+    const authType = authResponse.data.token_type;
+    const accessToken = authResponse.data.access_token;
+    localStorage.setItem("auth", `${authType} ${accessToken}`);
+    // TODO Route to main page
   }
   const handleGoogleLoginError = async () => {
     // TODO
