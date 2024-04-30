@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import logo from "assets/logo.png";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import { Stack } from "@mui/material";
 import api from "../api/config";
 
 const LoginPage = styled.div`
@@ -36,9 +35,9 @@ const LoginText = styled.div`
   }
 `;
 
-// const ButtonArea = styled.div`
-//   display: flex;
-// `;
+const ButtonArea = styled.div`
+  display: flex;
+`;
 
 const GOOGLE_ClIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
@@ -74,7 +73,7 @@ export default function Login() {
           <span>간편로그인</span>
         </LoginText>
 
-        <Stack>
+        <ButtonArea>
           <a href={KAKAO_AUTH_URL}>카카오</a>
           <GoogleOAuthProvider 
             clientId={GOOGLE_ClIENT_ID}
@@ -86,7 +85,7 @@ export default function Login() {
               useOneTap
             />
           </GoogleOAuthProvider>
-        </Stack>
+        </ButtonArea>
       </LoginPage>
     </>
   );
