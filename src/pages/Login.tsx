@@ -85,7 +85,7 @@ export default function Login() {
               use_fedcm_for_prompt={true}              
               onSuccess={handleGoogleCredential}
               onError={handleGoogleLoginError}
-              useOneTap
+              // useOneTap
             />
           </GoogleOAuthProvider>
         </ButtonArea>
