@@ -20,7 +20,7 @@ export default function Auth() {
         {
           grant_type: "authorization_code",
           client_id: import.meta.env.VITE_APP_KAKAO_CLIENT_KEY,
-          redirect_uri: "http://localhost:3000/auth",
+          redirect_uri: import.meta.env.VITE_APP_KAKAO_AUTH_REDIRECT_URL,
           code: code,
         },
         {
