@@ -46,7 +46,7 @@ const ButtonArea = styled.div`
 const GOOGLE_ClIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
 const KAKAO_KEY = import.meta.env.VITE_APP_KAKAO_CLIENT_KEY;
-const REDIRECT_URI = "/auth";
+const REDIRECT_URI = import.meta.env.VITE_APP_KAKAO_AUTH_REDIRECT_URL;
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=login`;
 
 export default function Login() {
