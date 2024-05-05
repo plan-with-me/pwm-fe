@@ -5,9 +5,14 @@ import api from "../api/config";
 import kakaoLogin from "assets/kakao_login.svg";
 
 const LoginPage = styled.div`
-  max-width: 700px;
-  min-width: 500px;
-  width: 100%;
+  @media (max-width: 700px) {
+    width: 90%;
+    #logo {
+      width: 80%;
+    }
+  }
+
+  width: 700px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -15,7 +20,7 @@ const LoginPage = styled.div`
   align-items: center;
 
   #logo {
-    max-width: 400px;
+    max-width: 500px;
     min-width: 200px;
     padding-top: 100px;
   }
