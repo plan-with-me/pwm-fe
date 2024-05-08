@@ -11,6 +11,7 @@ const TodoBtn = styled.div<{ color: string }>`
   label {
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   label::before {
@@ -60,7 +61,7 @@ export default function Checkbox({
   return (
     <TodoBtn color={color}>
       <form>
-        <input type="checkbox" checked={isChecked} />
+        <input type="checkbox" checked={isChecked} readOnly />
         <label onClick={todoCheck}></label>
       </form>
     </TodoBtn>

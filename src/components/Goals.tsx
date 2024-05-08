@@ -57,6 +57,7 @@ const WriteInput = styled.div<{ color: string }>`
     height: 16px;
     border: 2px solid ${(props) => props.color};
     border-radius: 4px;
+    cursor: pointer;
   }
 
   input {
