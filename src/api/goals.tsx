@@ -59,3 +59,18 @@ export async function postSubGoals(
 export async function deleteSubGoal(subGoalId: number, refetch: () => void) {
   api.delete(`/sub-goals/${subGoalId}`).then((response) => refetch());
 }
+
+export async function updateSubGoal(
+  subGoalId: number,
+  name: string,
+  plan_datetime: string,
+  status: string,
+  refetch: () => void
+) {
+  api
+    .put(`/sub-goals/${subGoalId}`, { name, plan_datetime, status })
+    .then((response) => {
+      // console.log(response.data);
+      refetch();
+    });
+}

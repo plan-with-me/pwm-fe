@@ -10,6 +10,7 @@ export default defineConfig({
       { find: "pages", replacement: "/src/pages" },
       { find: "components", replacement: "/src/components" },
       { find: "api", replacement: "/src/api" },
+      { find: "utils", replacement: "/src/utils" },
     ],
   },
   server: { port: 3000 },
