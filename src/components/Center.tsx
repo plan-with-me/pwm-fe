@@ -6,7 +6,9 @@ import Profile from "./Profile";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 400px;
+  height: fit-content;
+  /* border: solid 1px black; */
   margin: 20px;
 `;
 
