@@ -1,5 +1,3 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { getUserInfo } from "api/users";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
