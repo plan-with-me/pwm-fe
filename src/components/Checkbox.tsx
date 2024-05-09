@@ -1,6 +1,5 @@
 import { updateSubGoal } from "api/goals";
 import { useState } from "react";
-import getISOString from "utils/getISOString";
 import styled from "styled-components";
 
 const TodoBtn = styled.div<{ color: string }>`
@@ -47,12 +46,11 @@ export default function Checkbox({
 
   const todoCheck = async () => {
     setIsChecked(!isChecked);
-    const planDatetime = getISOString();
 
     await updateSubGoal(
       id,
       text,
-      planDatetime,
+      new Date(),
       !isChecked === true ? "complete" : "incomplete",
       refetch
     );

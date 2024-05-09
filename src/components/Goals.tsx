@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
-import getISOString from "utils/getISOString";
+import axios from "axios";
 
 const Wrapper = styled.div`
   width: 500px;
@@ -117,9 +117,7 @@ export default function Goals() {
   }
 
   const todoSubmit = async (categoryId: number, value: string) => {
-    const planDatetime = getISOString();
-
-    await postSubGoals(value, planDatetime, "incomplete", categoryId, refetch);
+    await postSubGoals(value, new Date(), "incomplete", categoryId, refetch);
   };
 
   // 하위 목표 등록

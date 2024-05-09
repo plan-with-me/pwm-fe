@@ -41,7 +41,7 @@ export async function getSubGoals() {
 
 export async function postSubGoals(
   name: string,
-  plan_datetime: string,
+  plan_datetime: Date,
   status: string,
   top_goal_id: number,
   refetch: () => void
@@ -63,7 +63,7 @@ export async function deleteSubGoal(subGoalId: number, refetch: () => void) {
 export async function updateSubGoal(
   subGoalId: number,
   name: string,
-  plan_datetime: string,
+  plan_datetime: Date,
   status: string,
   refetch: () => void
 ) {
