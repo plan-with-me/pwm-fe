@@ -13,8 +13,9 @@ import Checkbox from "./Checkbox";
 import axios from "axios";
 
 const Wrapper = styled.div`
-  width: 500px;
-  border: solid 1px black;
+  width: 400px;
+  height: fit-content;
+  /* border: solid 1px black; */
   margin: 20px;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -61,7 +62,7 @@ const WriteInput = styled.div<{ color: string }>`
   }
 
   input {
-    width: 300px;
+    width: 100%;
     background-color: none;
     border: none;
     border-bottom: 2px solid ${(props) => props.color};

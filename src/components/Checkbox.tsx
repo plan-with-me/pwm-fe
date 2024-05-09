@@ -1,6 +1,7 @@
 import { updateSubGoal } from "api/goals";
 import { useState } from "react";
 import styled from "styled-components";
+import check from "assets/check.svg";
 
 const TodoBtn = styled.div<{ color: string }>`
   input {
@@ -10,19 +11,25 @@ const TodoBtn = styled.div<{ color: string }>`
   label {
     display: flex;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
+    img {
+      position: absolute;
+    }
   }
 
   label::before {
     width: 16px;
     height: 16px;
-    border: 2px solid ${(props) => props.color};
+    /* border: 2px solid ${(props) => props.color}; */
+    background-color: #d5d5d5;
     content: "";
     display: inline-block;
     border-radius: 4px;
+    vertical-align: middle;
   }
 
-  input:checked + label::before {
+  input:checked + label:before {
     content: "";
     background-color: ${(props) => props.color};
   }
@@ -60,7 +67,9 @@ export default function Checkbox({
     <TodoBtn color={color}>
       <form>
         <input type="checkbox" checked={isChecked} readOnly />
-        <label onClick={todoCheck}></label>
+        <label onClick={todoCheck}>
+          {isChecked && <img src={check} width={10} />}
+        </label>
       </form>
     </TodoBtn>
   );
