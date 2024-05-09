@@ -56,9 +56,7 @@ const Follow = styled.div`
 `;
 
 export default function SideBar() {
-  const { data: categories, isLoading: categoriesLoading } = useQuery<
-    TopGoals[]
-  >({
+  const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
     queryFn: async () => await getTopGoals(),
   });
