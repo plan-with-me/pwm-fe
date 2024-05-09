@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
-import axios from "axios";
 import CategoryTitle from "./CategoryTitle";
 
 const Wrapper = styled.div`
