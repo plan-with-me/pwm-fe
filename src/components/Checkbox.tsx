@@ -19,8 +19,8 @@ const TodoBtn = styled.div<{ color: string }>`
   }
 
   label::before {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     /* border: 2px solid ${(props) => props.color}; */
     background-color: #d5d5d5;
     content: "";

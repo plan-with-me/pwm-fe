@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import axios from "axios";
+import CategoryTitle from "./CategoryTitle";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -28,41 +29,21 @@ const Category = styled.div`
   margin-bottom: 20px;
 `;
 
-const CategoryTitle = styled.div<{ color: string }>`
-  width: fit-content;
-  background-color: #d5d5d5;
-  font-size: 16px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  div {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: ${(props) => props.color || "black"};
-  }
-`;
-
 const WriteInput = styled.div<{ color: string }>`
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  gap: 8px;
 
   div {
-    width: 16px;
-    height: 16px;
-    border: 2px solid ${(props) => props.color};
+    width: 20px;
+    height: 20px;
+    background-color: #d5d5d5;
     border-radius: 4px;
     cursor: pointer;
   }
 
   input {
-    width: 100%;
+    width: calc(100% - 40px);
     background-color: none;
     border: none;
     border-bottom: 2px solid ${(props) => props.color};
@@ -73,7 +54,7 @@ const WriteInput = styled.div<{ color: string }>`
 const Todo = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 `;
 
 export default function Goals() {
@@ -155,10 +136,8 @@ export default function Goals() {
                 }
               }}
               color={category.color}
-            >
-              <div />
-              <span>{category.name}</span>
-            </CategoryTitle>
+              name={category.name}
+            />
             {!subLoading &&
               sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
