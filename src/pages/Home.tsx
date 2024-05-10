@@ -9,12 +9,31 @@ const Wrapper = styled.div`
   margin: 0 auto;
   display: flex;
 `;
+
+const SidebarWrapper = styled.div`
+  @media (max-width: 1240px) {
+    display: none;
+  }
+`;
+
+const TodoWrapper = styled.div`
+  display: flex;
+  @media (max-width: 880px) {
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
 export default function Home() {
   return (
     <Wrapper>
-      <SideBar />
-      <Center />
-      <Goals />
+      <SidebarWrapper>
+        <SideBar />
+      </SidebarWrapper>
+      <TodoWrapper>
+        <Center />
+        <Goals />
+      </TodoWrapper>
     </Wrapper>
   );
 }

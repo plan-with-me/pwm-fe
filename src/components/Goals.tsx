@@ -19,6 +19,13 @@ const Wrapper = styled.div`
   margin: 20px;
   padding-top: 20px;
   padding-bottom: 20px;
+
+  @media (max-width: 1240px) {
+    padding-top: 65px;
+  }
+  @media (max-width: 880px) {
+    padding-top: 20px;
+  }
 `;
 
 const Category = styled.div`
