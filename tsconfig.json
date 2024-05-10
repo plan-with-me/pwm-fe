@@ -25,7 +25,8 @@
       "pages/*": ["src/pages/*"],
       "components/*": ["src/components/*"],
       "api/*": ["src/api/*"],
-      "utils/*": ["src/utils/*"]
+      "utils/*": ["src/utils/*"],
+      "store/*": ["src/store/*"]
     }
   },
   "include": ["src", "**/*.ts", "**/*.tsx"],

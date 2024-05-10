@@ -7,11 +7,14 @@ import plus from "assets/plus-solid.svg";
 import CategoryTitle from "./CategoryTitle";
 import { TopGoals, getTopGoals } from "api/goals";
 import { useQuery } from "@tanstack/react-query";
+import { useRecoilState } from "recoil";
+import { SideBarAtom } from "store/SideBarAtom";
 
 const Wrapper = styled.div`
   width: 320px;
   height: 100vh;
   padding: 20px;
+  background-color: white;
   /* border: solid 1px black; */
 `;
 
@@ -19,6 +22,13 @@ const Logos = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+
+  .bar {
+    cursor: pointer;
+    @media (min-width: 1240px) {
+      display: none;
+    }
+  }
 `;
 
 const CalendarSelect = styled.div`
@@ -61,11 +71,19 @@ export default function SideBar() {
     queryFn: async () => await getTopGoals(),
   });
 
+  const [isClicked, setIsClicked] = useRecoilState(SideBarAtom);
+
   return (
     <Wrapper>
       <Logos>
         <img src={logo} width={160} />
-        <img src={bars} width={30} alt="" />
+        <img
+          src={bars}
+          width={30}
+          alt=""
+          className="bar"
+          onClick={() => setIsClicked(!isClicked)}
+        />
       </Logos>
       <CalendarSelect>
         <div>

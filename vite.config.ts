@@ -11,6 +11,7 @@ export default defineConfig({
       { find: "components", replacement: "/src/components" },
       { find: "api", replacement: "/src/api" },
       { find: "utils", replacement: "/src/utils" },
+      { find: "store", replacement: "/src/store" },
     ],
   },
   server: { port: 3000 },

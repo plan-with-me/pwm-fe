@@ -3,6 +3,8 @@ import Calendar from "./Calendar";
 import Profile from "./Profile";
 import bars from "assets/bars-solid.svg";
 import logo from "assets/logo.png";
+import { useRecoilState } from "recoil";
+import { SideBarAtom } from "store/SideBarAtom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,23 +19,38 @@ const Wrapper = styled.div`
       display: block;
     }
   }
+
+  @media (max-width: 440px) {
+    width: calc(100% - 40px);
+  }
 `;
 
 const Logo = styled.div`
   display: flex;
-  /* justify-content: center; */
   justify-content: space-between;
   span {
     width: 30px;
   }
+
+  .bar {
+    cursor: pointer;
+  }
 `;
 
 export default function Center() {
+  const [isClicked, setIsClicked] = useRecoilState(SideBarAtom);
+
   return (
     <>
       <Wrapper>
         <Logo>
-          <img src={bars} width={30} alt="" />
+          <img
+            src={bars}
+            width={30}
+            alt=""
+            className="bar"
+            onClick={() => setIsClicked(!isClicked)}
+          />
           <span></span>
           <img src={logo} width={80} />
           <span></span>

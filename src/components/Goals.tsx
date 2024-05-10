@@ -26,6 +26,9 @@ const Wrapper = styled.div`
   @media (max-width: 880px) {
     padding-top: 20px;
   }
+  @media (max-width: 440px) {
+    width: calc(100% - 40px);
+  }
 `;
 
 const Category = styled.div`
