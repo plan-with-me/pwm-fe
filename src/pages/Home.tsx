@@ -1,5 +1,6 @@
 import Center from "components/Center";
 import Goals from "components/Goals";
+import Navbar from "components/Navbar";
 import SideBar from "components/SideBar";
 import { useRecoilValue } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
@@ -40,14 +41,17 @@ export default function Home() {
   const xPosition = useRecoilValue(SideBarAtom);
 
   return (
-    <Wrapper>
-      <SidebarWrapper xPosition={xPosition}>
-        <SideBar />
-      </SidebarWrapper>
-      <TodoWrapper>
-        <Center />
-        <Goals />
-      </TodoWrapper>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <SidebarWrapper xPosition={xPosition}>
+          <SideBar />
+        </SidebarWrapper>
+        <TodoWrapper>
+          <Center />
+          <Goals />
+        </TodoWrapper>
+      </Wrapper>
+      <Navbar />
+    </>
   );
 }
