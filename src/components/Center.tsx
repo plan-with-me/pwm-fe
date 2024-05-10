@@ -38,7 +38,7 @@ const Logo = styled.div`
 `;
 
 export default function Center() {
-  const [isClicked, setIsClicked] = useRecoilState(SideBarAtom);
+  const [xPosition, setX] = useRecoilState(SideBarAtom);
 
   return (
     <>
@@ -49,7 +49,7 @@ export default function Center() {
             width={30}
             alt=""
             className="bar"
-            onClick={() => setIsClicked(!isClicked)}
+            onClick={() => setX(-xPosition)}
           />
           <span></span>
           <img src={logo} width={80} />

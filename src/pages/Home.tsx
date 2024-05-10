@@ -1,7 +1,6 @@
 import Center from "components/Center";
 import Goals from "components/Goals";
 import SideBar from "components/SideBar";
-import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
 import styled from "styled-components";
@@ -38,16 +37,7 @@ const TodoWrapper = styled.div`
 `;
 
 export default function Home() {
-  const [xPosition, setX] = useState(360);
-  const isClicked = useRecoilValue(SideBarAtom);
-
-  useEffect(() => {
-    if (isClicked) {
-      setX(360);
-    } else {
-      setX(0);
-    }
-  }, [isClicked]);
+  const xPosition = useRecoilValue(SideBarAtom);
 
   return (
     <Wrapper>

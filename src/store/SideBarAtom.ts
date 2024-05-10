@@ -2,5 +2,5 @@ import { atom } from "recoil";
 
 export const SideBarAtom = atom({
   key: "SidebarAtom",
-  default: false,
+  default: -360,
 });

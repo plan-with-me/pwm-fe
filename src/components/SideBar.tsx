@@ -71,7 +71,7 @@ export default function SideBar() {
     queryFn: async () => await getTopGoals(),
   });
 
-  const [isClicked, setIsClicked] = useRecoilState(SideBarAtom);
+  const [xPosition, setX] = useRecoilState(SideBarAtom);
 
   return (
     <Wrapper>
@@ -82,7 +82,7 @@ export default function SideBar() {
           width={30}
           alt=""
           className="bar"
-          onClick={() => setIsClicked(!isClicked)}
+          onClick={() => setX(-xPosition)}
         />
       </Logos>
       <CalendarSelect>
