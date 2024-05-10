@@ -14,7 +14,9 @@ const TodoBtn = styled.div<{ color: string }>`
     justify-content: center;
     cursor: pointer;
     img {
-      position: absolute;
+      position: relative;
+      right: 15px;
+      margin-right: -10px;
     }
   }
 

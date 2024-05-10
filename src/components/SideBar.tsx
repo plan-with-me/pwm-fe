@@ -12,11 +12,11 @@ import { SideBarAtom } from "store/SideBarAtom";
 
 const Wrapper = styled.div`
   width: 320px;
-  height: calc(100vh - 124px);
+  height: calc(100dvh - 124px);
   padding: 20px;
   background-color: white;
   @media (max-width: 1240px) {
-    height: calc(100vh - 40px);
+    height: calc(100dvh - 40px);
   }
   /* border: solid 1px black; */
 `;

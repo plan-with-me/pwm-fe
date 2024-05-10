@@ -28,10 +28,14 @@ const SidebarWrapper = styled.div<{ xPosition: number }>`
 
 const TodoWrapper = styled.div`
   display: flex;
+  height: calc(100vh - 84px);
+
   @media (max-width: 880px) {
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
   }
+
   @media (max-width: 440px) {
     width: 100%;
   }
