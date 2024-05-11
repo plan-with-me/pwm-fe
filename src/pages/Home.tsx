@@ -28,7 +28,7 @@ const SidebarWrapper = styled.div<{ xPosition: number }>`
 
 const TodoWrapper = styled.div`
   display: flex;
-  height: calc(100vh - 84px);
+  height: calc(100dvh - 84px);
 
   @media (max-width: 880px) {
     overflow-y: scroll;

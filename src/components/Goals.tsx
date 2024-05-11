@@ -15,19 +15,26 @@ import CategoryTitle from "./CategoryTitle";
 const Wrapper = styled.div`
   width: 400px;
   height: fit-content;
-  /* border: solid 1px black; */
-  margin: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  margin: 40px 20px;
 
   @media (max-width: 1240px) {
-    padding-top: 65px;
+    margin-top: 85px;
   }
   @media (max-width: 880px) {
-    padding-top: 20px;
+    margin-top: 40px;
   }
   @media (max-width: 440px) {
     width: calc(100% - 40px);
+    overflow-y: none;
+  }
+
+  @media (min-width: 880px) {
+    height: calc(100dvh - 189px);
+    overflow-y: scroll;
+  }
+  @media (min-width: 1240px) {
+    height: calc(100dvh - 144px);
+    overflow-y: scroll;
   }
 `;
 
