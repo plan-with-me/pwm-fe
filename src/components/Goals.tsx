@@ -30,11 +30,11 @@ const Wrapper = styled.div`
 
   @media (min-width: 880px) {
     height: calc(100dvh - 189px);
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   @media (min-width: 1240px) {
     height: calc(100dvh - 144px);
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 `;
 

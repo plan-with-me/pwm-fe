@@ -31,7 +31,7 @@ const TodoWrapper = styled.div`
   height: calc(100dvh - 84px);
 
   @media (max-width: 880px) {
-    overflow-y: scroll;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
   }
