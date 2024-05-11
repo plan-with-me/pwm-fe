@@ -13,12 +13,6 @@ const Wrapper = styled.div`
   height: fit-content;
   /* border: solid 1px black; */
   margin: 20px;
-  img {
-    display: none;
-    @media (max-width: 1240px) {
-      display: block;
-    }
-  }
 
   @media (max-width: 440px) {
     width: calc(100% - 40px);
@@ -30,6 +24,12 @@ const Logo = styled.div`
   justify-content: space-between;
   span {
     width: 30px;
+  }
+  img {
+    display: none;
+    @media (max-width: 1240px) {
+      display: block;
+    }
   }
 
   .bar {
