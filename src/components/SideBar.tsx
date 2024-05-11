@@ -2,13 +2,13 @@ import styled from "styled-components";
 import logo from "assets/logo.png";
 import bars from "assets/bars-solid.svg";
 import user from "assets/user-regular.svg";
-import users from "assets/users-solid.svg";
 import plus from "assets/plus-solid.svg";
 import CategoryTitle from "./CategoryTitle";
 import { TopGoals, getTopGoals } from "api/goals";
 import { useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 320px;
@@ -43,10 +43,16 @@ const CalendarSelect = styled.div`
   font-weight: 500;
   gap: 40px;
 
-  div {
+  div,
+  a {
     display: flex;
     align-items: center;
     gap: 16px;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
   }
 `;
 
@@ -89,14 +95,14 @@ export default function SideBar() {
         />
       </Logos>
       <CalendarSelect>
-        <div>
+        <Link to="/home">
           <img src={user} alt="" width={40} height={40} />
           <span>개인 달력</span>
-        </div>
-        <div>
+        </Link>
+        {/* <div>
           <img src={users} alt="" width={40} />
           <span>가족 달력</span>
-        </div>
+        </div> */}
         <div>
           <img src={plus} alt="" width={40} />
           <span>달력 추가</span>
