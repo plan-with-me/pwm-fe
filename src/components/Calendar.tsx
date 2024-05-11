@@ -1,10 +1,22 @@
 import { useState } from "react";
 import styled from "styled-components";
+import right_arrow from "assets/angle-right-solid.svg";
+import left_arrow from "assets/angle-left-solid.svg";
 
 const DateController = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
   span {
     font-weight: 600;
+  }
+  div {
+    display: flex;
+    gap: 20px;
+    img {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -85,9 +97,10 @@ export default function Calendar() {
           <span>
             {year}년 {month}월
           </span>
-          <button onClick={goToPreviousMonth}>이전 달</button>
-
-          <button onClick={goToNextMonth}>다음 달</button>
+          <div>
+            <img src={left_arrow} onClick={goToPreviousMonth} width={12} />
+            <img src={right_arrow} onClick={goToNextMonth} width={12} />
+          </div>
         </DateController>
         <CalendarDate>
           <span>일</span>
