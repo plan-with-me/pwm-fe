@@ -33,6 +33,36 @@ export async function getTopGoals() {
     .then((response: { data: TopGoals[] }) => response.data);
 }
 
+export async function createTopGoals(newGoalData: TopGoals) {
+  try {
+    const response = await api.post("/top-goals", newGoalData);
+    return response.data;
+  } catch (error) {
+    console.error("Error while creating top goal:", error);
+    throw error;
+  }
+}
+
+export async function updateTopGoals(goalId: number, updatedGoalData: Partial<TopGoals>) {
+  try {
+    const response = await api.put(`/top-goals/${goalId}`, updatedGoalData);
+    return response.data;
+  } catch (error) {
+    console.error("Error while updating top goal:", error);
+    throw error;
+  }
+}
+
+export async function deleteTopGoals(goalId: number) {
+  try {
+    const response = await api.delete(`/top-goals/${goalId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error while deleting top goal:", error);
+    throw error;
+  }
+}
+
 export async function getSubGoals() {
   return await api
     .get("/sub-goals")
