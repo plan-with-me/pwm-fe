@@ -5,24 +5,23 @@ import api from "../api/config";
 import kakaoLogin from "assets/kakao_login.svg";
 
 const LoginPage = styled.div`
-  @media (max-width: 700px) {
-    width: 90%;
-    #logo {
-      width: 80%;
-    }
-  }
-
-  width: 700px;
-  margin: 0 auto;
+  width: 500px;
+  height: calc(100dvh - 200px);
+  margin: 100px auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
 
   #logo {
-    max-width: 500px;
-    min-width: 200px;
-    padding-top: 100px;
+    width: 300px;
+  }
+
+  @media (max-width: 700px) {
+    width: 90%;
+    #logo {
+      width: 80%;
+    }
   }
 `;
 
@@ -33,7 +32,6 @@ const LoginText = styled.div`
   align-items: center;
   height: 1px;
   background-color: #d9d9d9;
-  margin-top: 240px;
   margin-bottom: 40px;
   span {
     font-size: 20px;
@@ -46,6 +44,13 @@ const ButtonArea = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+
+const LoginSec = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const GOOGLE_ClIENT_ID = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
@@ -93,24 +98,26 @@ export default function Login() {
     <>
       <LoginPage>
         <img src={logo} width={500} id="logo" />
-        <LoginText>
-          <span>간편로그인</span>
-        </LoginText>
+        <LoginSec>
+          <LoginText>
+            <span>간편로그인</span>
+          </LoginText>
 
-        <ButtonArea>
-          <a href={KAKAO_AUTH_URL} id="kakao">
-            <img src={kakaoLogin} alt="kakao" />
-          </a>
-          <GoogleOAuthProvider clientId={GOOGLE_ClIENT_ID}>
-            <GoogleLogin
-              use_fedcm_for_prompt={true}
-              onSuccess={handleGoogleCredential}
-              onError={handleGoogleLoginError}
-              // useOneTap
-              width={300}
-            />
-          </GoogleOAuthProvider>
-        </ButtonArea>
+          <ButtonArea>
+            <a href={KAKAO_AUTH_URL} id="kakao">
+              <img src={kakaoLogin} alt="kakao" />
+            </a>
+            <GoogleOAuthProvider clientId={GOOGLE_ClIENT_ID}>
+              <GoogleLogin
+                use_fedcm_for_prompt={true}
+                onSuccess={handleGoogleCredential}
+                onError={handleGoogleLoginError}
+                // useOneTap
+                width={300}
+              />
+            </GoogleOAuthProvider>
+          </ButtonArea>
+        </LoginSec>
       </LoginPage>
     </>
   );

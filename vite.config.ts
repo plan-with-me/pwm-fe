@@ -8,6 +8,10 @@ export default defineConfig({
     alias: [
       { find: "assets", replacement: "/src/assets" },
       { find: "pages", replacement: "/src/pages" },
+      { find: "components", replacement: "/src/components" },
+      { find: "api", replacement: "/src/api" },
+      { find: "utils", replacement: "/src/utils" },
+      { find: "store", replacement: "/src/store" },
     ],
   },
   server: { port: 3000 },
