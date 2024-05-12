@@ -9,6 +9,7 @@ import CreateTgoals from "pages/TGoals/CreateTGoals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";
+import My from "pages/My";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -16,7 +17,8 @@ const router = createBrowserRouter([
   { path: "/auth", element: <Auth /> },
   { path: "/tgoal", element: <Tgoals />},
   { path: "/update-tgoal/:id", element: <UpdateTgoals />},
-  { path: "/create-tgoal", element: <CreateTgoals />}
+  { path: "/create-tgoal", element: <CreateTgoals />},
+  { path: "/my", element: <My /> },
 ]);
 
 const queryClient = new QueryClient();
