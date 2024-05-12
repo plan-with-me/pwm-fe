@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getUserInfo, UserInfo } from "../../api/users"; // api.tsx에서 가져온 함수와 타입을 가져옵니다.
 import { getTopGoals, TopGoals } from "../../api/goals"; // goals.tsx에서 가져온 함수와 타입을 가져옵니다.
 import { Link, useNavigate } from "react-router-dom";

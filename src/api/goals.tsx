@@ -15,6 +15,7 @@ export type TopGoals = {
   show_scope: string;
   created_at: string;
   updated_at: string;
+  user_id: number;
 };
 
 export type SubGoals = {
