@@ -1,11 +1,5 @@
-import axios from "axios";
+import api from "./config";
 
-const auth = localStorage.getItem("auth");
-
-const api = axios.create({
-  baseURL: "https://pwm.ssc.co.kr/api",
-  headers: { Authorization: auth },
-});
 
 export type UserInfo = {
   id: number;

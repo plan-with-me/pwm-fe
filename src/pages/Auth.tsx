@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "api/config";
 import { useEffect } from "react";
 
 type kakaoToken = {
@@ -32,8 +33,8 @@ export default function Auth() {
 
       const id_token = tokenResponse.data.id_token;
 
-      const authResponse = await axios.post(
-        "https://pwm.ssc.co.kr/api/auth",
+      const authResponse = await api.post(
+        "/auth",
         { id_token },
         {
           headers: {
