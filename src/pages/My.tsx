@@ -26,25 +26,25 @@ const LoginPage = styled.div`
     
   }
 
-  #inputdiv{
+  #input_div{
     width: 700px;
     height: 1200px;
     min-width: 200px;
   }
 
-  #inputnamediv{
+  #input_name_div{
     margin-top: 50px;
   }
 
-  #inputintroductiondiv{
+  #input_introduction_div{
     margin-top: 50px;
   }
 
-  #spanname{
+  #span_name{
     margin-right: 50px;
   }
 
-  #spanintroduction{
+  #span_introduction{
     margin-right: 25px;
   }
 
@@ -111,17 +111,17 @@ export default function Login() {
           <span><input type="file"/></span>
         </LoginText>
 
-        <div id="inputdiv">
-          <div id = "inputnamediv">
-            <span id="spanname">이름</span>
+        <div id="input_div">
+          <div id = "input_name_div">
+            <span id="span_name">이름</span>
             <input ref={nameRef} style={{borderStyle: 'none', width: '600px'}}/> 
-            <hr width={"100%"}></hr>
+            <hr></hr>
           </div>
 
-          <div id = "inputintroductiondiv">
-            <span id="spanintroduction">자기소개</span>
+          <div id = "input_introduction_div">
+            <span id="span_introduction">자기소개</span>
             <input ref={introductionRef}  style={{borderStyle: 'none' , width: '600px'}}/>
-            <hr width={"100%"}></hr>
+            <hr></hr>
           </div>
 
           <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
