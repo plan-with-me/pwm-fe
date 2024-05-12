@@ -2,7 +2,7 @@ import styled from "styled-components";
 import logo from "assets/logo.png";
 import api from "../api/config";
 import { getUserInfo } from "api/users";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = styled.div`
@@ -79,30 +79,41 @@ const ConfirmButton = styled.button`
 
 export default function Login() {
   
+  const navigate = useNavigate();
+  const nameRef = useRef<HTMLInputElement | null>(null); 
+  const introductionRef = useRef<HTMLInputElement | null>(null); 
+  const [userId, setUserId] = useState<number | null>(0);
+
+
+  useEffect(() => {
+    getUserInfo().then(data => {
+      setUserId(data.id || 0);
+      if (nameRef.current) nameRef.current.value = data.name;
+      if (introductionRef.current) introductionRef.current.value = data.introduction || ''; 
+    });
+  }, []);
+
   const handleConfirm = async () => {
+    if (!userId || !nameRef.current || !introductionRef.current) {
+      console.error('User ID or refs are not initialized.');
+      return;
+    }
+
     api.put(`/users/${userId}`, {
       name: nameRef.current.value,
       introduction: introductionRef.current.value,
       image: null,
     })
-      .then(data => {
+      .then(() => {
         navigate('/home');
       })
       .catch(err => {
         console.error(err);
       })
   };
-  const navigate = useNavigate();
 
-  const nameRef = useRef()
-  const introductionRef = useRef()
-  const [userId, setUserId] = useState(null);
 
-  getUserInfo().then(data => {
-    setUserId(data.id);
-    nameRef.current.value = data.name
-    introductionRef.current.value = data.introduction
-  })
+  
 
   return (
       <LoginPage>
