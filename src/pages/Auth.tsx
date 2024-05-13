@@ -49,7 +49,9 @@ export default function Auth() {
         "auth",
         `${authResponse.data.token_type} ${authResponse.data.access_token}`
       );
-      window.location.href = "/home";
+
+      // 회원가입이면 프로필 설정 페이지로
+      window.location.href = authResponse.status === 201 ? "/my" : "/home";
     };
 
     getCode();
