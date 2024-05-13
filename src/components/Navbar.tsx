@@ -41,7 +41,7 @@ export default function Navbar() {
           <img src={lounge} alt="" width={28} />
           <span>라운지</span>
         </Link>
-        <Link to="/home">
+        <Link to="/tgoal">
           <img src={setting} alt="" width={28} />
           <span>설정</span>
         </Link>
