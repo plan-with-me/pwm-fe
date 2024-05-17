@@ -54,6 +54,11 @@ const Dimmed = styled.div<{ isVisible: boolean }>`
   animation: ${(props) => (props.isVisible ? "fadeIn" : "fadeOut")} 300ms
     ease-out;
 
+  @media (min-width: 1240px) {
+    width: 0;
+    height: 0;
+  }
+
   @keyframes fadeIn {
     from {
       opacity: 0;
