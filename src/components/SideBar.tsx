@@ -9,6 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
 import { Link } from "react-router-dom";
+import { AddBtnAtom } from "store/AddBtnAtom";
+import CalendarForm from "./CalendarForm";
 
 const Wrapper = styled.div`
   width: 320px;
@@ -81,6 +83,7 @@ export default function SideBar() {
   });
 
   const [xPosition, setX] = useRecoilState(SideBarAtom);
+  const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
 
   return (
     <Wrapper>
@@ -103,10 +106,15 @@ export default function SideBar() {
           <img src={users} alt="" width={40} />
           <span>가족 달력</span>
         </div> */}
-        <div>
-          <img src={plus} alt="" width={40} />
-          <span>달력 추가</span>
-        </div>
+
+        {isAddBtnClicked ? (
+          <CalendarForm />
+        ) : (
+          <div onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}>
+            <img src={plus} alt="" width={40} />
+            <span>달력 추가</span>
+          </div>
+        )}
       </CalendarSelect>
       <Category>
         {categories &&
