@@ -11,6 +11,7 @@ import { SideBarAtom } from "store/SideBarAtom";
 import { Link } from "react-router-dom";
 import { AddBtnAtom } from "store/AddBtnAtom";
 import CalendarForm from "./CalendarForm";
+import { CalendarInfo, getCalendars } from "api/calendar";
 
 const Wrapper = styled.div`
   width: 320px;
@@ -77,14 +78,17 @@ const Follow = styled.div`
 `;
 
 export default function SideBar() {
+  const [xPosition, setX] = useRecoilState(SideBarAtom);
+  const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
   const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
     queryFn: async () => await getTopGoals(),
   });
 
-  const [xPosition, setX] = useRecoilState(SideBarAtom);
-  const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
-
+  const { data: calenders } = useQuery<CalendarInfo[]>({
+    queryKey: ["myCalendarList", isAddBtnClicked],
+    queryFn: async () => await getCalendars(),
+  });
   return (
     <Wrapper>
       <Logos>
@@ -102,10 +106,12 @@ export default function SideBar() {
           <img src={user} alt="" width={40} height={40} />
           <span>개인 달력</span>
         </Link>
-        {/* <div>
-          <img src={users} alt="" width={40} />
-          <span>가족 달력</span>
-        </div> */}
+        {calenders?.map((calendar) => (
+          <div key={calendar.id}>
+            <img src={user} alt="" width={40} height={40} />
+            <span>{calendar.name}</span>
+          </div>
+        ))}
 
         {isAddBtnClicked ? (
           <CalendarForm />
