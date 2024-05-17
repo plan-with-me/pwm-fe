@@ -1,7 +1,7 @@
 import Center from "components/Center";
 import Goals from "components/Goals";
 import Navbar from "components/Navbar";
-import SideBar from "components/SideBar";
+import Sidebar from "components/sidebar/Sidebar";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <>
       <Wrapper>
-        <SideBar />
+        <Sidebar />
         <TodoWrapper>
           <Center />
           <Goals />

@@ -2,15 +2,16 @@ import styled from "styled-components";
 import logo from "assets/logo.png";
 import bars from "assets/bars-solid.svg";
 import user from "assets/user-regular.svg";
+import users from "assets/users-solid.svg";
 import plus from "assets/plus-solid.svg";
-import CategoryTitle from "./CategoryTitle";
+import CategoryTitle from "components/CategoryTitle";
 import { TopGoals, getTopGoals } from "api/goals";
 import { useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
 import { Link } from "react-router-dom";
 import { AddBtnAtom } from "store/AddBtnAtom";
-import CalendarForm from "./CalendarForm";
+import CalendarForm from "components/sidebar/CalendarForm";
 import { CalendarInfo, getCalendars } from "api/calendar";
 import { useEffect, useState } from "react";
 import Dimmed from "components/UI/Dimmed";
@@ -88,7 +89,7 @@ const Follow = styled.div`
   }
 `;
 
-export default function SideBar() {
+export default function Sidebar() {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
   const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
   const [isDimmedRenderd, setIsDimmedRendered] = useState(false);
@@ -132,7 +133,7 @@ export default function SideBar() {
             </Link>
             {calenders?.map((calendar) => (
               <div key={calendar.id}>
-                <img src={user} alt="" width={40} height={40} />
+                <img src={users} alt="" width={40} height={40} />
                 <span>{calendar.name}</span>
               </div>
             ))}
