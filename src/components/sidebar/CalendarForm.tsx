@@ -52,7 +52,6 @@ export default function CalendarForm() {
     <Form ref={formRef} onSubmit={calendarSubmit}>
       <img src={users} alt="" width={40} />
       <input
-        type="sumbit"
         value={calendarName}
         onChange={(event) => {
           setCalendarName(event.target.value);
