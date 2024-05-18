@@ -31,7 +31,11 @@ export default function CalendarForm() {
 
   const calendarSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    createCalendar(calendarName, null, [userInfo?.id || 0]);
+    const text = calendarName.trim();
+
+    if (text) {
+      createCalendar(text, null, [userInfo?.id || 0]);
+    }
     setIsAddBtnClicked(false);
   };
 
