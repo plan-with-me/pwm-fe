@@ -6,7 +6,7 @@ import {
   getTopGoals,
   postSubGoals,
 } from "api/goals";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
@@ -45,7 +45,7 @@ const Category = styled.div`
   margin-bottom: 20px;
 `;
 
-const WriteInput = styled.div<{ color: string }>`
+const WriteForm = styled.form<{ color: string }>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -93,6 +93,7 @@ export default function Goals() {
   const [sortedSubGoals, setSortedSubGoals] = useState<
     Record<number, SubGoals[]>
   >({});
+  const [todoText, setTodoText] = useState("");
 
   useEffect(() => {
     if (!subLoading && !categoriesLoading) {
@@ -114,21 +115,21 @@ export default function Goals() {
     setSortedSubGoals(sortedSubGoalsMap);
   }
 
-  const todoSubmit = async (categoryId: number, value: string) => {
-    await postSubGoals(value, new Date(), "incomplete", categoryId, refetch);
-  };
-
   // 하위 목표 등록
-  const handleInputKeyPress = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-    categoryId: number
-  ) => {
-    const text = event.currentTarget.value.trim();
+  const todoSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const text = todoText.trim();
 
-    if (event.key === "Enter" && text) {
-      event.preventDefault();
-      todoSubmit(categoryId, event.currentTarget.value);
-      event.currentTarget.value = "";
+    if (text && openCategoryId) {
+      await postSubGoals(
+        text,
+        new Date(),
+        "incomplete",
+        openCategoryId,
+        refetch
+      );
+      refetch();
+      setTodoText("");
     }
   };
 
@@ -172,13 +173,14 @@ export default function Goals() {
                 </Todo>
               ))}
             {openCategoryId === category.id && (
-              <WriteInput color={category.color}>
-                <div></div>
+              <WriteForm onSubmit={todoSubmit} color={category.color}>
+                <div />
                 <input
                   placeholder="할 일 입력"
-                  onKeyUp={(e) => handleInputKeyPress(e, category.id)}
+                  value={todoText}
+                  onChange={(event) => setTodoText(event.target.value)}
                 />
-              </WriteInput>
+              </WriteForm>
             )}
           </Category>
         ))}
