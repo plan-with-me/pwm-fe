@@ -132,10 +132,10 @@ export default function Sidebar() {
               <span>개인 달력</span>
             </Link>
             {calenders?.map((calendar) => (
-              <div key={calendar.id}>
+              <Link to={`/calendar/${calendar.id}`} key={calendar.id}>
                 <img src={users} alt="" width={40} height={40} />
                 <span>{calendar.name}</span>
-              </div>
+              </Link>
             ))}
 
             {isAddBtnClicked ? (

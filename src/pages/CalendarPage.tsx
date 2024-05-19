@@ -1,9 +1,11 @@
-import { UserInfo, getUserInfo } from "api/users";
+import { CalendarInfoDetail, getCalendar } from "api/calendar";
 import Center from "components/Center";
 import Goals from "components/Goals";
 import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -32,10 +34,17 @@ const TodoWrapper = styled.div`
   }
 `;
 
-export default function Home() {
-  const { data: userInfo } = useQuery<UserInfo>({
-    queryKey: ["userInfo"],
-    queryFn: async () => await getUserInfo(),
+export default function CalendarPage() {
+  const [calendarId, setCalendarId] = useState(0);
+  const params = useParams();
+
+  useEffect(() => {
+    setCalendarId(Number(params.calendar_id));
+  }, [params.calendar_id]);
+
+  const { data: calendarInfo } = useQuery<CalendarInfoDetail>({
+    queryKey: ["calendarInfo", calendarId],
+    queryFn: async () => await getCalendar(calendarId),
   });
 
   return (
@@ -43,7 +52,7 @@ export default function Home() {
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          <Center userInfo={userInfo!} />
+          <Center calendarInfo={calendarInfo} />
           <Goals />
         </TodoWrapper>
       </Wrapper>
