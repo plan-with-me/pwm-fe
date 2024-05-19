@@ -1,21 +1,15 @@
 import api from "./config";
 
-
 export type TopGoals = {
   id: number;
   name: string;
   color: string;
   status: string;
   show_scope: string;
-  created_at: string;
-  updated_at: string;
-  user_id: number;
 };
 
 export type SubGoals = {
   id: number;
-  created_at: string;
-  updated_at: string;
   top_goal_id: number;
   name: string;
   plan_datetime: string;
@@ -38,7 +32,10 @@ export async function createTopGoals(newGoalData: TopGoals) {
   }
 }
 
-export async function updateTopGoals(goalId: number, updatedGoalData: Partial<TopGoals>) {
+export async function updateTopGoals(
+  goalId: number,
+  updatedGoalData: Partial<TopGoals>
+) {
   try {
     const response = await api.put(`/top-goals/${goalId}`, updatedGoalData);
     return response.data;
@@ -81,6 +78,7 @@ export async function postSubGoals(
       refetch();
     });
 }
+
 export async function deleteSubGoal(subGoalId: number, refetch: () => void) {
   api.delete(`/sub-goals/${subGoalId}`).then(() => refetch());
 }
