@@ -15,7 +15,6 @@ import CalendarForm from "components/sidebar/CalendarForm";
 import { CalendarInfo, getCalendars } from "api/calendar";
 import { useEffect, useState } from "react";
 import Dimmed from "components/UI/Dimmed";
-import api from "api/config";
 
 const SidebarWrapper = styled.div<{ xPosition: number }>`
   @media (max-width: 1240px) {
