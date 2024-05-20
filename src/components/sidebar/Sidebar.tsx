@@ -15,6 +15,7 @@ import CalendarForm from "components/sidebar/CalendarForm";
 import { CalendarInfo, getCalendars } from "api/calendar";
 import { useEffect, useState } from "react";
 import Dimmed from "components/UI/Dimmed";
+import api from "api/config";
 
 const SidebarWrapper = styled.div<{ xPosition: number }>`
   @media (max-width: 1240px) {
@@ -89,6 +90,10 @@ const Follow = styled.div`
   }
 `;
 
+const AddCalendarBtn = styled.div`
+  cursor: pointer;
+`;
+
 export default function Sidebar() {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
   const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
@@ -99,7 +104,7 @@ export default function Sidebar() {
     queryFn: async () => await getTopGoals(),
   });
 
-  const { data: calenders } = useQuery<CalendarInfo[]>({
+  const { data: calenders, refetch } = useQuery<CalendarInfo[]>({
     queryKey: ["myCalendarList", isAddBtnClicked],
     queryFn: async () => await getCalendars(),
   });
@@ -139,12 +144,14 @@ export default function Sidebar() {
             ))}
 
             {isAddBtnClicked ? (
-              <CalendarForm />
+              <CalendarForm refetch={refetch} />
             ) : (
-              <div onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}>
+              <AddCalendarBtn
+                onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}
+              >
                 <img src={plus} alt="" width={40} />
                 <span>달력 추가</span>
-              </div>
+              </AddCalendarBtn>
             )}
           </CalendarSelect>
           <Category>
