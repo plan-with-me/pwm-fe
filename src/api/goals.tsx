@@ -22,9 +22,19 @@ export async function getTopGoals() {
     .then((response: { data: TopGoals[] }) => response.data);
 }
 
-export async function createTopGoals(newGoalData: TopGoals) {
+export async function createTopGoals(
+  name: string,
+  color: string,
+  status: string,
+  show_scope: string
+) {
   try {
-    const response = await api.post("/top-goals", newGoalData);
+    const response = await api.post("/top-goals", {
+      name,
+      color,
+      status,
+      show_scope,
+    });
     return response.data;
   } catch (error) {
     console.error("Error while creating top goal:", error);
