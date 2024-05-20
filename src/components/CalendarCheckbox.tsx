@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import check from "assets/check.svg";
-import { updateSubGoals } from "api/goals";
+import { updateSubGoals } from "api/calendarGoals";
 
 const TodoBtn = styled.div<{ color: string }>`
   input {
@@ -37,7 +37,8 @@ const TodoBtn = styled.div<{ color: string }>`
   }
 `;
 
-interface CheckboxProps {
+interface CalendarCheckboxProps {
+  calendarId: number;
   id: number;
   color: string;
   status: string;
@@ -45,13 +46,14 @@ interface CheckboxProps {
   refetch: () => void;
 }
 
-export default function Checkbox({
+export default function CalendarCheckbox({
+  calendarId,
   id,
   color,
   status,
   text,
   refetch,
-}: CheckboxProps) {
+}: CalendarCheckboxProps) {
   const initialCheckedState = status === "incomplete" ? false : true;
   const [isChecked, setIsChecked] = useState(initialCheckedState);
 
@@ -59,7 +61,15 @@ export default function Checkbox({
     const newStatus = isChecked ? "incomplete" : "complete";
     setIsChecked(!isChecked);
 
-    await updateSubGoals(id, text, new Date(), newStatus, refetch);
+    await updateSubGoals(
+      calendarId,
+      id,
+      text,
+      "black",
+      newStatus,
+      "me",
+      refetch
+    );
   };
 
   return (

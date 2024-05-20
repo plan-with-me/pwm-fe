@@ -1,12 +1,12 @@
 import { CalendarInfoDetail, getCalendar } from "api/calendar";
 import Center from "components/Center";
-import Goals from "components/Goals";
 import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import CalendarGoals from "components/CalendarGoals";
 
 const Wrapper = styled.div`
   /* width: 100%; */
@@ -53,7 +53,7 @@ export default function CalendarPage() {
         <Sidebar />
         <TodoWrapper>
           <Center calendarInfo={calendarInfo} />
-          <Goals />
+          <CalendarGoals calendarId={calendarId} />
         </TodoWrapper>
       </Wrapper>
       <Navbar />
