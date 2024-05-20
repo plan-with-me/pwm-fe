@@ -1,21 +1,15 @@
 import api from "./config";
 
-
 export type TopGoals = {
   id: number;
   name: string;
   color: string;
   status: string;
   show_scope: string;
-  created_at: string;
-  updated_at: string;
-  user_id: number;
 };
 
 export type SubGoals = {
   id: number;
-  created_at: string;
-  updated_at: string;
   top_goal_id: number;
   name: string;
   plan_datetime: string;
@@ -28,9 +22,19 @@ export async function getTopGoals() {
     .then((response: { data: TopGoals[] }) => response.data);
 }
 
-export async function createTopGoals(newGoalData: TopGoals) {
+export async function createTopGoals(
+  name: string,
+  color: string,
+  status: string,
+  show_scope: string
+) {
   try {
-    const response = await api.post("/top-goals", newGoalData);
+    const response = await api.post("/top-goals", {
+      name,
+      color,
+      status,
+      show_scope,
+    });
     return response.data;
   } catch (error) {
     console.error("Error while creating top goal:", error);
@@ -38,7 +42,10 @@ export async function createTopGoals(newGoalData: TopGoals) {
   }
 }
 
-export async function updateTopGoals(goalId: number, updatedGoalData: Partial<TopGoals>) {
+export async function updateTopGoals(
+  goalId: number,
+  updatedGoalData: Partial<TopGoals>
+) {
   try {
     const response = await api.put(`/top-goals/${goalId}`, updatedGoalData);
     return response.data;
@@ -64,7 +71,7 @@ export async function getSubGoals() {
     .then((response: { data: SubGoals[] }) => response.data);
 }
 
-export async function postSubGoals(
+export async function createSubGoals(
   name: string,
   plan_datetime: Date,
   status: string,
@@ -81,19 +88,20 @@ export async function postSubGoals(
       refetch();
     });
 }
-export async function deleteSubGoal(subGoalId: number, refetch: () => void) {
-  api.delete(`/sub-goals/${subGoalId}`).then(() => refetch());
+
+export async function deleteSubGoals(sub_goal_id: number, refetch: () => void) {
+  api.delete(`/sub-goals/${sub_goal_id}`).then(() => refetch());
 }
 
-export async function updateSubGoal(
-  subGoalId: number,
+export async function updateSubGoals(
+  sub_goal_id: number,
   name: string,
   plan_datetime: Date,
   status: string,
   refetch: () => void
 ) {
   api
-    .put(`/sub-goals/${subGoalId}`, { name, plan_datetime, status })
+    .put(`/sub-goals/${sub_goal_id}`, { name, plan_datetime, status })
     .then(() => {
       // console.log(response.data);
       refetch();
