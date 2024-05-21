@@ -11,6 +11,9 @@ import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import CategoryTitle from "./CategoryTitle";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import getDateFormat from "utils/getDateFormat";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -76,10 +79,9 @@ const Todo = styled.div`
 export default function Goals() {
   const [todoText, setTodoText] = useState("");
   const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery<
-    TopGoals[]
-  >({
+  const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
     queryFn: async () => await getTopGoals(),
   });
@@ -89,8 +91,13 @@ export default function Goals() {
     isLoading: subLoading,
     refetch,
   } = useQuery<SubGoals[]>({
-    queryKey: ["subGoals"],
-    queryFn: async () => await getSubGoals(),
+    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+    queryFn: async () =>
+      await getSubGoals({
+        plan_date: `${calendarDate.year}-${calendarDate.month
+          .toString()
+          .padStart(2, "0")}`,
+      }),
   });
 
   const [sortedSubGoals, setSortedSubGoals] = useState<
@@ -102,20 +109,30 @@ export default function Goals() {
 
     if (categories && subGoals) {
       categories.forEach((category) => {
-        const subGoalsForCategory = subGoals.filter(
-          (subGoal) => subGoal.top_goal_id === category.id
-        );
+        const subGoalsForCategory = subGoals.filter((subGoal) => {
+          const planDate = new Date(subGoal.plan_datetime)
+            .toISOString()
+            .split("T")[0];
+          const targetDate = `${calendarDate.year}-${calendarDate.month
+            .toString()
+            .padStart(2, "0")}-${calendarDate.date
+            .toString()
+            .padStart(2, "0")}`;
+          return subGoal.top_goal_id === category.id && planDate === targetDate;
+        });
         sortedSubGoalsMap[category.id] = subGoalsForCategory;
       });
     }
+    // console.log(sortedSubGoalsMap);
+    // console.log(subGoals);
     setSortedSubGoals(sortedSubGoalsMap);
   }
 
   useEffect(() => {
-    if (!subLoading && !categoriesLoading) {
-      categories && subGoals && sortSubGoals(categories, subGoals);
+    if (categories && subGoals) {
+      sortSubGoals(categories, subGoals);
     }
-  }, [categories, subGoals, subLoading, categoriesLoading]);
+  }, [categories, subGoals, calendarDate]);
 
   // 하위 목표 등록
   const todoSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -125,7 +142,13 @@ export default function Goals() {
     if (text && openCategoryId) {
       await createSubGoals(
         text,
-        new Date(),
+        new Date(
+          getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          )
+        ),
         "incomplete",
         openCategoryId,
         refetch

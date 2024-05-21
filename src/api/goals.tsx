@@ -65,9 +65,15 @@ export async function deleteTopGoals(goalId: number) {
   }
 }
 
-export async function getSubGoals() {
+export async function getSubGoals({
+  user_id,
+  plan_date,
+}: {
+  user_id?: number;
+  plan_date?: string;
+}) {
   return await api
-    .get("/sub-goals")
+    .get("/sub-goals", { params: { user_id, plan_date } })
     .then((response: { data: SubGoals[] }) => response.data);
 }
 
