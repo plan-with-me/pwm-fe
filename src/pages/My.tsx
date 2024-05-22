@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import logo from "assets/logo.png";
+import profilePhoto from "assets/lounge.png";
 import api from "../api/config";
 import { getUserInfo } from "api/users";
 import { useRef, useState, useEffect } from "react";
@@ -30,13 +31,18 @@ const LoginPage = styled.div`
     width: 700px;
     height: 1200px;
     min-width: 200px;
+    display: flex;
+    flex-direction:column; 
+    align-items: center;
   }
 
   #input_name_div{
+    width: 500px;
     margin-top: 50px;
   }
 
   #input_introduction_div{
+    width: 500px;
     margin-top: 50px;
   }
 
@@ -50,6 +56,8 @@ const LoginPage = styled.div`
 
 `;
 
+
+
 const LoginText = styled.div`
   width: 100%;
   display: flex;
@@ -59,6 +67,7 @@ const LoginText = styled.div`
   background-color: #d9d9d9;
   margin-top: 240px;
   margin-bottom: 40px;
+  
   span {
     font-size: 20px;
     background-color: white;
@@ -69,11 +78,15 @@ const LoginText = styled.div`
 
 const ConfirmButton = styled.button`
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: transparent;
+  color: black;
+  font-size: 18px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 20px;
 `;
 
 
@@ -116,29 +129,37 @@ export default function Login() {
   
 
   return (
+    <div>
+      <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
       <LoginPage>
         <img src={logo} width={500} id="logo" />
+        
         <LoginText>
-          <span><input type="file"/></span>
+          <label htmlFor="fileInput">
+            <img src={profilePhoto} alt="파일 선택" style={{ width: '100px', height: 'auto' }} />
+            <input id="fileInput" type="file" style={{ display: 'none' }} />
+          </label>
         </LoginText>
 
         <div id="input_div">
           <div id = "input_name_div">
             <span id="span_name">이름</span>
-            <input ref={nameRef} style={{borderStyle: 'none', width: '600px'}}/> 
+            <input ref={nameRef} style={{borderStyle: 'none', width: '400px'}}/> 
             <hr></hr>
           </div>
 
           <div id = "input_introduction_div">
             <span id="span_introduction">자기소개</span>
-            <input ref={introductionRef}  style={{borderStyle: 'none' , width: '600px'}}/>
+            <input ref={introductionRef}  style={{borderStyle: 'none' , width: '400px'}}/>
             <hr></hr>
           </div>
 
-          <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
+          
         </div>
         
       </LoginPage>
+      
+      </div>
       
   );
 }
