@@ -35,16 +35,19 @@ const TodoWrapper = styled.div`
 `;
 
 export default function CalendarPage() {
-  const [calendarId, setCalendarId] = useState(0);
-  const params = useParams();
+  const [calendarId, setCalendarId] = useState<number | null>(null);
+  const params = useParams<{ calendar_id: string }>();
 
   useEffect(() => {
-    setCalendarId(Number(params.calendar_id));
+    if (params.calendar_id) {
+      setCalendarId(Number(params.calendar_id));
+    }
   }, [params.calendar_id]);
 
   const { data: calendarInfo } = useQuery<CalendarInfoDetail>({
     queryKey: ["calendarInfo", calendarId],
-    queryFn: async () => await getCalendar(calendarId),
+    queryFn: async () => await getCalendar(calendarId!),
+    enabled: !!calendarId,
   });
 
   return (
@@ -53,7 +56,7 @@ export default function CalendarPage() {
         <Sidebar />
         <TodoWrapper>
           <Center calendarInfo={calendarInfo} />
-          <CalendarGoals calendarId={calendarId} />
+          <CalendarGoals />
         </TodoWrapper>
       </Wrapper>
       <Navbar />

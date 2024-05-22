@@ -24,9 +24,17 @@ export async function createSubGoals(
     });
 }
 
-export async function getSubGoals(calendar_id: number) {
+export async function getSubGoals({
+  calendar_id,
+  plan_date,
+}: {
+  calendar_id: number;
+  plan_date?: string;
+}) {
   return await api
-    .get(`/calendars/${calendar_id}/sub-goals`)
+    .get(`/calendars/${calendar_id}/sub-goals`, {
+      params: { calendar_id, plan_date },
+    })
     .then((response: { data: SubGoals[] }) => response.data);
 }
 
