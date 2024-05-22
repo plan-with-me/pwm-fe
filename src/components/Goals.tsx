@@ -7,13 +7,13 @@ import {
   getTopGoals,
 } from "api/goals";
 import { FormEvent, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import CategoryTitle from "./CategoryTitle";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
+import { useQuery } from "@tanstack/react-query";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -86,11 +86,7 @@ export default function Goals() {
     queryFn: async () => await getTopGoals(),
   });
 
-  const {
-    data: subGoals,
-    isLoading: subLoading,
-    refetch,
-  } = useQuery<SubGoals[]>({
+  const { data: subGoals, refetch } = useQuery<SubGoals[]>({
     queryKey: ["subGoals", calendarDate.year, calendarDate.month],
     queryFn: async () =>
       await getSubGoals({
@@ -104,7 +100,7 @@ export default function Goals() {
     Record<number, SubGoals[]>
   >({});
 
-  function sortSubGoals(categories: TopGoals[], subGoals: SubGoals[]) {
+  useEffect(() => {
     const sortedSubGoalsMap: Record<number, SubGoals[]> = {};
 
     if (categories && subGoals) {
@@ -113,25 +109,18 @@ export default function Goals() {
           const planDate = new Date(subGoal.plan_datetime)
             .toISOString()
             .split("T")[0];
-          const targetDate = `${calendarDate.year}-${calendarDate.month
-            .toString()
-            .padStart(2, "0")}-${calendarDate.date
-            .toString()
-            .padStart(2, "0")}`;
+          const targetDate = getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          );
+
           return subGoal.top_goal_id === category.id && planDate === targetDate;
         });
         sortedSubGoalsMap[category.id] = subGoalsForCategory;
       });
     }
-    // console.log(sortedSubGoalsMap);
-    // console.log(subGoals);
     setSortedSubGoals(sortedSubGoalsMap);
-  }
-
-  useEffect(() => {
-    if (categories && subGoals) {
-      sortSubGoals(categories, subGoals);
-    }
   }, [categories, subGoals, calendarDate]);
 
   // 하위 목표 등록
@@ -177,8 +166,7 @@ export default function Goals() {
               color={category.color}
               name={category.name}
             />
-            {!subLoading &&
-              sortedSubGoals[category.id] &&
+            {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id}>
                   <Checkbox
