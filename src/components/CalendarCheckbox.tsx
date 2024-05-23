@@ -61,15 +61,13 @@ export default function CalendarCheckbox({
     const newStatus = isChecked ? "incomplete" : "complete";
     setIsChecked(!isChecked);
 
-    await updateSubGoals(
-      calendarId,
-      id,
-      text,
-      "black",
-      newStatus,
-      "me",
-      refetch
-    );
+    await updateSubGoals({
+      calendar_id: calendarId,
+      sub_goal_id: id,
+      name: text,
+      status: newStatus,
+      refetch: refetch,
+    });
   };
 
   return (

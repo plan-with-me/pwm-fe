@@ -38,24 +38,33 @@ export async function getSubGoals({
     .then((response: { data: SubGoals[] }) => response.data);
 }
 
-export async function updateSubGoals(
-  calendar_id: number,
-  sub_goal_id: number,
-  name: string,
-  color: string,
-  status: string,
-  show_scope: string,
-  refetch: () => void
-) {
-  return await api
-    .put(
-      `/calendars/${calendar_id}/sub-goals/${sub_goal_id}`,
-      { name, color, status, show_scope },
-      { params: { calendar_id, sub_goal_id } }
-    )
+export async function updateSubGoals({
+  calendar_id,
+  sub_goal_id,
+  name,
+  color,
+  status,
+  show_scope,
+  refetch,
+}: {
+  calendar_id: number;
+  sub_goal_id: number;
+  name: string;
+  color?: string;
+  status: string;
+  show_scope?: string;
+  refetch: () => void;
+}) {
+  await api
+    .put(`/calendars/${calendar_id}/sub-goals/${sub_goal_id}`, {
+      name,
+      color,
+      status,
+      show_scope,
+    })
     .then((response) => {
       refetch();
-      return response.data;
+      console.log(response.data);
     })
     .catch((error) => console.log(error));
 }
