@@ -89,6 +89,10 @@ const Follow = styled.div`
   }
 `;
 
+const AddCalendarBtn = styled.div`
+  cursor: pointer;
+`;
+
 export default function Sidebar() {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
   const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
@@ -99,7 +103,7 @@ export default function Sidebar() {
     queryFn: async () => await getTopGoals(),
   });
 
-  const { data: calenders } = useQuery<CalendarInfo[]>({
+  const { data: calenders, refetch } = useQuery<CalendarInfo[]>({
     queryKey: ["myCalendarList", isAddBtnClicked],
     queryFn: async () => await getCalendars(),
   });
@@ -132,19 +136,21 @@ export default function Sidebar() {
               <span>개인 달력</span>
             </Link>
             {calenders?.map((calendar) => (
-              <div key={calendar.id}>
+              <Link to={`/calendar/${calendar.id}`} key={calendar.id}>
                 <img src={users} alt="" width={40} height={40} />
                 <span>{calendar.name}</span>
-              </div>
+              </Link>
             ))}
 
             {isAddBtnClicked ? (
-              <CalendarForm />
+              <CalendarForm refetch={refetch} />
             ) : (
-              <div onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}>
+              <AddCalendarBtn
+                onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}
+              >
                 <img src={plus} alt="" width={40} />
                 <span>달력 추가</span>
-              </div>
+              </AddCalendarBtn>
             )}
           </CalendarSelect>
           <Category>

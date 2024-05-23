@@ -19,7 +19,7 @@ const Form = styled.form`
   }
 `;
 
-export default function CalendarForm() {
+export default function CalendarForm({ refetch }: { refetch: () => void }) {
   const [calendarName, setCalendarName] = useState("");
   const setIsAddBtnClicked = useSetRecoilState(AddBtnAtom);
   const formRef = useRef<HTMLFormElement>(null);
@@ -37,6 +37,7 @@ export default function CalendarForm() {
       createCalendar(text, null, [userInfo?.id || 0]);
     }
     setIsAddBtnClicked(false);
+    refetch();
   };
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function CalendarForm() {
           setCalendarName(event.target.value);
         }}
         placeholder="공유 달력 제목 입력"
+        autoFocus={true}
       ></input>
     </Form>
   );

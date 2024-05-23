@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createTopGoals, TopGoals } from "../../api/goals";
 import styled from 'styled-components';
@@ -110,7 +109,6 @@ const Line = styled.div`
   background-color: lightgray;
 `;
 
-
 export default function CreateTGoals() {
   const [name, setName] = useState("");
   const [color, setColor] = useState("");
@@ -122,22 +120,7 @@ export default function CreateTGoals() {
     e.preventDefault();
 
     try {
-      const now = new Date().toISOString();
-      const userId = parseInt(window.location.pathname.split("/")[2]);
-
-      const newTopGoalData: TopGoals = {
-        id: 0,
-        name,
-        color,
-        status: "incomplete",
-        show_scope: showScope, // show_scope 필드 값을 추가합니다.
-        created_at: now,
-        updated_at: now,
-        user_id: userId,
-      };
-      console.log(userId)
-
-      await createTopGoals(newTopGoalData);
+      await createTopGoals(name, color, "incomplete", showScope);
 
       navigate("/tgoal");
     } catch (error) {

@@ -1,16 +1,15 @@
 import {
-  SubGoals,
-  TopGoals,
   createSubGoals,
   deleteSubGoals,
   getSubGoals,
   getTopGoals,
-} from "api/goals";
+} from "api/calendarGoals";
 import { FormEvent, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import Checkbox from "./Checkbox";
 import CategoryTitle from "./CategoryTitle";
+import { useQuery } from "@tanstack/react-query";
+import { SubGoals, TopGoals } from "api/goals";
+import CalendarCheckbox from "./CalendarCheckbox";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -73,15 +72,15 @@ const Todo = styled.div`
   gap: 8px;
 `;
 
-export default function Goals() {
+export default function CalendarGoals({ calendarId }: { calendarId: number }) {
   const [todoText, setTodoText] = useState("");
   const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
 
   const { data: categories, isLoading: categoriesLoading } = useQuery<
     TopGoals[]
   >({
-    queryKey: ["myGoalList"],
-    queryFn: async () => await getTopGoals(),
+    queryKey: ["sharedCalendarCategory", calendarId],
+    queryFn: async () => await getTopGoals(calendarId),
   });
 
   const {
@@ -89,8 +88,8 @@ export default function Goals() {
     isLoading: subLoading,
     refetch,
   } = useQuery<SubGoals[]>({
-    queryKey: ["subGoals"],
-    queryFn: async () => await getSubGoals(),
+    queryKey: ["sharedCalendarSubGoals", calendarId],
+    queryFn: async () => await getSubGoals(calendarId),
   });
 
   const [sortedSubGoals, setSortedSubGoals] = useState<
@@ -127,6 +126,7 @@ export default function Goals() {
         text,
         new Date(),
         "incomplete",
+        calendarId,
         openCategoryId,
         refetch
       );
@@ -135,7 +135,7 @@ export default function Goals() {
   };
 
   const handleSubGoalDelete = async (subGoalId: number) => {
-    await deleteSubGoals(subGoalId, refetch);
+    await deleteSubGoals(calendarId, subGoalId, refetch);
   };
 
   return (
@@ -154,11 +154,11 @@ export default function Goals() {
               color={category.color}
               name={category.name}
             />
-            {!subLoading &&
-              sortedSubGoals[category.id] &&
+            {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id}>
-                  <Checkbox
+                  <CalendarCheckbox
+                    calendarId={calendarId}
                     id={subGoal.id}
                     color={category.color}
                     status={subGoal.status}

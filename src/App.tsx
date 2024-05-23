@@ -10,15 +10,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";
 import My from "pages/My";
+import CalendarPage from "pages/CalendarPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   { path: "/home", element: <Home /> },
   { path: "/auth", element: <Auth /> },
-  { path: "/tgoal", element: <Tgoals />},
-  { path: "/update-tgoal/:id", element: <UpdateTgoals />},
-  { path: "/create-tgoal", element: <CreateTgoals />},
+  { path: "/tgoal", element: <Tgoals /> },
+  { path: "/update-tgoal/:id", element: <UpdateTgoals /> },
+  { path: "/create-tgoal", element: <CreateTgoals /> },
   { path: "/my", element: <My /> },
+  { path: "/calendar/:calendar_id", element: <CalendarPage /> },
 ]);
 
 const queryClient = new QueryClient();
