@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
-const Div = styled.div<{ isVisible: boolean }>`
+const Div = styled.div<{ $isVisible: boolean }>`
   width: 100dvw;
   height: 100dvh;
   background-color: #222222;
   position: fixed;
   z-index: 10;
   cursor: pointer;
-  opacity: ${(props) => (props.isVisible ? 0.7 : 0)};
-  animation: ${(props) => (props.isVisible ? "fadeIn" : "fadeOut")} 300ms
+  opacity: ${(props) => (props.$isVisible ? 0.7 : 0)};
+  animation: ${(props) => (props.$isVisible ? "fadeIn" : "fadeOut")} 300ms
     ease-out;
 
   @media (min-width: 1240px) {
@@ -42,5 +42,5 @@ export default function Dimmed({
   isVisible: boolean;
   onClick: () => void;
 }) {
-  return <Div isVisible={isVisible} onClick={onClick} />;
+  return <Div $isVisible={isVisible} onClick={onClick} />;
 }

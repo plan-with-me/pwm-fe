@@ -8,8 +8,13 @@ import { FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import CategoryTitle from "./CategoryTitle";
 import { useQuery } from "@tanstack/react-query";
-import { SubGoals, TopGoals } from "api/goals";
+
 import CalendarCheckbox from "./CalendarCheckbox";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import getDateFormat from "utils/getDateFormat";
+import { SubGoals, TopGoals } from "api/goals";
+import { useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -44,7 +49,7 @@ const Category = styled.div`
   margin-bottom: 20px;
 `;
 
-const WriteForm = styled.form<{ color: string }>`
+const WriteForm = styled.form<{ $color: string }>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -61,7 +66,7 @@ const WriteForm = styled.form<{ color: string }>`
     width: calc(100% - 40px);
     background-color: none;
     border: none;
-    border-bottom: 2px solid ${(props) => props.color};
+    border-bottom: 2px solid ${(props) => props.$color};
     padding: 4px;
   }
 `;
@@ -72,49 +77,68 @@ const Todo = styled.div`
   gap: 8px;
 `;
 
-export default function CalendarGoals({ calendarId }: { calendarId: number }) {
+export default function CalendarGoals() {
   const [todoText, setTodoText] = useState("");
   const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery<
-    TopGoals[]
-  >({
-    queryKey: ["sharedCalendarCategory", calendarId],
-    queryFn: async () => await getTopGoals(calendarId),
+  const [calendarId, setCalendarId] = useState<number | null>(null);
+  const params = useParams<{ calendar_id: string }>();
+
+  useEffect(() => {
+    if (params.calendar_id) {
+      setCalendarId(Number(params.calendar_id));
+    }
+  }, [params.calendar_id]);
+
+  const { data: categories } = useQuery<TopGoals[]>({
+    queryKey: ["shared_calendar_category", calendarId],
+    queryFn: async () => await getTopGoals(calendarId!),
+    enabled: !!calendarId,
   });
 
-  const {
-    data: subGoals,
-    isLoading: subLoading,
-    refetch,
-  } = useQuery<SubGoals[]>({
-    queryKey: ["sharedCalendarSubGoals", calendarId],
-    queryFn: async () => await getSubGoals(calendarId),
+  const { data: subGoals, refetch } = useQuery<SubGoals[]>({
+    queryKey: [
+      "sharedCalendarSubGoals",
+      calendarId,
+      calendarDate.year,
+      calendarDate.month,
+    ],
+    queryFn: async () =>
+      await getSubGoals({
+        calendar_id: calendarId!,
+        plan_date: `${calendarDate.year}-${calendarDate.month
+          .toString()
+          .padStart(2, "0")}`,
+      }),
   });
 
   const [sortedSubGoals, setSortedSubGoals] = useState<
     Record<number, SubGoals[]>
   >({});
 
-  function sortSubGoals(categories: TopGoals[], subGoals: SubGoals[]) {
+  useEffect(() => {
     const sortedSubGoalsMap: Record<number, SubGoals[]> = {};
-
     if (categories && subGoals) {
       categories.forEach((category) => {
-        const subGoalsForCategory = subGoals.filter(
-          (subGoal) => subGoal.top_goal_id === category.id
-        );
+        const subGoalsForCategory = subGoals.filter((subGoal) => {
+          const planDate = new Date(subGoal.plan_datetime)
+            .toISOString()
+            .split("T")[0];
+          const targetDate = getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          );
+
+          return subGoal.top_goal_id === category.id && planDate === targetDate;
+        });
         sortedSubGoalsMap[category.id] = subGoalsForCategory;
       });
     }
     setSortedSubGoals(sortedSubGoalsMap);
-  }
+  }, [categories, subGoals, calendarDate]);
 
-  useEffect(() => {
-    if (!subLoading && !categoriesLoading) {
-      categories && subGoals && sortSubGoals(categories, subGoals);
-    }
-  }, [categories, subGoals, subLoading, categoriesLoading]);
 
   // 하위 목표 등록
   const todoSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -124,9 +148,15 @@ export default function CalendarGoals({ calendarId }: { calendarId: number }) {
     if (text && openCategoryId) {
       await createSubGoals(
         text,
-        new Date(),
+        new Date(
+          getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          )
+        ),
         "incomplete",
-        calendarId,
+        calendarId!,
         openCategoryId,
         refetch
       );
@@ -135,7 +165,7 @@ export default function CalendarGoals({ calendarId }: { calendarId: number }) {
   };
 
   const handleSubGoalDelete = async (subGoalId: number) => {
-    await deleteSubGoals(calendarId, subGoalId, refetch);
+    await deleteSubGoals(calendarId!, subGoalId, refetch);
   };
 
   return (
@@ -158,7 +188,7 @@ export default function CalendarGoals({ calendarId }: { calendarId: number }) {
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id}>
                   <CalendarCheckbox
-                    calendarId={calendarId}
+                    calendarId={calendarId!}
                     id={subGoal.id}
                     color={category.color}
                     status={subGoal.status}
@@ -172,12 +202,16 @@ export default function CalendarGoals({ calendarId }: { calendarId: number }) {
                 </Todo>
               ))}
             {openCategoryId === category.id && (
-              <WriteForm onSubmit={todoSubmit} color={category.color}>
+              <WriteForm onSubmit={todoSubmit} $color={category.color}>
                 <div />
                 <input
+                  id="todo"
+                  name="todo"
+                  type="text"
                   placeholder="할 일 입력"
                   value={todoText}
                   onChange={(event) => setTodoText(event.target.value)}
+                  autoFocus={true}
                 />
               </WriteForm>
             )}

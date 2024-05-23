@@ -7,10 +7,13 @@ import {
   getTopGoals,
 } from "api/goals";
 import { FormEvent, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import CategoryTitle from "./CategoryTitle";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import getDateFormat from "utils/getDateFormat";
+import { useQuery } from "@tanstack/react-query";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -45,7 +48,7 @@ const Category = styled.div`
   margin-bottom: 20px;
 `;
 
-const WriteForm = styled.form<{ color: string }>`
+const WriteForm = styled.form<{ $color: string }>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -62,7 +65,7 @@ const WriteForm = styled.form<{ color: string }>`
     width: calc(100% - 40px);
     background-color: none;
     border: none;
-    border-bottom: 2px solid ${(props) => props.color};
+    border-bottom: 2px solid ${(props) => props.$color};
     padding: 4px;
   }
 `;
@@ -76,46 +79,49 @@ const Todo = styled.div`
 export default function Goals() {
   const [todoText, setTodoText] = useState("");
   const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery<
-    TopGoals[]
-  >({
+  const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
     queryFn: async () => await getTopGoals(),
   });
 
-  const {
-    data: subGoals,
-    isLoading: subLoading,
-    refetch,
-  } = useQuery<SubGoals[]>({
-    queryKey: ["subGoals"],
-    queryFn: async () => await getSubGoals(),
+  const { data: subGoals, refetch } = useQuery<SubGoals[]>({
+    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+    queryFn: async () =>
+      await getSubGoals({
+        plan_date: `${calendarDate.year}-${calendarDate.month
+          .toString()
+          .padStart(2, "0")}`,
+      }),
   });
 
   const [sortedSubGoals, setSortedSubGoals] = useState<
     Record<number, SubGoals[]>
   >({});
 
-  function sortSubGoals(categories: TopGoals[], subGoals: SubGoals[]) {
+  useEffect(() => {
     const sortedSubGoalsMap: Record<number, SubGoals[]> = {};
 
     if (categories && subGoals) {
       categories.forEach((category) => {
-        const subGoalsForCategory = subGoals.filter(
-          (subGoal) => subGoal.top_goal_id === category.id
-        );
+        const subGoalsForCategory = subGoals.filter((subGoal) => {
+          const planDate = new Date(subGoal.plan_datetime)
+            .toISOString()
+            .split("T")[0];
+          const targetDate = getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          );
+
+          return subGoal.top_goal_id === category.id && planDate === targetDate;
+        });
         sortedSubGoalsMap[category.id] = subGoalsForCategory;
       });
     }
     setSortedSubGoals(sortedSubGoalsMap);
-  }
-
-  useEffect(() => {
-    if (!subLoading && !categoriesLoading) {
-      categories && subGoals && sortSubGoals(categories, subGoals);
-    }
-  }, [categories, subGoals, subLoading, categoriesLoading]);
+  }, [categories, subGoals, calendarDate]);
 
   // 하위 목표 등록
   const todoSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -125,7 +131,13 @@ export default function Goals() {
     if (text && openCategoryId) {
       await createSubGoals(
         text,
-        new Date(),
+        new Date(
+          getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          )
+        ),
         "incomplete",
         openCategoryId,
         refetch
@@ -154,8 +166,7 @@ export default function Goals() {
               color={category.color}
               name={category.name}
             />
-            {!subLoading &&
-              sortedSubGoals[category.id] &&
+            {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id}>
                   <Checkbox
@@ -172,7 +183,7 @@ export default function Goals() {
                 </Todo>
               ))}
             {openCategoryId === category.id && (
-              <WriteForm onSubmit={todoSubmit} color={category.color}>
+              <WriteForm onSubmit={todoSubmit} $color={category.color}>
                 <div />
                 <input
                   placeholder="할 일 입력"

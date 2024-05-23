@@ -2,8 +2,11 @@ import { useState } from "react";
 import styled from "styled-components";
 import check from "assets/check.svg";
 import { updateSubGoals } from "api/goals";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import getDateFormat from "utils/getDateFormat";
 
-const TodoBtn = styled.div<{ color: string }>`
+const TodoBtn = styled.div<{ $color: string }>`
   input {
     display: none;
   }
@@ -33,7 +36,7 @@ const TodoBtn = styled.div<{ color: string }>`
 
   input:checked + label:before {
     content: "";
-    background-color: ${(props) => props.color};
+    background-color: ${(props) => props.$color};
   }
 `;
 
@@ -54,16 +57,25 @@ export default function Checkbox({
 }: CheckboxProps) {
   const initialCheckedState = status === "incomplete" ? false : true;
   const [isChecked, setIsChecked] = useState(initialCheckedState);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
 
   const todoCheck = async () => {
     const newStatus = isChecked ? "incomplete" : "complete";
     setIsChecked(!isChecked);
 
-    await updateSubGoals(id, text, new Date(), newStatus, refetch);
+    await updateSubGoals(
+      id,
+      text,
+      new Date(
+        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+      ),
+      newStatus,
+      refetch
+    );
   };
 
   return (
-    <TodoBtn color={color}>
+    <TodoBtn $color={color}>
       <form>
         <input type="checkbox" checked={isChecked} readOnly />
         <label onClick={todoCheck}>
