@@ -49,7 +49,7 @@ const Category = styled.div`
   margin-bottom: 20px;
 `;
 
-const WriteForm = styled.form<{ color: string }>`
+const WriteForm = styled.form<{ $color: string }>`
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -66,7 +66,7 @@ const WriteForm = styled.form<{ color: string }>`
     width: calc(100% - 40px);
     background-color: none;
     border: none;
-    border-bottom: 2px solid ${(props) => props.color};
+    border-bottom: 2px solid ${(props) => props.$color};
     padding: 4px;
   }
 `;
@@ -202,7 +202,7 @@ export default function CalendarGoals() {
                 </Todo>
               ))}
             {openCategoryId === category.id && (
-              <WriteForm onSubmit={todoSubmit} color={category.color}>
+              <WriteForm onSubmit={todoSubmit} $color={category.color}>
                 <div />
                 <input
                   id="todo"

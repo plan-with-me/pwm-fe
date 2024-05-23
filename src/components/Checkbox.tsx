@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
 
-const TodoBtn = styled.div<{ color: string }>`
+const TodoBtn = styled.div<{ $color: string }>`
   input {
     display: none;
   }
@@ -36,7 +36,7 @@ const TodoBtn = styled.div<{ color: string }>`
 
   input:checked + label:before {
     content: "";
-    background-color: ${(props) => props.color};
+    background-color: ${(props) => props.$color};
   }
 `;
 
@@ -75,7 +75,7 @@ export default function Checkbox({
   };
 
   return (
-    <TodoBtn color={color}>
+    <TodoBtn $color={color}>
       <form>
         <input type="checkbox" checked={isChecked} readOnly />
         <label onClick={todoCheck}>

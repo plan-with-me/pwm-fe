@@ -30,9 +30,9 @@ const CalendarDate = styled.div`
 `;
 
 const Day = styled.div<{
-  emtpyColor?: string;
-  bgColor?: string;
-  textColor?: string;
+  $emtpyColor?: string;
+  $bgColor?: string;
+  $textColor?: string;
 }>`
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@ const Day = styled.div<{
   gap: 4px;
 
   div {
-    background-color: ${(props) => props.emtpyColor || "#d5d5d5"};
+    background-color: ${(props) => props.$emtpyColor || "#d5d5d5"};
     width: 20px;
     height: 20px;
     border-radius: 4px;
@@ -48,9 +48,9 @@ const Day = styled.div<{
   }
 
   span {
-    background-color: ${(props) => props.bgColor};
+    background-color: ${(props) => props.$bgColor};
     font-size: 12px;
-    color: ${(props) => props.textColor};
+    color: ${(props) => props.$textColor};
     width: 20px;
     height: 20px;
     display: flex;
@@ -133,15 +133,15 @@ export default function Calendar() {
           ].map((date, index) => (
             <Day
               key={index}
-              emtpyColor={date ? "" : "white"}
-              bgColor={
+              $emtpyColor={date ? "" : "white"}
+              $bgColor={
                 date === calendarDate.date
                   ? "black"
                   : date === today.getDate()
                   ? "lightgrey"
                   : ""
               }
-              textColor={date === calendarDate.date ? "white" : ""}
+              $textColor={date === calendarDate.date ? "white" : ""}
             >
               <div
                 onClick={() => {

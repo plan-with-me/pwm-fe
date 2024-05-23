@@ -16,11 +16,11 @@ import { CalendarInfo, getCalendars } from "api/calendar";
 import { useEffect, useState } from "react";
 import Dimmed from "components/UI/Dimmed";
 
-const SidebarWrapper = styled.div<{ xPosition: number }>`
+const SidebarWrapper = styled.div<{ $xPosition: number }>`
   @media (max-width: 1240px) {
     position: fixed;
     left: -360px;
-    transform: translatex(${(props) => props.xPosition}px);
+    transform: translatex(${(props) => props.$xPosition}px);
     transition-duration: 300ms;
     z-index: 20;
   }
@@ -118,7 +118,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <SidebarWrapper xPosition={xPosition}>
+      <SidebarWrapper $xPosition={xPosition}>
         <SidebarLayout>
           <Logos>
             <img src={logo} width={160} />
