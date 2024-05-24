@@ -4,8 +4,6 @@ import bars from "assets/bars-solid.svg";
 import user from "assets/user-regular.svg";
 import users from "assets/users-solid.svg";
 import plus from "assets/plus-solid.svg";
-import CategoryTitle from "components/CategoryTitle";
-import { TopGoals, getTopGoals } from "api/goals";
 import { useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
@@ -15,6 +13,7 @@ import CalendarForm from "components/sidebar/CalendarForm";
 import { CalendarInfo, getCalendars } from "api/calendar";
 import { useEffect, useState } from "react";
 import Dimmed from "components/UI/Dimmed";
+import AchievementRate from "./AchievementRate";
 
 const SidebarWrapper = styled.div<{ $xPosition: number }>`
   @media (max-width: 1240px) {
@@ -71,16 +70,6 @@ const CalendarSelect = styled.div`
   }
 `;
 
-const Category = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  border-top: 2px solid #d5d5d5;
-  border-bottom: 2px solid #d5d5d5;
-`;
-
 const Follow = styled.div`
   padding-top: 20px;
   span {
@@ -97,11 +86,6 @@ export default function Sidebar() {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
   const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
   const [isDimmedRenderd, setIsDimmedRendered] = useState(false);
-
-  const { data: categories } = useQuery<TopGoals[]>({
-    queryKey: ["myGoalList"],
-    queryFn: async () => await getTopGoals(),
-  });
 
   const { data: calenders, refetch } = useQuery<CalendarInfo[]>({
     queryKey: ["myCalendarList", isAddBtnClicked],
@@ -153,16 +137,7 @@ export default function Sidebar() {
               </AddCalendarBtn>
             )}
           </CalendarSelect>
-          <Category>
-            {categories &&
-              categories.map((category: TopGoals) => (
-                <CategoryTitle
-                  key={category.id}
-                  color={category.color}
-                  name={category.name}
-                />
-              ))}
-          </Category>
+          <AchievementRate />
           <Follow>
             <span>팔로우</span>
           </Follow>
