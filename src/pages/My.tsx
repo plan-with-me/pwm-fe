@@ -6,12 +6,26 @@ import { getUserInfo } from "api/users";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
+
 const LoginPage = styled.div`
   @media (max-width: 700px) {
     width: 90%;
     #logo {
       width: 80%;
     }
+
+    #input_name_div, #input_introduction_div {
+      padding: 0 10px;
+    }
+
+    #span_name, #span_introduction {
+      margin-right: 10px;
+    }
+
+    input {
+      width: 100%;
+    }
+
   }
 
   width: 700px;
@@ -28,22 +42,19 @@ const LoginPage = styled.div`
   }
 
   #input_div{
-    width: 700px;
-    height: 1200px;
+    width: 100%;
+    height: 200px;
     min-width: 200px;
     display: flex;
     flex-direction:column; 
     align-items: center;
   }
 
-  #input_name_div{
-    width: 500px;
+  #input_name_div, #input_introduction_div {
+    width: 100%;
+    max-width: 500px;
     margin-top: 50px;
-  }
-
-  #input_introduction_div{
-    width: 500px;
-    margin-top: 50px;
+    padding: 0 20px;
   }
 
   #span_name{
@@ -87,6 +98,11 @@ const ConfirmButton = styled.button`
   position: absolute;
   top: 10px;
   right: 20px;
+
+  @media (max-width: 700px) {
+    top: 20px;
+    right: 10px;
+  }
 `;
 
 
@@ -144,13 +160,13 @@ export default function Login() {
         <div id="input_div">
           <div id = "input_name_div">
             <span id="span_name">이름</span>
-            <input ref={nameRef} style={{borderStyle: 'none', width: '400px'}}/> 
+            <input ref={nameRef} style={{borderStyle: 'none', width: '100%'}}/> 
             <hr></hr>
           </div>
 
           <div id = "input_introduction_div">
             <span id="span_introduction">자기소개</span>
-            <input ref={introductionRef}  style={{borderStyle: 'none' , width: '400px'}}/>
+            <input ref={introductionRef}  style={{borderStyle: 'none' , width: '100%'}}/>
             <hr></hr>
           </div>
 
