@@ -16,6 +16,14 @@ export type SubGoals = {
   status: string;
 };
 
+export type Achievement = {
+  id: number;
+  name: string;
+  color: string;
+  sub_goal_count: number;
+  complete_count: number;
+};
+
 export async function getTopGoals() {
   return await api
     .get("/top-goals")
@@ -112,4 +120,10 @@ export async function updateSubGoals(
       // console.log(response.data);
       refetch();
     });
+}
+
+export async function getAchievementRates(userId?: number) {
+  return api
+    .get("/top-goals/achievement-rates", { params: { userId } })
+    .then((response: { data: Achievement[] }) => response.data);
 }
