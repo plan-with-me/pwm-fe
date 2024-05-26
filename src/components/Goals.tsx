@@ -6,7 +6,7 @@ import {
   getTopGoals,
   updateSubGoals,
 } from "api/goals";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import CategoryTitle from "./CategoryTitle";
@@ -197,6 +197,21 @@ export default function Goals() {
     }
   };
 
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setOpenCategoryId(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [formRef]);
+
   return (
     <Wrapper>
       {categories &&
@@ -233,6 +248,7 @@ export default function Goals() {
                           onChange={(event) => {
                             setUpdateTodo(event.target.value);
                           }}
+                          autoFocus={true}
                         />
                       </form>
                     ) : (
@@ -250,11 +266,16 @@ export default function Goals() {
             {openCategoryId === category.id && (
               <Todo $color={category.color}>
                 <Box />
-                <WriteForm onSubmit={todoSubmit} $color={category.color}>
+                <WriteForm
+                  onSubmit={todoSubmit}
+                  $color={category.color}
+                  ref={formRef}
+                >
                   <input
                     placeholder="할 일 입력"
                     value={todoText}
                     onChange={(event) => setTodoText(event.target.value)}
+                    autoFocus={true}
                   />
                 </WriteForm>
                 <img src={more} width={20} />
