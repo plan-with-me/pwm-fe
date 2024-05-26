@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import MoreModal from "./MoreModal";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import more from "assets/more.svg";
+import useClickOutside from "hooks/useClickOutside";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -198,19 +199,7 @@ export default function Goals() {
   };
 
   const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (formRef.current && !formRef.current.contains(event.target as Node)) {
-        setOpenCategoryId(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [formRef]);
+  useClickOutside(formRef, () => setOpenCategoryId(null));
 
   return (
     <Wrapper>
@@ -218,13 +207,7 @@ export default function Goals() {
         categories.map((category: TopGoals) => (
           <Category key={category.id}>
             <CategoryTitle
-              onClick={() => {
-                if (category.id === openCategoryId) {
-                  setOpenCategoryId(null);
-                } else {
-                  setOpenCategoryId(category.id);
-                }
-              }}
+              onClick={() => setOpenCategoryId(category.id)}
               color={category.color}
               name={category.name}
             />

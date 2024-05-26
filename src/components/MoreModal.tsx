@@ -1,6 +1,7 @@
 import { deleteSubGoals } from "api/goals";
 import more from "assets/more.svg";
-import { useEffect, useRef, useState } from "react";
+import useClickOutside from "hooks/useClickOutside";
+import { useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import styled from "styled-components";
@@ -36,25 +37,10 @@ export default function MoreModal({
   refetch: () => void;
 }) {
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        setIsMoreBtnClicked(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [modalRef, setIsMoreBtnClicked]);
-
   const setSelectedTodo = useSetRecoilState(selectedTodoAtom);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  useClickOutside(modalRef, () => setIsMoreBtnClicked(false));
 
   return (
     <>
