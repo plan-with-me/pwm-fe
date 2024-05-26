@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import CalendarGoals from "components/CalendarGoals";
+import CalendarGoals from "components/sharedCalendar/CalendarGoals";
 
 const Wrapper = styled.div`
   /* width: 100%; */
