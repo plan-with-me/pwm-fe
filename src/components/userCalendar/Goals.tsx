@@ -9,7 +9,7 @@ import {
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
-import CategoryTitle from "./CategoryTitle";
+import CategoryTitle from "../CategoryTitle";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
