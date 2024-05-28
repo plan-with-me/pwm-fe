@@ -3,6 +3,8 @@ import logo from "assets/logo.png";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import api from "../api/config";
 import kakaoLogin from "assets/kakao_login.svg";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = styled.div`
   width: 500px;
@@ -95,6 +97,14 @@ export default function Login() {
   const handleGoogleLoginError = async () => {
     // TODO
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      navigate("/home");
+    }
+  }, [navigate]);
 
   return (
     <>
