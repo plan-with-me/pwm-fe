@@ -31,7 +31,18 @@ const SidebarLayout = styled.div`
   padding: 20px;
   background-color: white;
   @media (max-width: 1240px) {
+    padding-right: 0;
     height: calc(100dvh - 40px);
+  }
+`;
+
+const ScrollArea = styled.div`
+  overflow-y: auto;
+  height: calc(100dvh - 110px);
+  padding-right: 20px;
+
+  @media (min-width: 1240px) {
+    height: calc(100dvh - 194px);
   }
 `;
 
@@ -39,6 +50,7 @@ const Logos = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-right: 20px;
 
   .bar {
     cursor: pointer;
@@ -114,33 +126,35 @@ export default function Sidebar() {
               onClick={() => setX(-xPosition)}
             />
           </Logos>
-          <CalendarSelect>
-            <Link to="/home">
-              <img src={user} alt="" width={40} height={40} />
-              <span>개인 달력</span>
-            </Link>
-            {calenders?.map((calendar) => (
-              <Link to={`/calendar/${calendar.id}`} key={calendar.id}>
-                <img src={users} alt="" width={40} height={40} />
-                <span>{calendar.name}</span>
+          <ScrollArea>
+            <CalendarSelect>
+              <Link to="/home">
+                <img src={user} alt="" width={40} height={40} />
+                <span>개인 달력</span>
               </Link>
-            ))}
+              {calenders?.map((calendar) => (
+                <Link to={`/calendar/${calendar.id}`} key={calendar.id}>
+                  <img src={users} alt="" width={40} height={40} />
+                  <span>{calendar.name}</span>
+                </Link>
+              ))}
 
-            {isAddBtnClicked ? (
-              <CalendarForm refetch={refetch} />
-            ) : (
-              <AddCalendarBtn
-                onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}
-              >
-                <img src={plus} alt="" width={40} />
-                <span>달력 추가</span>
-              </AddCalendarBtn>
-            )}
-          </CalendarSelect>
-          <AchievementRate />
-          <Follow>
-            <span>팔로우</span>
-          </Follow>
+              {isAddBtnClicked ? (
+                <CalendarForm refetch={refetch} />
+              ) : (
+                <AddCalendarBtn
+                  onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}
+                >
+                  <img src={plus} alt="" width={40} />
+                  <span>달력 추가</span>
+                </AddCalendarBtn>
+              )}
+            </CalendarSelect>
+            <AchievementRate />
+            <Follow>
+              <span>팔로우</span>
+            </Follow>
+          </ScrollArea>
         </SidebarLayout>
       </SidebarWrapper>
       {isDimmedRenderd && (
