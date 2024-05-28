@@ -1,3 +1,3 @@
 export default function getPercent(a: number, b: number) {
-  return Math.round((a / b) * 100);
+  return b > 0 ? Math.round((a / b) * 100) : 0;
 }
