@@ -88,7 +88,7 @@ export default function Login() {
 
     const authType = authResponse.data.token_type;
     const accessToken = authResponse.data.access_token;
-    localStorage.setItem("auth", `${authType} ${accessToken}`);
+    sessionStorage.setItem("auth", `${authType} ${accessToken}`);
 
     // 회원가입이면 프로필 설정 페이지로
     window.location.href = authResponse.status === 201 ? "/my" : "/home";
@@ -101,7 +101,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("auth")) {
+    if (sessionStorage.getItem("auth")) {
       navigate("/home");
     }
   }, [navigate]);

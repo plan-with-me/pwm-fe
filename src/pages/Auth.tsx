@@ -45,7 +45,7 @@ export default function Auth() {
       );
 
       console.log(authResponse.data);
-      localStorage.setItem(
+      sessionStorage.setItem(
         "auth",
         `${authResponse.data.token_type} ${authResponse.data.access_token}`
       );
