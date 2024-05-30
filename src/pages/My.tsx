@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import logo from "assets/logo.png";
-import profilePhoto from "assets/lounge.png";
+import defaultProfile from "assets/defaultProfile.png";
+//import camera from "assets/camera.png";
 import api from "../api/config";
 import { getUserInfo } from "api/users";
 import { useRef, useState, useEffect } from "react";
@@ -105,6 +106,13 @@ const ConfirmButton = styled.button`
   }
 `;
 
+interface UserInfo {
+  id: number;
+  name: string;
+  introduction: string;
+  image?: string;
+}
+
 
 export default function Login() {
   
@@ -112,6 +120,8 @@ export default function Login() {
   const nameRef = useRef<HTMLInputElement | null>(null); 
   const introductionRef = useRef<HTMLInputElement | null>(null); 
   const [userId, setUserId] = useState<number | null>(0);
+  const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태 추가
+  const [previewImage, setPreviewImage] = useState<string | null>(null); // 이미지 미리보기 상태 추가
 
 
   useEffect(() => {
@@ -119,6 +129,7 @@ export default function Login() {
       setUserId(data.id || 0);
       if (nameRef.current) nameRef.current.value = data.name;
       if (introductionRef.current) introductionRef.current.value = data.introduction || ''; 
+      if (data.image) setPreviewImage(data.image); // 프로필 이미지 미리보기 설정
     });
   }, []);
 
@@ -128,18 +139,59 @@ export default function Login() {
       return;
     }
 
-    api.put(`/users/${userId}`, {
+    let imageUrl = null;
+
+    if (profileImage) { // 이미지 파일이 있을 경우 업로드 처리
+      const formData = new FormData();
+      formData.append('file', profileImage);
+      try {
+        const response = await api.post('/files', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        imageUrl = response.data.client_location; // 업로드된 이미지의 URL
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    }
+
+    const payload: Partial<UserInfo> = {
       name: nameRef.current.value,
       introduction: introductionRef.current.value,
-      image: null,
-    })
-      .then(() => {
-        navigate('/home');
-      })
-      .catch(err => {
-        console.error(err);
-      })
+    };
+
+    if (imageUrl) {
+      payload.image = imageUrl;
+    }
+
+    console.log("Payload:", payload); // 콘솔에 요청 데이터를 로그로 출력
+
+    try {
+      await api.put(`/users/${userId}`, payload);
+      navigate('/home');
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setProfileImage(file); // 이미지 파일 상태 업데이트
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string); // 이미지 미리보기 상태 업데이트
+      };
+      reader.readAsDataURL(file);
+      console.log("Selected file:", file); // 파일 정보 로그로 출력
+    } 
+    else {
+      console.log("No file selected"); // 파일 선택이 안된 경우 로그로 출력
+    }
+  };
+
 
 
   
@@ -152,21 +204,22 @@ export default function Login() {
         
         <LoginText>
           <label htmlFor="fileInput">
-            <img src={profilePhoto} alt="파일 선택" style={{ width: '100px', height: 'auto' }} />
-            <input id="fileInput" type="file" style={{ display: 'none' }} />
+            <img src={previewImage || defaultProfile} alt="파일 선택" style={{ width: '100px', height: 'auto' }} />
+            {/*<img src={camera} alt="카메라" style={{ width: '50px', height: 'auto' }} />*/}
+            <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleImageChange}/>
           </label>
         </LoginText>
 
         <div id="input_div">
           <div id = "input_name_div">
             <span id="span_name">이름</span>
-            <input ref={nameRef} style={{borderStyle: 'none', width: '100%'}}/> 
+            <input ref={nameRef} style={{borderStyle: 'none', width: '80%'}}/> 
             <hr></hr>
           </div>
 
           <div id = "input_introduction_div">
             <span id="span_introduction">자기소개</span>
-            <input ref={introductionRef}  style={{borderStyle: 'none' , width: '100%'}}/>
+            <input ref={introductionRef}  style={{borderStyle: 'none' , width: '80%'}}/>
             <hr></hr>
           </div>
 
