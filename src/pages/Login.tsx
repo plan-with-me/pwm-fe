@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 
+
 const LoginPage = styled.div`
   width: 500px;
   height: calc(100dvh - 200px);
@@ -92,6 +93,7 @@ export default function Login() {
     const authType = authResponse.data.token_type;
     const accessToken = authResponse.data.access_token;
     cookies.set("auth", `${authType} ${accessToken}`, { path: "/" });
+
 
     // 회원가입이면 프로필 설정 페이지로
     window.location.href = authResponse.status === 201 ? "/my" : "/home";

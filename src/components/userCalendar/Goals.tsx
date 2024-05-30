@@ -206,11 +206,16 @@ export default function Goals() {
       {categories &&
         categories.map((category: TopGoals) => (
           <Category key={category.id}>
-            <CategoryTitle
-              onClick={() => setOpenCategoryId(category.id)}
-              color={category.color}
-              name={category.name}
-            />
+            {/* 종료한 목표 중 하위 목표가 있는 상위 목표만 표시 + 종료하지 않은 목표 표시 */}
+            {((sortedSubGoals[category.id] &&
+              sortedSubGoals[category.id].length > 0) ||
+              category.status === "incomplete") && (
+              <CategoryTitle
+                onClick={() => setOpenCategoryId(category.id)}
+                color={category.color}
+                name={category.name}
+              />
+            )}
             {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id} $color={category.color}>

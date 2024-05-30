@@ -44,6 +44,7 @@ export default function Auth() {
         }
       );
 
+
       cookies.set(
         "auth",
         `${authResponse.data.token_type} ${authResponse.data.access_token}`,
