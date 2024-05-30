@@ -1,4 +1,7 @@
 import axios from "axios";
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
 
 const api = axios.create({
   baseURL: "https://pwm.ssc.co.kr/api",
@@ -9,7 +12,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = sessionStorage.getItem("auth");
+    config.headers.Authorization = cookies.get("auth");
     return config;
   },
   (error) => Promise.reject(error)

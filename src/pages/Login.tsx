@@ -5,6 +5,8 @@ import api from "../api/config";
 import kakaoLogin from "assets/kakao_login.svg";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
+
 
 const LoginPage = styled.div`
   width: 500px;
@@ -61,23 +63,25 @@ const KAKAO_KEY = import.meta.env.VITE_APP_KAKAO_CLIENT_KEY;
 const REDIRECT_URI = import.meta.env.VITE_APP_KAKAO_AUTH_REDIRECT_URL;
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=login`;
 
-export default function Login() {
-  type credentialResponse = {
-    /** This field is the returned ID token */
-    credential?: string;
-    /** This field sets how the credential is selected */
-    select_by?:
-      | "auto"
-      | "user"
-      | "user_1tap"
-      | "user_2tap"
-      | "btn"
-      | "btn_confirm"
-      | "btn_add_session"
-      | "btn_confirm_add_session";
-    clientId?: string;
-  };
+type credentialResponse = {
+  /** This field is the returned ID token */
+  credential?: string;
+  /** This field sets how the credential is selected */
+  select_by?:
+    | "auto"
+    | "user"
+    | "user_1tap"
+    | "user_2tap"
+    | "btn"
+    | "btn_confirm"
+    | "btn_add_session"
+    | "btn_confirm_add_session";
+  clientId?: string;
+};
 
+const cookies = new Cookies();
+
+export default function Login() {
   const handleGoogleCredential = async (
     credentialResponse: credentialResponse
   ) => {
@@ -88,7 +92,8 @@ export default function Login() {
 
     const authType = authResponse.data.token_type;
     const accessToken = authResponse.data.access_token;
-    sessionStorage.setItem("auth", `${authType} ${accessToken}`);
+    cookies.set("auth", `${authType} ${accessToken}`, { path: "/" });
+
 
     // 회원가입이면 프로필 설정 페이지로
     window.location.href = authResponse.status === 201 ? "/my" : "/home";
@@ -101,7 +106,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (sessionStorage.getItem("auth")) {
+    if (cookies.get("auth")) {
       navigate("/home");
     }
   }, [navigate]);

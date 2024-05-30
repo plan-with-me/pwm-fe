@@ -1,6 +1,7 @@
 import axios from "axios";
 import api from "api/config";
 import { useEffect } from "react";
+import { Cookies } from "react-cookie";
 
 type kakaoToken = {
   token_type: string;
@@ -11,6 +12,8 @@ type kakaoToken = {
   refresh_token_expires_in: number;
   scope: string;
 };
+
+const cookies = new Cookies();
 
 export default function Auth() {
   useEffect(() => {
@@ -37,19 +40,16 @@ export default function Auth() {
         "/auth",
         { id_token },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
           params: { social_type: "kakao" },
         }
       );
 
-      console.log(authResponse.data);
-      sessionStorage.setItem(
-        "auth",
-        `${authResponse.data.token_type} ${authResponse.data.access_token}`
-      );
 
+      cookies.set(
+        "auth",
+        `${authResponse.data.token_type} ${authResponse.data.access_token}`,
+        { path: "/" }
+      );
       // 회원가입이면 프로필 설정 페이지로
       window.location.href = authResponse.status === 201 ? "/my" : "/home";
     };
