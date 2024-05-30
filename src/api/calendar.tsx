@@ -16,9 +16,9 @@ export async function createCalendar(
   image: string | null,
   user_ids: number[]
 ) {
-  api.post("/calendars", { name, image, user_ids }).then((response) => {
-    console.log(response.data);
-  });
+  return api
+    .post("/calendars", { name, image, user_ids })
+    .then((response) => response.data);
 }
 
 export async function getCalendars() {
