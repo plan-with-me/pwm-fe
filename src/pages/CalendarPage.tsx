@@ -7,6 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import CalendarGoals from "components/sharedCalendar/CalendarGoals";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { SubGoals } from "api/goals";
+import { getSubGoals } from "api/calendarGoals";
 
 const Wrapper = styled.div`
   /* width: 100%; */
@@ -37,6 +41,23 @@ const TodoWrapper = styled.div`
 export default function CalendarPage() {
   const [calendarId, setCalendarId] = useState<number | null>(null);
   const params = useParams<{ calendar_id: string }>();
+  const calendarDate = useRecoilValue(CalendarDateAtom);
+
+  const { data: subGoals } = useQuery<SubGoals[]>({
+    queryKey: [
+      "shared_calendar_subGoals",
+      calendarId,
+      calendarDate.year,
+      calendarDate.month,
+    ],
+    queryFn: async () =>
+      await getSubGoals({
+        calendar_id: calendarId!,
+        plan_date: `${calendarDate.year}-${calendarDate.month
+          .toString()
+          .padStart(2, "0")}`,
+      }),
+  });
 
   useEffect(() => {
     if (params.calendar_id) {
@@ -55,7 +76,7 @@ export default function CalendarPage() {
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          <Center calendarInfo={calendarInfo} />
+          <Center calendarInfo={calendarInfo!} subGoals={subGoals} />
           <CalendarGoals />
         </TodoWrapper>
       </Wrapper>
