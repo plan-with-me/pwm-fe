@@ -128,12 +128,16 @@ export default function Sidebar() {
           </Logos>
           <ScrollArea>
             <CalendarSelect>
-              <Link to="/home">
+              <Link to="/home" onClick={() => setX(-xPosition)}>
                 <img src={user} alt="" width={40} height={40} />
                 <span>개인 달력</span>
               </Link>
               {calenders?.map((calendar) => (
-                <Link to={`/calendar/${calendar.id}`} key={calendar.id}>
+                <Link
+                  to={`/calendar/${calendar.id}`}
+                  key={calendar.id}
+                  onClick={() => setX(-xPosition)}
+                >
                   <img src={users} alt="" width={40} height={40} />
                   <span>{calendar.name}</span>
                 </Link>

@@ -3,6 +3,8 @@ import right_arrow from "assets/angle-right-solid.svg";
 import left_arrow from "assets/angle-left-solid.svg";
 import { useRecoilState } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { SubGoals } from "api/goals";
+import { useEffect, useState } from "react";
 
 const DateController = styled.div`
   display: flex;
@@ -45,6 +47,10 @@ const Day = styled.div<{
     height: 20px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
   }
 
   span {
@@ -60,7 +66,7 @@ const Day = styled.div<{
   }
 `;
 
-export default function Calendar() {
+export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
   const today = new Date();
 
   const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
@@ -105,6 +111,29 @@ export default function Calendar() {
     }
   };
 
+  const [todos, setTodos] = useState(new Map());
+  useEffect(() => {
+    if (subGoals) {
+      const newTodos = new Map();
+      subGoals.forEach((item) => {
+        const todoDate = new Date(item.plan_datetime);
+        const date = todoDate.getDate();
+
+        if (item.status === "incomplete") {
+          if (newTodos.has(date)) {
+            newTodos.set(date, newTodos.get(date) + 1);
+          } else newTodos.set(date, 1);
+        } else {
+          if (newTodos.has(date)) {
+            newTodos.set(date, newTodos.get(date) + 1);
+          } else newTodos.set(date, 0);
+        }
+      });
+      setTodos(newTodos);
+    }
+  }, [subGoals]);
+
+  console.log(todos);
   return (
     <>
       <div>
@@ -137,7 +166,9 @@ export default function Calendar() {
               $bgColor={
                 date === calendarDate.date
                   ? "black"
-                  : date === today.getDate()
+                  : date === today.getDate() &&
+                    calendarDate.month === today.getMonth() + 1 &&
+                    calendarDate.year === today.getFullYear()
                   ? "lightgrey"
                   : ""
               }
@@ -147,7 +178,9 @@ export default function Calendar() {
                 onClick={() => {
                   setCalendarDate({ ...calendarDate, date });
                 }}
-              />
+              >
+                {todos.get(date)}
+              </div>
               <span>{date}</span>
             </Day>
           ))}

@@ -5,6 +5,9 @@ import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
+import { SubGoals } from "api/goals";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
 
 const Wrapper = styled.div`
   width: fit-content;
@@ -31,9 +34,15 @@ const TodoWrapper = styled.div`
 `;
 
 export default function Home() {
+  const calendarDate = useRecoilValue(CalendarDateAtom);
+
   const { data: userInfo } = useQuery<UserInfo>({
     queryKey: ["userInfo"],
     queryFn: async () => await getUserInfo(),
+  });
+
+  const { data: subGoals } = useQuery<SubGoals[]>({
+    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
   });
 
   return (
@@ -41,7 +50,7 @@ export default function Home() {
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          <Center userInfo={userInfo!} />
+          <Center userInfo={userInfo!} subGoals={subGoals} />
           <Goals />
         </TodoWrapper>
       </Wrapper>
