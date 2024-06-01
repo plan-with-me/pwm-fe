@@ -128,8 +128,8 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
             newTodos.set(date, newTodos.get(date) + 1);
           } else newTodos.set(date, 0);
         }
-        setTodos(newTodos);
       });
+      setTodos(newTodos);
     }
   }, [subGoals]);
 
@@ -166,7 +166,9 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
               $bgColor={
                 date === calendarDate.date
                   ? "black"
-                  : date === today.getDate()
+                  : date === today.getDate() &&
+                    calendarDate.month === today.getMonth() + 1 &&
+                    calendarDate.year === today.getFullYear()
                   ? "lightgrey"
                   : ""
               }
