@@ -5,7 +5,6 @@ import setting from "assets/setting.png";
 import calendar from "assets/calendar.png";
 
 const Wrapper = styled.div`
-  z-index: -1;
   position: absolute;
   bottom: 0;
   background-color: white;
