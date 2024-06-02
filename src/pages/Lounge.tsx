@@ -3,25 +3,14 @@ import loungeImg from "assets/lounge.png";
 import settingImg from "assets/setting.png";
 import calendarImg from "assets/calendar.png";
 import api from "../api/config";
-import { useRef, useState} from "react";
-import { UserInfo } from "api/users";
+// import { useRef, useState} from "react";
+// import { UserInfo } from "api/users";
 
-//import { getUserInfo, UserInfo } from "api/users";
-//import { useRef, useState, useEffect } from "react";
+import { getUserInfo, UserInfo } from "api/users";
+import { useRef, useState, useEffect } from "react";
 //import { useNavigate } from 'react-router-dom';
 
 
-/* 
-// 더미 데이터로 테스트 시 이거까지 풀고 테스트 
-interface UserInfo {
-  id: string;
-  name: string;
-  introduction: string;
-  image?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-*/
 
 const LoungePage = styled.div`
   
@@ -83,6 +72,21 @@ const LoungePage = styled.div`
     display: block;
   }
 
+  #follow_button{
+    display: block;
+    margin-left: auto;
+    margin-right: 20px;
+    margin-top: 20px;
+    height: 40px;
+  }
+
+  #share_calendar_button{
+    display: block;
+    margin-right: 20px;
+    margin-top: 20px;
+    height: 40px;
+  }
+
 
 `;
 
@@ -93,13 +97,13 @@ export default function Lounge() {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const [searchResults, setSearchResults] = useState<UserInfo | null>(null);
 
-  //const introductionRef = useRef<HTMLInputElement | null>(null); 
-  //const [userId, setUserId] = useState<number | null>(0);
+  const introductionRef = useRef<HTMLInputElement | null>(null); 
+  const [userId, setUserId] = useState<number | null>(0);
   //const navigate = useNavigate();
   
 
 
-  /*
+  
   useEffect(() => {
     getUserInfo().then(data => {
       setUserId(data.id || 0);
@@ -108,25 +112,14 @@ export default function Lounge() {
     });
     
   }, []);
-  */
+  
 
 
   const handleSearch = async (searchText: string) => {
     if (searchText) {
       try {
-        const response = await api.get(`/users/search`, { params: { email: searchText } });
+        const response = await api.get(`/users`, { params: { email: searchText } });
         const results = response.data;
-
-        /*
-        // 테스트 용 더미 데이터
-        const results = [
-          {
-            id: "1",
-            name: "John Doe",
-            introduction: "Hello, I am John Doe.",
-          },
-        ];
-        */
 
         setSearchResults(results.length > 0 ? results[0] : null);
       } catch (error) {
@@ -141,6 +134,18 @@ export default function Lounge() {
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && nameRef.current) {
       handleSearch(nameRef.current.value);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (searchResults) {
+      try {
+        await api.post(`/users/${searchResults.id}/follows`);
+        alert("팔로우 요청이 성공적으로 완료되었습니다.");
+      } catch (error) {
+        console.error("팔로우 요청 중 오류 발생:", error);
+        alert("팔로우 요청에 실패했습니다.");
+      }
     }
   };
 
@@ -171,7 +176,9 @@ export default function Lounge() {
               <span id="searched_user_name_span">{searchResults.name}</span>
               <span id="searched_user_introduction_span">{searchResults.introduction}</span>
             </div>
-            
+
+            <button id="follow_button" onClick={handleFollow}> 팔로우 </button>
+            <button id="share_calendar_button"> 공유 달력 추가 </button>
           </div>
         )}
       </LoungePage>
