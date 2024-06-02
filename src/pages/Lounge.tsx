@@ -78,6 +78,8 @@ const LoungePage = styled.div`
     margin-right: 20px;
     margin-top: 20px;
     height: 40px;
+    border: none;
+    background-color: white;
   }
 
   #share_calendar_button{
@@ -85,6 +87,8 @@ const LoungePage = styled.div`
     margin-right: 20px;
     margin-top: 20px;
     height: 40px;
+    border: none;
+    background-color: white;
   }
 
 
@@ -95,25 +99,22 @@ const LoungePage = styled.div`
 export default function Lounge() {
   
   const nameRef = useRef<HTMLInputElement | null>(null);
+  const [searchText, setSearchText] = useState<string>('');
   const [searchResults, setSearchResults] = useState<UserInfo | null>(null);
-
-  const introductionRef = useRef<HTMLInputElement | null>(null); 
+  //const introductionRef = useRef<HTMLInputElement | null>(null); 
   const [userId, setUserId] = useState<number | null>(0);
+  const [imagesrc, setimagesrc] = useState<string>();
   //const navigate = useNavigate();
   
 
-
-  
   useEffect(() => {
     getUserInfo().then(data => {
       setUserId(data.id || 0);
-      if (nameRef.current) nameRef.current.value = data.name;
-      if (introductionRef.current) introductionRef.current.value = data.introduction || ''; 
     });
     
   }, []);
   
-
+  //console.log(userId);
 
   const handleSearch = async (searchText: string) => {
     if (searchText) {
@@ -122,6 +123,8 @@ export default function Lounge() {
         const results = response.data;
 
         setSearchResults(results.length > 0 ? results[0] : null);
+        setimagesrc(results.image)
+        
       } catch (error) {
         console.error('사용자 검색 중 오류 발생:', error);
         setSearchResults(null);
@@ -132,8 +135,8 @@ export default function Lounge() {
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && nameRef.current) {
-      handleSearch(nameRef.current.value);
+    if (event.key === 'Enter') {
+      handleSearch(searchText);
     }
   };
 
@@ -162,7 +165,9 @@ export default function Lounge() {
         <div id="input_div">
           <div id = "input_name_div">
             
-            <input ref={nameRef}
+            <input id = "search" ref={nameRef}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
                    onKeyPress={handleKeyPress}
                    style={{border:'none', width: '700px', height: '30px', background: 'lightgray', borderRadius: '10px'}}
                    placeholder=" 🔍  계정 또는 키워드 검색"/> 
@@ -171,9 +176,10 @@ export default function Lounge() {
         </div>
         {searchResults && (
           <div id="searched_user_div">
-            <img src={loungeImg} width={80} id="searched_user_img"/>
+            <img src={imagesrc} width={80} id="searched_user_img" style={{width: '80px', height: '80px'}}/>
             <div id="searched_user_info">
               <span id="searched_user_name_span">{searchResults.name}</span>
+              {/*<span id="searched_user_name_span">{searchResults.id}</span>*/}
               <span id="searched_user_introduction_span">{searchResults.introduction}</span>
             </div>
 
