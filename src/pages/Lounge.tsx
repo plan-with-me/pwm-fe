@@ -21,19 +21,32 @@ const LoungePage = styled.div`
   align-items: center;
 
   #menuImg{
-    margin-right: 140px;
+    margin-right: 180px;
   }
   
   #calendarImg{
-    margin-right: 20px;
+    margin-right: 30px;
   }
 
   #loungeImg{
-    margin-right: 20px;
+    margin-right: 30px;
   }
 
   #settingImg{
     margin-right: 20px;
+  }
+
+  #calendarText{
+    margin-left: 250px;
+    
+  }
+
+  #loungeText{
+    margin-left: 60px;
+  }
+
+  #settingText{
+    margin-left: 55px;
   }
 
   #input_div{
@@ -114,7 +127,7 @@ export default function Lounge() {
     
   }, []);
   
-  //console.log(userId);
+  console.log(userId);
 
   const handleSearch = async (searchText: string) => {
     if (searchText) {
@@ -156,10 +169,14 @@ export default function Lounge() {
   return (
       <LoungePage>
 
-        <img src={loungeImg} width={80} id="menuImg" />
-        <img src={calendarImg} width={80} id="calendarImg" />
-        <img src={loungeImg} width={80} id="loungeImg" />
-        <img src={settingImg} width={80} id="settingImg" />
+        <img src={loungeImg} width={60} id="menuImg" />
+        <img src={calendarImg} width={60} id="calendarImg" />
+        <img src={loungeImg} width={60} id="loungeImg" />
+        <img src={settingImg} width={60} id="settingImg" />
+        <p></p>
+        <span id = "calendarText">달력</span>
+        <span id = "loungeText">라운지</span>
+        <span id = "settingText">설정</span>
         
 
         <div id="input_div">
