@@ -10,6 +10,7 @@ import { SideBarAtom } from "store/SideBarAtom";
 import { Link } from "react-router-dom";
 import { AddBtnAtom } from "store/AddBtnAtom";
 import CalendarForm from "components/sidebar/CalendarForm";
+import FollowList from "components/sidebar/FollowList";
 import { CalendarInfo, getCalendars } from "api/calendar";
 import { useEffect, useState } from "react";
 import Dimmed from "components/UI/Dimmed";
@@ -156,7 +157,7 @@ export default function Sidebar() {
             </CalendarSelect>
             <AchievementRate />
             <Follow>
-              <span>팔로우</span>
+             <FollowList/>
             </Follow>
           </ScrollArea>
         </SidebarLayout>

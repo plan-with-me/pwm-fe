@@ -14,14 +14,15 @@ const Wrapper = styled.div`
   @media (max-width: 1000px) {
     width: 90%;
   }
-
   width: fit-content;
-  height: 100vh;
+  min-height: 100vh; // height에서 min-height로 변경
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0px 15px;
+  padding: 0 15px;
+  z-index: 1;
+  position: relative;
 `;
 
 const TopWrapper = styled.div`
@@ -74,6 +75,12 @@ const Goal = styled(Link)`
   border-radius: 30px;
 `;
 
+const NavbarWrapper = styled.div`
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+`;
+
 export default function TGoals() {
   const [userId, setUserId] = useState<number | null>(null); // 사용자 ID를 상태로 관리합니다.
   const [topGoals, setTopGoals] = useState<TopGoals[]>([]); // 최상위 목표를 상태로 관리합니다.
@@ -124,7 +131,9 @@ export default function TGoals() {
           ))}
         </div>
       </GoalsList>
-      <Navbar />
+      <NavbarWrapper>
+        <Navbar />
+      </NavbarWrapper>
     </Wrapper>
   );
 }

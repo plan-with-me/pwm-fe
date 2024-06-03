@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import left_arrow from '../../assets/angle-left-solid.svg'; // 이미지 경로
 import Navbar from "components/Navbar";
 
-
 const Wrapper = styled.div`
   @media (min-width: 700px) {
     width: 90%;  
@@ -20,7 +19,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 15px;
+  padding: 0px 15px;
+  z-index: 1;
+  position: relative;
 `;
 
 const TopWrapper = styled.div`
@@ -216,7 +217,7 @@ export default function UpdateTGoals() {
           </Button>
         </Link>
         <Heading>목표</Heading>
-        <Button onClick={handleUpdate}>확인</Button>        
+        <Button onClick={handleUpdate} disabled={!name}>확인</Button>        
       </TopWrapper>
       <Form>
       <WriteInput>
