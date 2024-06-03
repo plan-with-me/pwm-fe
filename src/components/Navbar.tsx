@@ -36,7 +36,7 @@ export default function Navbar() {
           <img src={calendar} alt="" width={28} />
           <span>달력</span>
         </Link>
-        <Link to="/home">
+        <Link to="/lounge">
           <img src={lounge} alt="" width={28} />
           <span>라운지</span>
         </Link>
