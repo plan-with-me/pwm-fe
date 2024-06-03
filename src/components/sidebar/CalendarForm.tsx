@@ -2,8 +2,6 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import users from "assets/users-solid.svg";
 import { createCalendar } from "api/calendar";
-import { getUserInfo } from "api/users";
-import { useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 import { AddBtnAtom } from "store/AddBtnAtom";
 import { useNavigate } from "react-router-dom";
@@ -28,17 +26,12 @@ export default function CalendarForm({ refetch }: { refetch: () => void }) {
   const navigate = useNavigate();
   const setX = useSetRecoilState(SideBarAtom);
 
-  const { data: userInfo } = useQuery({
-    queryKey: ["userInfo"],
-    queryFn: async () => await getUserInfo(),
-  });
-
   const calendarSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const text = calendarName.trim();
 
     if (text) {
-      const data = await createCalendar(text, null, [userInfo?.id || 0]);
+      const data = await createCalendar({ name: text });
       navigate(`/calendar/${data.id}`);
       setX(-360);
     }
