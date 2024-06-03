@@ -12,7 +12,7 @@ import CalendarPage from "pages/CalendarPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";
-
+import Lounge from "pages/Lounge";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
   { path: "/tgoal", element: <Tgoals /> },
   { path: "/update-tgoal/:id", element: <UpdateTgoals /> },
   { path: "/create-tgoal", element: <CreateTgoals /> },
-  { path: "/setting", element: <Settings />},
+  { path: "/setting", element: <Settings /> },
   { path: "/my", element: <My /> },
   { path: "/lounge", element: <Lounge /> },
   { path: "/calendar/:calendar_id", element: <CalendarPage /> },
