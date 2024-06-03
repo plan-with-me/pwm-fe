@@ -122,24 +122,18 @@ export default function CreateTGoals() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
-      const now = new Date().toISOString();
       const userId = parseInt(window.location.pathname.split("/")[2]);
-
       const newTopGoalData: TopGoals = {
         id: 0,
         name,
         color,
         status: "incomplete",
-        show_scope: showScope, // show_scope 필드 값을 추가합니다.
-        created_at: now,
-        updated_at: now,
-        user_id: userId,
+        show_scope: showScope
       };
       console.log(userId)
 
-      await createTopGoals(newTopGoalData);
+      await createTopGoals(name, color, newTopGoalData.status, showScope);
 
       navigate("/tgoal");
     } catch (error) {
