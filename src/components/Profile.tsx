@@ -1,6 +1,6 @@
 import { UserInfo } from "api/users";
 import styled from "styled-components";
-import { CalendarInfoDetail } from "api/calendar";
+import { CalendarInfo } from "api/calendar";
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ export default function Profile({
   calendarInfo,
 }: {
   userInfo?: UserInfo;
-  calendarInfo?: CalendarInfoDetail;
+  calendarInfo?: CalendarInfo;
 }) {
   const defaultIntroduction = "프로필에 자기소개를 입력해보세요";
 

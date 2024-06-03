@@ -133,7 +133,6 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
     }
   }, [subGoals]);
 
-  console.log(todos);
   return (
     <>
       <div>

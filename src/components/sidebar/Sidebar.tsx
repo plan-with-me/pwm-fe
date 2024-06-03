@@ -102,7 +102,7 @@ export default function Sidebar() {
 
   const { data: calenders, refetch } = useQuery<CalendarInfo[]>({
     queryKey: ["myCalendarList", isAddBtnClicked],
-    queryFn: async () => await getCalendars(),
+    queryFn: async () => await getCalendars({}),
   });
 
   useEffect(() => {
@@ -157,7 +157,7 @@ export default function Sidebar() {
             </CalendarSelect>
             <AchievementRate />
             <Follow>
-             <FollowList/>
+              <FollowList />
             </Follow>
           </ScrollArea>
         </SidebarLayout>
