@@ -13,7 +13,7 @@ import styled from "styled-components";
 
 const FollowWrapper = styled.div`
   width: 100%;
-  padding: 20px;
+  padding: 10px 0px;
   box-sizing: border-box;
 `;
 
@@ -220,7 +220,7 @@ export default function FollowList() {
       {user && (
         <div>
           <FollowingWrapper>
-            <h1 id="header">{user.name}'s Followings</h1>
+            <h1 id="header"> 팔로잉 </h1>
             {Array.isArray(followingInfo) && followingInfo.length > 0 ? (
               <ul>
                 {followingInfo.map(follow => (
@@ -243,7 +243,7 @@ export default function FollowList() {
           </FollowingWrapper>
 
           <FollowerWrapper>
-          <h1>{user.name}'s Followers</h1>
+          <h1> 팔로우 요청 </h1>
           {Array.isArray(followerInfo) && followerInfo.length > 0 ? (
             <ul>
               {followerInfo.map(follow => (
