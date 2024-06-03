@@ -5,6 +5,9 @@ import bars from "assets/bars-solid.svg";
 import logo from "assets/logo.png";
 import { useRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
+import { UserInfo } from "api/users";
+import { CalendarInfoDetail } from "api/calendar";
+import { SubGoals } from "api/goals";
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,7 +40,15 @@ const Logo = styled.div`
   }
 `;
 
-export default function Center() {
+export default function Center({
+  userInfo,
+  calendarInfo,
+  subGoals,
+}: {
+  userInfo?: UserInfo;
+  calendarInfo?: CalendarInfoDetail;
+  subGoals?: SubGoals[];
+}) {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
 
   return (
@@ -56,8 +67,8 @@ export default function Center() {
           <span></span>
           <span></span>
         </Logo>
-        <Profile />
-        <Calendar />
+        <Profile userInfo={userInfo} calendarInfo={calendarInfo} />
+        <Calendar subGoals={subGoals} />
       </Wrapper>
     </>
   );

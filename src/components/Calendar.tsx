@@ -1,7 +1,10 @@
-import { useState } from "react";
 import styled from "styled-components";
 import right_arrow from "assets/angle-right-solid.svg";
 import left_arrow from "assets/angle-left-solid.svg";
+import { useRecoilState } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { SubGoals } from "api/goals";
+import { useEffect, useState } from "react";
 
 const DateController = styled.div`
   display: flex;
@@ -29,9 +32,9 @@ const CalendarDate = styled.div`
 `;
 
 const Day = styled.div<{
-  emtpyColor?: string;
-  bgColor?: string;
-  textColor?: string;
+  $emtpyColor?: string;
+  $bgColor?: string;
+  $textColor?: string;
 }>`
   display: flex;
   flex-direction: column;
@@ -39,17 +42,21 @@ const Day = styled.div<{
   gap: 4px;
 
   div {
-    background-color: ${(props) => props.emtpyColor || "#d5d5d5"};
+    background-color: ${(props) => props.$emtpyColor || "#d5d5d5"};
     width: 20px;
     height: 20px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
   }
 
   span {
-    background-color: ${(props) => props.bgColor};
+    background-color: ${(props) => props.$bgColor};
     font-size: 12px;
-    color: ${(props) => props.textColor};
+    color: ${(props) => props.$textColor};
     width: 20px;
     height: 20px;
     display: flex;
@@ -59,43 +66,80 @@ const Day = styled.div<{
   }
 `;
 
-export default function Calendar() {
+export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
   const today = new Date();
-  const [year, setYear] = useState(today.getFullYear());
-  const [month, setMonth] = useState(today.getMonth() + 1); // 월은 0부터 시작하므로 +1 해줍니다.
-  const [seletedDate, setSelectedDate] = useState(today.getDate());
+
+  const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
+
   // 해당 월의 첫 번째 날의 요일을 구합니다.
-  const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+  const firstDayOfMonth = new Date(
+    calendarDate.year,
+    calendarDate.month - 1,
+    1
+  ).getDay();
 
   // 해당 월의 마지막 날짜를 구합니다.
-  const lastDateOfMonth = new Date(year, month, 0).getDate();
+  const lastDateOfMonth = new Date(
+    calendarDate.year,
+    calendarDate.month,
+    0
+  ).getDate();
 
   // 이전 달로 이동하는 함수
   const goToPreviousMonth = () => {
-    if (month === 1) {
-      setYear(year - 1);
-      setMonth(12);
+    if (calendarDate.month === 1) {
+      setCalendarDate({
+        ...calendarDate,
+        year: calendarDate.year - 1,
+        month: 12,
+      });
     } else {
-      setMonth(month - 1);
+      setCalendarDate({ ...calendarDate, month: calendarDate.month - 1 });
     }
   };
 
   // 다음 달로 이동하는 함수
   const goToNextMonth = () => {
-    if (month === 12) {
-      setYear(year + 1);
-      setMonth(1);
+    if (calendarDate.month === 12) {
+      setCalendarDate({
+        ...calendarDate,
+        year: calendarDate.year + 1,
+        month: 1,
+      });
     } else {
-      setMonth(month + 1);
+      setCalendarDate({ ...calendarDate, month: calendarDate.month + 1 });
     }
   };
 
+  const [todos, setTodos] = useState(new Map());
+  useEffect(() => {
+    if (subGoals) {
+      const newTodos = new Map();
+      subGoals.forEach((item) => {
+        const todoDate = new Date(item.plan_datetime);
+        const date = todoDate.getDate();
+
+        if (item.status === "incomplete") {
+          if (newTodos.has(date)) {
+            newTodos.set(date, newTodos.get(date) + 1);
+          } else newTodos.set(date, 1);
+        } else {
+          if (newTodos.has(date)) {
+            newTodos.set(date, newTodos.get(date) + 1);
+          } else newTodos.set(date, 0);
+        }
+      });
+      setTodos(newTodos);
+    }
+  }, [subGoals]);
+
+  console.log(todos);
   return (
     <>
       <div>
         <DateController>
           <span>
-            {year}년 {month}월
+            {calendarDate.year}년 {calendarDate.month}월
           </span>
           <div>
             <img src={left_arrow} onClick={goToPreviousMonth} width={12} />
@@ -118,11 +162,25 @@ export default function Calendar() {
           ].map((date, index) => (
             <Day
               key={index}
-              emtpyColor={date ? "" : "white"}
-              bgColor={date === seletedDate ? "black" : ""}
-              textColor={date === seletedDate ? "white" : ""}
+              $emtpyColor={date ? "" : "white"}
+              $bgColor={
+                date === calendarDate.date
+                  ? "black"
+                  : date === today.getDate() &&
+                    calendarDate.month === today.getMonth() + 1 &&
+                    calendarDate.year === today.getFullYear()
+                  ? "lightgrey"
+                  : ""
+              }
+              $textColor={date === calendarDate.date ? "white" : ""}
             >
-              <div onClick={() => setSelectedDate(date)} />
+              <div
+                onClick={() => {
+                  setCalendarDate({ ...calendarDate, date });
+                }}
+              >
+                {todos.get(date)}
+              </div>
               <span>{date}</span>
             </Day>
           ))}

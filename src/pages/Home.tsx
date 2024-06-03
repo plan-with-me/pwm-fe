@@ -1,15 +1,18 @@
+import { UserInfo, getUserInfo } from "api/users";
 import Center from "components/Center";
-import Goals from "components/Goals";
+import Goals from "components/userCalendar/Goals";
 import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
+import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
+import { SubGoals } from "api/goals";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
 
 const Wrapper = styled.div`
-  /* width: 100%; */
   width: fit-content;
   margin: 0 auto;
   display: flex;
-  /* border: 1px solid black; */
   @media (max-width: 440px) {
     width: 100%;
   }
@@ -31,12 +34,23 @@ const TodoWrapper = styled.div`
 `;
 
 export default function Home() {
+  const calendarDate = useRecoilValue(CalendarDateAtom);
+
+  const { data: userInfo } = useQuery<UserInfo>({
+    queryKey: ["userInfo"],
+    queryFn: async () => await getUserInfo(),
+  });
+
+  const { data: subGoals } = useQuery<SubGoals[]>({
+    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+  });
+
   return (
     <>
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          <Center />
+          <Center userInfo={userInfo!} subGoals={subGoals} />
           <Goals />
         </TodoWrapper>
       </Wrapper>
