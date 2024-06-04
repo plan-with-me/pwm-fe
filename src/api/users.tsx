@@ -5,8 +5,6 @@ export type UserInfo = {
   name: string;
   image: string | null;
   introduction: string | null;
-  created_at: string;
-  updated_at: string;
 };
 
 export type FollowInfo = {
@@ -27,8 +25,10 @@ export async function getUserInfo() {
 
 export async function getFollowingInfo(userId: string): Promise<FollowInfo[]> {
   try {
-    const response = await api.get(`/users/${userId}/follows?kind=followings&status=accepted`);
-    console.log(response.data, "0"); 
+    const response = await api.get(
+      `/users/${userId}/follows?kind=followings&status=accepted`
+    );
+    console.log(response.data, "0");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch followings info:", error);
@@ -38,8 +38,10 @@ export async function getFollowingInfo(userId: string): Promise<FollowInfo[]> {
 
 export async function getFollowerInfo(userId: string): Promise<FollowInfo[]> {
   try {
-    const response = await api.get(`/users/${userId}/follows?kind=followers&stat=pending`);
-    console.log(response.data, "4"); 
+    const response = await api.get(
+      `/users/${userId}/follows?kind=followers&stat=pending`
+    );
+    console.log(response.data, "4");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch follower info:", error);
@@ -66,6 +68,3 @@ export async function deleteFollower(followId: number): Promise<void> {
     throw new Error(`Failed to delete follow ${followId}`);
   }
 }
-
-
-
