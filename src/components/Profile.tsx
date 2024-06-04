@@ -1,6 +1,7 @@
 import { UserInfo } from "api/users";
 import styled from "styled-components";
 import { CalendarInfo } from "api/calendar";
+import defaultProfile from "assets/defaultProfile.png";
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,8 +13,17 @@ const Wrapper = styled.div`
 const ProfileImg = styled.div`
   width: 50px;
   height: 50px;
+  overflow: hidden;
   border-radius: 50%;
-  background-color: black;
+  position: relative;
+
+  img {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 const UserInfoDiv = styled.div`
@@ -33,7 +43,15 @@ export default function Profile({
 
   return (
     <Wrapper>
-      {userInfo?.image === null && <ProfileImg />}
+      <ProfileImg>
+        <img
+          src={
+            userInfo?.image === null
+              ? defaultProfile
+              : `https://pwm.ssc.co.kr${userInfo?.image}`
+          }
+        />
+      </ProfileImg>
       <UserInfoDiv>
         <span>{userInfo?.name || calendarInfo?.name}</span>
         <span>{userInfo?.introduction || defaultIntroduction}</span>
