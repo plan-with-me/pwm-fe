@@ -2,12 +2,18 @@ import { UserInfo } from "api/users";
 import styled from "styled-components";
 import { CalendarInfo } from "api/calendar";
 import defaultProfile from "assets/defaultProfile.png";
+import setting from "assets/setting.png";
+import { Link, useLocation } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   margin: 20px 0px;
+  div {
+    display: flex;
+    gap: 12px;
+  }
 `;
 
 const ProfileImg = styled.div`
@@ -40,22 +46,30 @@ export default function Profile({
   calendarInfo?: CalendarInfo;
 }) {
   const defaultIntroduction = "프로필에 자기소개를 입력해보세요";
+  const location = useLocation();
 
   return (
     <Wrapper>
-      <ProfileImg>
-        <img
-          src={
-            userInfo?.image === null
-              ? defaultProfile
-              : `https://pwm.ssc.co.kr${userInfo?.image}`
-          }
-        />
-      </ProfileImg>
-      <UserInfoDiv>
-        <span>{userInfo?.name || calendarInfo?.name}</span>
-        <span>{userInfo?.introduction || defaultIntroduction}</span>
-      </UserInfoDiv>
+      <div>
+        <ProfileImg>
+          <img
+            src={
+              userInfo?.image === (null || undefined)
+                ? defaultProfile
+                : `https://pwm.ssc.co.kr/${userInfo?.image}`
+            }
+          />
+        </ProfileImg>
+        <UserInfoDiv>
+          <span>{userInfo?.name || calendarInfo?.name}</span>
+          <span>{userInfo?.introduction || defaultIntroduction}</span>
+        </UserInfoDiv>
+      </div>
+      {location.pathname !== "/home" && (
+        <Link to={`${location.pathname}/setting`}>
+          <img src={setting} width={28} />
+        </Link>
+      )}
     </Wrapper>
   );
 }
