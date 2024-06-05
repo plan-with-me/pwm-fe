@@ -12,6 +12,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";
 import My from "pages/My";
 import CalendarPage from "pages/CalendarPage";
+import CalendarSetting from "pages/CalendarSetting";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
   { path: "/setting", element: <Settings />},
   { path: "/my", element: <My /> },
   { path: "/calendar/:calendar_id", element: <CalendarPage /> },
+  { path: "/calendar/:calendar_id/setting", element: <CalendarSetting /> },
 ]);
 
 const queryClient = new QueryClient();

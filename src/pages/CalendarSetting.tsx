@@ -1,15 +1,11 @@
 import Navbar from "components/Navbar";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import { Cookies } from "react-cookie";
-import bell from "assets/bell.png";
-import info from "assets/info.png";
-import speaker from "assets/speaker.png";
-import questionMark from "assets/questionMark.png";
-import unlock from "assets/unlock.png";
+import { Link } from "react-router-dom";
+import calendar from "assets/calendar.png";
 import check from "assets/check.png";
 import user from "assets/user-regular.svg";
 import left_arrow from "assets/angle-left-solid.svg";
+import deleteBtn from "assets/delete.png";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -87,53 +83,32 @@ const NavbarWrapper = styled.div`
   width: 100%;
 `;
 
-const cookies = new Cookies();
-
 export default function Setting() {
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    cookies.remove("auth", { path: "/" });
-    navigate("/");
-  };
-
   return (
     <Wrapper>
       <Header>
-        <IconButton to="/home">
+        <IconButton to="/calendar">
           <img src={left_arrow} alt="Back" />
         </IconButton>
-        <Title>설정</Title>
+        <Title>달력 설정</Title>
       </Header>
       <SettingWrapper>
         <SettingLink to="/home">
-          <img src={user} alt="Account" />
-          <span>계정</span>
+          <img src={calendar} alt="Account" />
+          <span>프로필 편집</span>
         </SettingLink>
         <SettingLink to="/home">
-          <img src={bell} alt="Notifications" />
-          <span>알림</span>
+          <img src={check} alt="Notifications" />
+          <span>목표 설정</span>
         </SettingLink>
         <SettingLink to="/home">
-          <img src={info} alt="Notices" />
-          <span>공지사항</span>
+          <img src={user} alt="Notices" />
+          <span>인원 관리</span>
         </SettingLink>
         <SettingLink to="/home">
-          <img src={speaker} alt="Information" />
-          <span>정보</span>
+          <img src={deleteBtn} alt="Information" />
+          <span>공유 달력 삭제</span>
         </SettingLink>
-        <SettingLink to="/home">
-          <img src={questionMark} alt="Inquiries" />
-          <span>문의하기</span>
-        </SettingLink>
-        <SettingLink to="/tgoal">
-          <img src={check} alt="Goals" />
-          <span>목표관리</span>
-        </SettingLink>
-        <SettingLink to="/" onClick={handleLogout}>
-          <img src={unlock} alt="Logout" />
-          <span>로그아웃</span>
-        </SettingLink>
-
       </SettingWrapper>
       <NavbarWrapper>
         <Navbar/>
