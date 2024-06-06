@@ -124,9 +124,7 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
             newTodos.set(date, newTodos.get(date) + 1);
           } else newTodos.set(date, 1);
         } else {
-          if (newTodos.has(date)) {
-            newTodos.set(date, newTodos.get(date) + 1);
-          } else newTodos.set(date, 0);
+          if (!newTodos.has(date)) newTodos.set(date, 0);
         }
       });
       setTodos(newTodos);
