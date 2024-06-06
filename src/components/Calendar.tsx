@@ -182,7 +182,12 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
               $textColor={date === calendarDate.date ? "white" : ""}
             >
               {todos.get(date) === 0 ? (
-                <div id="complete">
+                <div
+                  id="complete"
+                  onClick={() => {
+                    setCalendarDate({ ...calendarDate, date });
+                  }}
+                >
                   <img src={allCheck} width={24} />
                 </div>
               ) : (
