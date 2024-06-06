@@ -13,8 +13,11 @@ import { CalendarInfo } from "api/calendar";
 const LoungePage = styled.div`
   
   width: 100%;
+  width: 100%;
   margin: 0 auto;
   margin-top: 50px;
+  display: flex;
+  flex-direction: column;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,6 +52,7 @@ const LoungePage = styled.div`
   }
 
   #input_div{
+    
     
     width: 700px;
     height: 100px;
