@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import loungeImg from "assets/lounge.png";
-import settingImg from "assets/setting.png";
-import calendarImg from "assets/calendar.png";
 import api from "../api/config";
+import Navbar from "components/Navbar";
 // import { useRef, useState} from "react";
 // import { UserInfo } from "api/users";
 
@@ -14,10 +12,11 @@ import { useRef, useState, useEffect } from "react";
 
 const LoungePage = styled.div`
   
-  width: 700px;
+  width: 100%;
   margin: 0 auto;
   margin-top: 50px;
-  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 
   #menuImg{
@@ -50,6 +49,7 @@ const LoungePage = styled.div`
   }
 
   #input_div{
+    
     width: 700px;
     height: 100px;
     min-width: 200px;
@@ -60,6 +60,8 @@ const LoungePage = styled.div`
   }
 
   #searched_user_div{
+    margin-top: 50px;
+    width: 700px;
     display: flex;
     alignItems: center;
   }
@@ -116,6 +118,7 @@ export default function Lounge() {
   const [searchResults, setSearchResults] = useState<UserInfo | null>(null);
   //const introductionRef = useRef<HTMLInputElement | null>(null); 
   const [userId, setUserId] = useState<number | null>(0);
+  const [calendarId, setCalendarId] = useState<number | null>(null);
   const [imagesrc, setimagesrc] = useState<string>();
   //const navigate = useNavigate();
   
@@ -123,6 +126,16 @@ export default function Lounge() {
   useEffect(() => {
     getUserInfo().then(data => {
       setUserId(data.id || 0);
+    });
+
+     // 사용자 공유 달력 목록을 가져와서 첫 번째 달력의 ID를 설정
+     api.get('/calendars').then(response => {
+      const calendars = response.data;
+      if (calendars.length > 0) {
+        setCalendarId(calendars[0].id);
+      }
+    }).catch(error => {
+      console.error('공유 달력 목록을 가져오는 중 오류 발생:', error);
     });
     
   }, []);
@@ -165,19 +178,21 @@ export default function Lounge() {
     }
   };
 
+  const handleShareCalendar = async () => {
+    if (searchResults && calendarId) {
+      try {
+        await api.post(`/calendars/${calendarId}/users/${searchResults.id}`);
+        alert("공유 달력에 유저가 성공적으로 추가되었습니다.");
+      } catch (error) {
+        console.error("공유 달력 추가 중 오류 발생:", error);
+        alert("공유 달력 추가에 실패했습니다.");
+      }
+    }
+  };
+
 
   return (
       <LoungePage>
-
-        <img src={loungeImg} width={60} id="menuImg" />
-        <img src={calendarImg} width={60} id="calendarImg" />
-        <img src={loungeImg} width={60} id="loungeImg" />
-        <img src={settingImg} width={60} id="settingImg" />
-        <p></p>
-        <span id = "calendarText">달력</span>
-        <span id = "loungeText">라운지</span>
-        <span id = "settingText">설정</span>
-        
 
         <div id="input_div">
           <div id = "input_name_div">
@@ -201,9 +216,10 @@ export default function Lounge() {
             </div>
 
             <button id="follow_button" onClick={handleFollow}> 팔로우 </button>
-            <button id="share_calendar_button"> 공유 달력 추가 </button>
+            <button id="share_calendar_button" onClick={handleShareCalendar}> 공유 달력 추가 </button>
           </div>
         )}
+        <Navbar />
       </LoungePage>
       
   );
