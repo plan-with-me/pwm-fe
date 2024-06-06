@@ -251,7 +251,7 @@ export default function Lounge() {
           {calendarList.map(calendar => (
             <div key={calendar.id} className="calendar_item">
               <h4>{calendar.name}</h4>
-              {/*<p>{calendar.description}</p>*/}
+              <p>{calendar.introduction}</p>
               <button id="share_this_calendar_button" onClick={handleShareCalendar}> 이 달력에 추가 </button>
             </div>
           ))}
