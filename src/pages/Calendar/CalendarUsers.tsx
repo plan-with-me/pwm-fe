@@ -165,6 +165,7 @@ export default function CalendarUsers() {
                 <SettingModal
                   calendarId={Number(calendar_id)}
                   userId={user.id}
+                  name={user.name}
                 />
               </UserLayout>
             ))}

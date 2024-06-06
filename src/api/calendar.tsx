@@ -75,5 +75,5 @@ export async function addCalendarUser(calendar_id: number, user_id: number) {
 }
 
 export async function deleteCalendarUser(calendar_id: number, user_id: number) {
-  await api.delete(`/calendars/${calendar_id}/users/${user_id}`);
+  return await api.delete(`/calendars/${calendar_id}/users/${user_id}`);
 }
