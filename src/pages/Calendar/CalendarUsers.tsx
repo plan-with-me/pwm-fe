@@ -9,9 +9,15 @@ import left_arrow from "assets/angle-left-solid.svg";
 import logo from "assets/logo.png";
 
 const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+`;
+
+const CalendarUsersLayout = styled.div`
   width: 440px;
   height: calc(100dvh - 84px);
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,9 +25,14 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   width: 400px;
+  height: fit-content;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top: 0;
+  background-color: white;
+  z-index: 10;
   padding: 20px;
   span {
     width: 20px;
@@ -33,10 +44,16 @@ const Header = styled.div`
 `;
 
 const Title = styled.span`
-  width: fit-content;
-  margin: 20px 0 40px 0;
+  width: 400px;
+  padding: 20px 20px 40px 20px;
   font-size: 20px;
   font-weight: 600;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 85px;
+  background-color: white;
+  z-index: 10;
 `;
 
 const ProfileImg = styled.div`
@@ -59,7 +76,8 @@ const Users = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
+  padding-top: 165px;
+  padding-bottom: 12px;
 `;
 
 const UserLayout = styled.div`
@@ -101,46 +119,57 @@ export default function CalendarUsers() {
     queryFn: async () => await getCalendar(Number(calendar_id)),
   });
 
+  console.log(users);
   return (
     <>
       <Wrapper>
-        <Header>
-          <img
-            src={left_arrow}
-            alt=""
-            width={20}
-            onClick={() => navigate(`/calendar/${calendar_id}/setting`)}
-          />
-          <span></span>
-          <img src={logo} alt="" width={80} onClick={() => navigate("/home")} />
-          <span></span>
-          <span></span>
-        </Header>
-        <Title>[{calendarInfo?.name}] 인원 관리</Title>
-        <Users>
-          {users?.map((user) => (
-            <UserLayout key={user.id}>
-              <div id="profile">
-                <ProfileImg>
-                  <img
-                    src={
-                      user.image === undefined || user.image === null
-                        ? defaultProfile
-                        : `https://pwm.ssc.co.kr/${user.image}`
-                    }
-                    alt=""
-                    width={50}
-                  />
-                </ProfileImg>
-                <div id="info">
-                  <span>{user.name}</span>
-                  <span>{user.introduction || defaultIntroduction}</span>
+        <CalendarUsersLayout>
+          <Header>
+            <img
+              src={left_arrow}
+              alt=""
+              width={20}
+              onClick={() => navigate(`/calendar/${calendar_id}/setting`)}
+            />
+            <span></span>
+            <img
+              src={logo}
+              alt=""
+              width={80}
+              onClick={() => navigate("/home")}
+            />
+            <span></span>
+            <span></span>
+          </Header>
+          <Title>[{calendarInfo?.name}] 인원 관리</Title>
+          <Users>
+            {users?.map((user) => (
+              <UserLayout key={user.id}>
+                <div id="profile">
+                  <ProfileImg>
+                    <img
+                      src={
+                        user.image === undefined || user.image === null
+                          ? defaultProfile
+                          : `https://pwm.ssc.co.kr/${user.image}`
+                      }
+                      alt=""
+                      width={50}
+                    />
+                  </ProfileImg>
+                  <div id="info">
+                    <span>{user.name}</span>
+                    <span>{user.introduction || defaultIntroduction}</span>
+                  </div>
                 </div>
-              </div>
-              <SettingModal calendarId={Number(calendar_id)} userId={user.id} />
-            </UserLayout>
-          ))}
-        </Users>
+                <SettingModal
+                  calendarId={Number(calendar_id)}
+                  userId={user.id}
+                />
+              </UserLayout>
+            ))}
+          </Users>
+        </CalendarUsersLayout>
       </Wrapper>
       <Navbar />
     </>
