@@ -6,6 +6,8 @@ import { getUserInfo } from "api/users";
 import { useQuery } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 import { AddBtnAtom } from "store/AddBtnAtom";
+import { useNavigate } from "react-router-dom";
+import { SideBarAtom } from "store/SideBarAtom";
 
 const Form = styled.form`
   display: flex;
@@ -19,24 +21,29 @@ const Form = styled.form`
   }
 `;
 
-export default function CalendarForm() {
+export default function CalendarForm({ refetch }: { refetch: () => void }) {
   const [calendarName, setCalendarName] = useState("");
   const setIsAddBtnClicked = useSetRecoilState(AddBtnAtom);
   const formRef = useRef<HTMLFormElement>(null);
+  const navigate = useNavigate();
+  const setX = useSetRecoilState(SideBarAtom);
 
   const { data: userInfo } = useQuery({
     queryKey: ["userInfo"],
     queryFn: async () => await getUserInfo(),
   });
 
-  const calendarSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const calendarSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const text = calendarName.trim();
 
     if (text) {
-      createCalendar(text, null, [userInfo?.id || 0]);
+      const data = await createCalendar(text, null, [userInfo?.id || 0]);
+      navigate(`/calendar/${data.id}`);
+      setX(-360);
     }
     setIsAddBtnClicked(false);
+    refetch();
   };
 
   useEffect(() => {
@@ -61,6 +68,7 @@ export default function CalendarForm() {
           setCalendarName(event.target.value);
         }}
         placeholder="공유 달력 제목 입력"
+        autoFocus={true}
       ></input>
     </Form>
   );

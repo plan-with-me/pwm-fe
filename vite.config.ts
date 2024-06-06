@@ -12,6 +12,7 @@ export default defineConfig({
       { find: "api", replacement: "/src/api" },
       { find: "utils", replacement: "/src/utils" },
       { find: "store", replacement: "/src/store" },
+      { find: "hooks", replacement: "/src/hooks" },
     ],
   },
   server: { port: 3000 },

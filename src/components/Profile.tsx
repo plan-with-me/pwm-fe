@@ -1,6 +1,6 @@
-import { getUserInfo } from "api/users";
+import { UserInfo } from "api/users";
 import styled from "styled-components";
-import { useQuery } from "@tanstack/react-query";
+import { CalendarInfoDetail } from "api/calendar";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,26 +16,28 @@ const ProfileImg = styled.div`
   background-color: black;
 `;
 
-const UserInfo = styled.div`
+const UserInfoDiv = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
 `;
 
-export default function Profile() {
+export default function Profile({
+  userInfo,
+  calendarInfo,
+}: {
+  userInfo?: UserInfo;
+  calendarInfo?: CalendarInfoDetail;
+}) {
   const defaultIntroduction = "프로필에 자기소개를 입력해보세요";
-  const { data } = useQuery({
-    queryKey: ["userInfo"],
-    queryFn: async () => await getUserInfo(),
-  });
 
   return (
     <Wrapper>
-      {data?.image === null && <ProfileImg />}
-      <UserInfo>
-        <span>{data?.name}</span>
-        <span>{data?.introduction || defaultIntroduction}</span>
-      </UserInfo>
+      {userInfo?.image === null && <ProfileImg />}
+      <UserInfoDiv>
+        <span>{userInfo?.name || calendarInfo?.name}</span>
+        <span>{userInfo?.introduction || defaultIntroduction}</span>
+      </UserInfoDiv>
     </Wrapper>
   );
 }

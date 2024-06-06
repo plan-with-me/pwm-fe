@@ -1,5 +1,7 @@
 import axios from "axios";
+import { Cookies } from "react-cookie";
 
+const cookies = new Cookies();
 
 const api = axios.create({
   baseURL: "https://pwm.ssc.co.kr/api",
@@ -9,16 +11,16 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  config => {
-    config.headers.Authorization = localStorage.getItem("auth");
+  (config) => {
+    config.headers.Authorization = cookies.get("auth");
     return config;
   },
-  error => Promise.reject(error),
-)
+  (error) => Promise.reject(error)
+);
 
 api.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     const errorResponse = error.response;
     const statusCode = errorResponse.status;
     console.error("Error response data from server", errorResponse.data);
@@ -26,6 +28,6 @@ api.interceptors.response.use(
       window.location.href = "/";
     }
   }
-)
+);
 
 export default api;

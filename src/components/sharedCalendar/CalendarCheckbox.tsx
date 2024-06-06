@@ -1,9 +1,9 @@
-import { updateSubGoal } from "api/goals";
 import { useState } from "react";
 import styled from "styled-components";
 import check from "assets/check.svg";
+import { updateSubGoals } from "api/calendarGoals";
 
-const TodoBtn = styled.div<{ color: string }>`
+const TodoBtn = styled.div<{ $color: string }>`
   input {
     display: none;
   }
@@ -23,7 +23,6 @@ const TodoBtn = styled.div<{ color: string }>`
   label::before {
     width: 20px;
     height: 20px;
-    /* border: 2px solid ${(props) => props.color}; */
     background-color: #d5d5d5;
     content: "";
     display: inline-block;
@@ -33,40 +32,45 @@ const TodoBtn = styled.div<{ color: string }>`
 
   input:checked + label:before {
     content: "";
-    background-color: ${(props) => props.color};
+    background-color: ${(props) => props.$color};
   }
 `;
 
-export default function Checkbox({
-  id,
-  color,
-  status,
-  text,
-  refetch,
-}: {
+interface CalendarCheckboxProps {
+  calendarId: number;
   id: number;
   color: string;
   status: string;
   text: string;
   refetch: () => void;
-}) {
+}
+
+export default function CalendarCheckbox({
+  calendarId,
+  id,
+  color,
+  status,
+  text,
+  refetch,
+}: CalendarCheckboxProps) {
   const initialCheckedState = status === "incomplete" ? false : true;
   const [isChecked, setIsChecked] = useState(initialCheckedState);
 
   const todoCheck = async () => {
+    const newStatus = isChecked ? "incomplete" : "complete";
     setIsChecked(!isChecked);
 
-    await updateSubGoal(
-      id,
-      text,
-      new Date(),
-      !isChecked === true ? "complete" : "incomplete",
-      refetch
-    );
+    await updateSubGoals({
+      calendar_id: calendarId,
+      sub_goal_id: id,
+      name: text,
+      status: newStatus,
+      refetch: refetch,
+    });
   };
 
   return (
-    <TodoBtn color={color}>
+    <TodoBtn $color={color}>
       <form>
         <input type="checkbox" checked={isChecked} readOnly />
         <label onClick={todoCheck}>

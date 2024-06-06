@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Title = styled.div<{ color: string }>`
+const Title = styled.div<{ $color: string }>`
   width: fit-content;
   background-color: #d5d5d5;
   font-size: 20px;
@@ -15,7 +15,7 @@ const Title = styled.div<{ color: string }>`
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background-color: ${(props) => props.color || "black"};
+    background-color: ${(props) => props.$color || "black"};
   }
 `;
 
@@ -29,7 +29,7 @@ export default function CategoryTitle({
   onClick?: () => void;
 }) {
   return (
-    <Title color={color} onClick={onClick}>
+    <Title $color={color} onClick={onClick}>
       <div />
       <span>{name}</span>
     </Title>
