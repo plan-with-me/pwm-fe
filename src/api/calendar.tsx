@@ -1,5 +1,4 @@
 import api from "./config";
-import { UserInfo } from "./users";
 
 export type CalendarInfo = {
   id: number;
@@ -8,8 +7,13 @@ export type CalendarInfo = {
   image: string | null;
 };
 
-export type CalendarInfoDetail = CalendarInfo & {
-  users: UserInfo[];
+export type CalendarUserInfo = {
+  id: number;
+  name: string;
+  introduction: string;
+  image: string;
+  uid: string;
+  is_admin: boolean;
 };
 
 export async function createCalendar({
@@ -60,18 +64,43 @@ export async function deleteCalendar(calendar_id: number) {
     .then((response) => console.log(response.data));
 }
 
-export async function getCalendarUsers(calendar_id: number) {
+export type Permission = {
+  id: number;
+  calendar_id: number;
+  user_id: number;
+  is_admin: boolean;
+};
+
+export async function getCalendarPermission(calendar_id: number) {
   return await api
-    .get(`/calendars/${calendar_id}/users`)
-    .then((response: { data: UserInfo[] }) => {
+    .get(`/calendars/${calendar_id}/permission`)
+    .then((response: { data: Permission }) => {
       console.log(response.data);
       return response.data;
     });
 }
 
-// 덜 적음
+export async function getCalendarUsers(calendar_id: number) {
+  return await api
+    .get(`/calendars/${calendar_id}/users`)
+    .then((response: { data: CalendarUserInfo[] }) => {
+      console.log(response.data);
+      return response.data;
+    });
+}
+
 export async function addCalendarUser(calendar_id: number, user_id: number) {
   await api.post(`/calendars/${calendar_id}/users/${user_id}`);
+}
+
+export async function updateCalendarPermission(
+  calendar_id: number,
+  user_id: number,
+  admin?: boolean
+) {
+  return await api.put(
+    `/calendars/${calendar_id}/users/${user_id}?admin=${admin}`
+  );
 }
 
 export async function deleteCalendarUser(calendar_id: number, user_id: number) {
