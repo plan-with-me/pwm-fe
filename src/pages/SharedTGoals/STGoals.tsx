@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getUserInfo, UserInfo } from "../../api/users"; // api.tsx에서 가져온 함수와 타입을 가져옵니다.
-import { getTopGoals, TopGoals } from "../../api/goals"; // goals.tsx에서 가져온 함수와 타입을 가져옵니다.
-import { Link, useNavigate } from "react-router-dom";
+import { getCalendar, CalendarInfo } from "../../api/calendar";
+import { getTopGoals } from "../../api/calendarGoals";
+import { TopGoals } from "../../api/goals";
+import { Link, useNavigate, useParams} from "react-router-dom";
 import Navbar from "components/Navbar";
 import styled from "styled-components";
 import left_arrow from "../../assets/angle-left-solid.svg"; // 이미지 경로
@@ -81,33 +82,35 @@ const NavbarWrapper = styled.div`
   bottom: 0;
 `;
 
-export default function TGoals() {
-  const [userId, setUserId] = useState<number | null>(null); // 사용자 ID를 상태로 관리합니다.
-  const [topGoals, setTopGoals] = useState<TopGoals[]>([]); // 최상위 목표를 상태로 관리합니다.
+export default function STGoals() {
+  const { calendar_id } = useParams();
+  const [calendarId, setCalendarId] = useState<number | null>(null);
+  const [topGoals, setTopGoals] = useState<TopGoals[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getUserInfo().then((userInfo: UserInfo) => {
-      setUserId(userInfo.id);
-      console.log(userInfo.id);
+    getCalendar(Number(calendar_id)).then((calendarInfo: CalendarInfo) => {
+      setCalendarId(calendarInfo.id);
+      console.log(calendarInfo.id);      
+      console.log(calendarId,'1');
     });
 
-    getTopGoals().then((data) => {
+    getTopGoals(Number(calendar_id)).then((data) => {
       setTopGoals(data);
       console.log(data);
     });
   }, []);
 
   const handleCreateTGoals = () => {
-    if (userId) {
-      navigate(`/create-tgoal`);
+    if (calendar_id) {
+      navigate(`/calendar/${calendar_id}/s-create-tgoal`);
     }
   };
 
   return (
     <Wrapper>
       <TopWrapper>
-        <Link to="/setting">
+        <Link to={`/calendar/${calendar_id}/setting`}>
           <Button>
             <img src={left_arrow} width={24} />
           </Button>
@@ -122,7 +125,7 @@ export default function TGoals() {
         <div id="goals">
           {topGoals.map((goal, index) => (
             <Goal
-              to={`/update-tgoal/${goal.id}`}
+              to={`/calendar/${calendar_id}/s-update-tgoal/${goal.id}`}
               color={goal.color}
               key={index}
             >
