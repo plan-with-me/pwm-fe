@@ -1,5 +1,5 @@
 import api from "./config";
-import { SubGoals } from "./goals";
+import { SubGoals, TopGoals } from "./goals";
 
 export async function createSubGoals(
   name: string,
@@ -92,7 +92,6 @@ export async function createTopGoals(
     .post(
       `/calendars/${calendar_id}/top-goals`,
       { name, color, status, show_scope },
-      { params: { calendar_id } }
     )
     .then();
 }
@@ -106,21 +105,18 @@ export async function getTopGoals(calendar_id: number) {
 export async function updateTopGoals(
   calendar_id: number,
   top_goal_id: number,
-  name: string,
-  color: string,
-  status: string,
-  show_scope: string
+  updatedGoalData: Partial<TopGoals>
 ) {
   api
     .put(
       `/calendars/${calendar_id}/top-goals/${top_goal_id}`,
-      { name, color, status, show_scope },
-      { params: { calendar_id, top_goal_id } }
+      updatedGoalData
     )
     .then();
 }
 
-export default function deleteTopGoals(
+
+export async function deleteTopGoals(
   calendar_id: number,
   top_goal_id: number
 ) {

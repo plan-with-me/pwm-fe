@@ -37,3 +37,9 @@ export async function getCalendar(calendar_id: number) {
     .get(`/calendars/${calendar_id}`)
     .then((response: { data: CalendarInfo }) => response.data);
 }
+
+export async function deleteCalendar(calendar_id: number) {
+  return api
+    .delete(`/calendars/${calendar_id}`)
+    .then((response) => response.data);
+}

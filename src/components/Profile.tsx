@@ -10,8 +10,9 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 20px 0px;
-  div {
+  #row {
     display: flex;
+    align-items: center;
     gap: 12px;
   }
 `;
@@ -50,13 +51,13 @@ export default function Profile({
 
   return (
     <Wrapper>
-      <div>
+      <div id="row">
         <ProfileImg>
           <img
             src={
-              userInfo?.image === (null || undefined)
+              userInfo?.image === undefined || userInfo.image === null
                 ? defaultProfile
-                : `https://pwm.ssc.co.kr/${userInfo?.image}`
+                : `https://pwm.ssc.co.kr/${userInfo.image}`
             }
           />
         </ProfileImg>

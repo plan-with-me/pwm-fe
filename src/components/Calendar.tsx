@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import { SubGoals } from "api/goals";
 import { useEffect, useState } from "react";
+import allCheck from "assets/allCheck.png";
 
 const DateController = styled.div`
   display: flex;
@@ -51,6 +52,15 @@ const Day = styled.div<{
     justify-content: center;
     align-items: center;
     font-size: 12px;
+  }
+
+  #complete {
+    background-color: white;
+    position: relative;
+    img {
+      position: relative;
+      left: 2px;
+    }
   }
 
   span {
@@ -124,9 +134,7 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
             newTodos.set(date, newTodos.get(date) + 1);
           } else newTodos.set(date, 1);
         } else {
-          if (newTodos.has(date)) {
-            newTodos.set(date, newTodos.get(date) + 1);
-          } else newTodos.set(date, 0);
+          if (!newTodos.has(date)) newTodos.set(date, 0);
         }
       });
       setTodos(newTodos);
@@ -173,13 +181,24 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
               }
               $textColor={date === calendarDate.date ? "white" : ""}
             >
-              <div
-                onClick={() => {
-                  setCalendarDate({ ...calendarDate, date });
-                }}
-              >
-                {todos.get(date)}
-              </div>
+              {todos.get(date) === 0 ? (
+                <div
+                  id="complete"
+                  onClick={() => {
+                    setCalendarDate({ ...calendarDate, date });
+                  }}
+                >
+                  <img src={allCheck} width={24} />
+                </div>
+              ) : (
+                <div
+                  onClick={() => {
+                    setCalendarDate({ ...calendarDate, date });
+                  }}
+                >
+                  {todos.get(date)}
+                </div>
+              )}
               <span>{date}</span>
             </Day>
           ))}
