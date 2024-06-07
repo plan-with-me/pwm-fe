@@ -5,6 +5,7 @@ export type UserInfo = {
   name: string;
   image: string | null;
   introduction: string | null;
+  uid: string;
 };
 
 export type FollowInfo = {
@@ -12,6 +13,7 @@ export type FollowInfo = {
   name: string;
   introduction: string;
   image: string;
+  uid: string;
 };
 
 export async function getUserInfo() {
