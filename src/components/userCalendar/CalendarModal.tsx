@@ -2,7 +2,7 @@ import Modal from "react-modal";
 import right_arrow from "assets/angle-right-solid.svg";
 import left_arrow from "assets/angle-left-solid.svg";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateSubGoals } from "api/goals";
 import getDateFormat from "utils/getDateFormat";
 
@@ -16,23 +16,14 @@ interface CalendarModalProps {
   refetch: () => void;
 }
 
-const customModalStyle: ReactModal.Styles = {
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    zIndex: 10,
-  },
-  content: {
-    position: "absolute",
-    width: "320px",
-    height: "320px",
-    top: "calc(100dvh - 360px)",
-    left: "calc(50% - 160px)",
-    backgroundColor: "white",
-    transform: "translate(0%, 0%)",
-    borderTopLeftRadius: "20px",
-    borderTopRightRadius: "20px",
-  },
-};
+const Wrapper = styled.div`
+  width: 320px;
+  height: 320px;
+  padding: 20px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: white;
+`;
 
 const DateController = styled.div`
   #title {
@@ -97,11 +88,13 @@ const DateForm = styled.form`
   display: flex;
   justify-content: center;
   margin-top: 20px;
+
   input {
     width: 90%;
     height: 32px;
     border: none;
     border-radius: 8px;
+    cursor: pointer;
   }
 `;
 
@@ -114,7 +107,39 @@ export default function CalendarModal({
   status,
   refetch,
 }: CalendarModalProps) {
-  console.log(date);
+  const getCustomModalStyle = () => ({
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      zIndex: 10,
+    },
+    content: {
+      width: window.innerWidth <= 360 ? "100%" : "360px",
+      height: "360px",
+      margin: "0 auto",
+      padding: 0,
+      border: "none",
+      top: "calc(100dvh - 360px)",
+      left: 0,
+      right: 0,
+      backgroundColor: "white",
+      display: "flex",
+      alignItems: "flex-end",
+      borderTopLeftRadius: "20px",
+      borderTopRightRadius: "20px",
+    },
+  });
+
+  const [modalStyle, setModalStyle] = useState(getCustomModalStyle());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setModalStyle(getCustomModalStyle());
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const today = new Date();
   const planDate = new Date(date);
 
@@ -175,61 +200,64 @@ export default function CalendarModal({
       refetch
     );
   };
+
   return (
     <>
-      <Modal isOpen={isOpen} style={customModalStyle} onRequestClose={onClose}>
-        <DateController>
-          <div id="title">날짜 바꾸기</div>
-          <div id="controller">
-            <span>
-              {calendarDate.year}년 {calendarDate.month}월
-            </span>
-            <div>
-              <img src={left_arrow} onClick={goToPreviousMonth} width={12} />
-              <img src={right_arrow} onClick={goToNextMonth} width={12} />
-            </div>
-          </div>
-        </DateController>
-        <CalendarDate>
-          <span>일</span>
-          <span>월</span>
-          <span>화</span>
-          <span>수</span>
-          <span>목</span>
-          <span>금</span>
-          <span>토</span>
-          {[
-            ...Array(firstDayOfMonth).fill(null),
-            ...Array(lastDateOfMonth)
-              .fill(null)
-              .map((_, index) => index + 1),
-          ].map((date, index) => (
-            <Day
-              key={index}
-              $bgColor={
-                date === calendarDate.date
-                  ? "black"
-                  : date === today.getDate() &&
-                    calendarDate.month === today.getMonth() + 1 &&
-                    calendarDate.year === today.getFullYear()
-                  ? "lightgrey"
-                  : ""
-              }
-              $textColor={date === calendarDate.date ? "white" : ""}
-            >
-              <span
-                onClick={() => {
-                  setCalendarDate({ ...calendarDate, date });
-                }}
-              >
-                {date}
+      <Modal isOpen={isOpen} style={modalStyle} onRequestClose={onClose}>
+        <Wrapper>
+          <DateController>
+            <div id="title">날짜 바꾸기</div>
+            <div id="controller">
+              <span>
+                {calendarDate.year}년 {calendarDate.month}월
               </span>
-            </Day>
-          ))}
-        </CalendarDate>
-        <DateForm>
-          <input type="button" value={"확인"} onClick={changeDateHandler} />
-        </DateForm>
+              <div>
+                <img src={left_arrow} onClick={goToPreviousMonth} width={12} />
+                <img src={right_arrow} onClick={goToNextMonth} width={12} />
+              </div>
+            </div>
+          </DateController>
+          <CalendarDate>
+            <span>일</span>
+            <span>월</span>
+            <span>화</span>
+            <span>수</span>
+            <span>목</span>
+            <span>금</span>
+            <span>토</span>
+            {[
+              ...Array(firstDayOfMonth).fill(null),
+              ...Array(lastDateOfMonth)
+                .fill(null)
+                .map((_, index) => index + 1),
+            ].map((date, index) => (
+              <Day
+                key={index}
+                $bgColor={
+                  date === calendarDate.date
+                    ? "black"
+                    : date === today.getDate() &&
+                      calendarDate.month === today.getMonth() + 1 &&
+                      calendarDate.year === today.getFullYear()
+                    ? "lightgrey"
+                    : ""
+                }
+                $textColor={date === calendarDate.date ? "white" : ""}
+              >
+                <span
+                  onClick={() => {
+                    setCalendarDate({ ...calendarDate, date });
+                  }}
+                >
+                  {date}
+                </span>
+              </Day>
+            ))}
+          </CalendarDate>
+          <DateForm>
+            <input type="button" value={"확인"} onClick={changeDateHandler} />
+          </DateForm>
+        </Wrapper>
       </Modal>
     </>
   );
