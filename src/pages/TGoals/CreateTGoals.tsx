@@ -115,7 +115,7 @@ const Line = styled.div`
 
 export default function CreateTGoals() {
   const [name, setName] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#000000");
   const [showScope, setShowScope] = useState("me"); // show_scope 필드를 추가합니다.
 
   const navigate = useNavigate();

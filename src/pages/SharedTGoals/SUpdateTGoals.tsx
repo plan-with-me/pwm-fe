@@ -240,10 +240,8 @@ export default function UpdateTGoals() {
           value={showScope}
           onChange={(e) => setShowScope(e.target.value)}
           >
-            <option value="me">나만 보기</option>
-            <option value="followers">팔로워 공개</option>
-            <option value="all">전체 공개</option>
-          </select>
+          <option value="group">그룹 공개</option>
+        </select>
       </ScopeInput>
       <Line/>
       <ColorInput>

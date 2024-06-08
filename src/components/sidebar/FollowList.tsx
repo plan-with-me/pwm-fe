@@ -10,6 +10,7 @@ import {
 } from '../../api/users';
 import baseProfile from 'assets/baseProfile.png';
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 const FollowWrapper = styled.div`
   width: 100%;
@@ -144,6 +145,7 @@ export default function FollowList() {
   const [followingInfo, setFollowingInfo] = useState<FollowInfo[]>([]);
   const [followerInfo, setFollowerInfo] = useState<FollowInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -211,6 +213,10 @@ export default function FollowList() {
     }
   };
 
+  const handleItemClick = (id: number) => {
+    navigate(`/following/${id}`);
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -224,7 +230,7 @@ export default function FollowList() {
             {Array.isArray(followingInfo) && followingInfo.length > 0 ? (
               <ul>
                 {followingInfo.map(follow => (
-                  <li key={follow.id}>
+                  <li key={follow.id} onClick={() => handleItemClick(follow.id)}>
                     <img 
                       id="profile"
                       src={follow.image ? follow.image : baseProfile} 
