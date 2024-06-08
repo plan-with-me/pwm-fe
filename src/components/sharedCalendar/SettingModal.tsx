@@ -1,4 +1,4 @@
-import { deleteCalendarUser } from "api/calendar";
+import { deleteCalendarUser, updateCalendarPermission } from "api/calendar";
 import { UserInfo, getUserInfo } from "api/users";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
@@ -41,15 +41,20 @@ const Modal = styled.div`
     border-top: 1px solid hsla(220, 9%, 46%, 0.3);
   }
 `;
+
+interface SettingModalProps {
+  calendarId: number;
+  userId: number;
+  name: string;
+  isAdmin: boolean;
+}
+
 export default function SettingModal({
   calendarId,
   userId,
   name,
-}: {
-  calendarId: number;
-  userId: number;
-  name: string;
-}) {
+  isAdmin,
+}: SettingModalProps) {
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -61,19 +66,46 @@ export default function SettingModal({
     queryFn: async () => await getUserInfo(),
   });
 
-  const deleteHandler = async (calendarId: number, userId: number) => {
-    const result = await deleteCalendarUser(calendarId, userId);
-
-    if (result.status === 200) {
-      if (userId === userInfo?.id) {
-        alert("달력에서 성공적으로 탈퇴했습니다.");
-        navigate("/home");
+  const deleteHandler = async () => {
+    try {
+      const result = await deleteCalendarUser(calendarId, userId);
+      if (result.status === 200) {
+        if (userId === userInfo?.id) {
+          alert("달력에서 성공적으로 탈퇴했습니다.");
+          navigate("/home");
+        } else {
+          alert(`${name} 유저를 내보냈습니다.`);
+          window.location.reload();
+        }
       } else {
-        alert(`${name} 유저를 내보냈습니다.`);
-        window.location.reload();
+        alert("에러가 발생했습니다.");
       }
-    } else {
-      alert(`에러가 발생했습니다.`);
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      alert("에러가 발생했습니다.");
+    }
+  };
+
+  const grantHandler = async () => {
+    try {
+      const result = await updateCalendarPermission(
+        calendarId,
+        userId,
+        !isAdmin
+      );
+      if (result.status === 200) {
+        alert(
+          `${name} 유저를 ${
+            result.data ? "관리자로 변경했습니다." : "일반 유저로 변경했습니다."
+          }`
+        );
+        window.location.reload();
+      } else {
+        alert("에러가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("Failed to update user permission:", error);
+      alert("에러가 발생했습니다.");
     }
   };
 
@@ -88,13 +120,14 @@ export default function SettingModal({
       </MoreBtn>
       {isMoreBtnClicked && (
         <Modal id="modal" ref={modalRef}>
-          <div
-            id="delete"
-            onClick={async () => deleteHandler(calendarId, userId)}
-          >
+          <div id="delete" onClick={deleteHandler}>
             {userId === userInfo?.id ? "나가기" : "내보내기"}
           </div>
-          {userId !== userInfo?.id && <div id="grant">관리자 권한 주기</div>}
+          {userId !== userInfo?.id && (
+            <div id="grant" onClick={grantHandler}>
+              관리자 권한 {isAdmin ? "뺏기" : "주기"}
+            </div>
+          )}
         </Modal>
       )}
     </>

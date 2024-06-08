@@ -1,4 +1,11 @@
-import { CalendarInfo, getCalendar, getCalendarUsers } from "api/calendar";
+import {
+  CalendarInfo,
+  CalendarUserInfo,
+  Permission,
+  getCalendar,
+  getCalendarPermission,
+  getCalendarUsers,
+} from "api/calendar";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -109,14 +116,19 @@ export default function CalendarUsers() {
   const navigate = useNavigate();
   const defaultIntroduction = "프로필에 자기소개를 입력해보세요";
 
-  const { data: users } = useQuery({
-    queryKey: ["calendarUsers"],
+  const { data: users } = useQuery<CalendarUserInfo[]>({
+    queryKey: ["calendarUsers", calendar_id],
     queryFn: async () => await getCalendarUsers(Number(calendar_id)),
   });
 
   const { data: calendarInfo } = useQuery<CalendarInfo>({
     queryKey: ["calendarInfo", calendar_id],
     queryFn: async () => await getCalendar(Number(calendar_id)),
+  });
+
+  const { data: permission } = useQuery<Permission>({
+    queryKey: ["permission", calendar_id],
+    queryFn: async () => await getCalendarPermission(Number(calendar_id)),
   });
 
   console.log(users);
@@ -162,11 +174,14 @@ export default function CalendarUsers() {
                     <span>{user.introduction || defaultIntroduction}</span>
                   </div>
                 </div>
-                <SettingModal
-                  calendarId={Number(calendar_id)}
-                  userId={user.id}
-                  name={user.name}
-                />
+                {permission?.is_admin && (
+                  <SettingModal
+                    calendarId={Number(calendar_id)}
+                    userId={user.id}
+                    name={user.name}
+                    isAdmin={user.is_admin}
+                  />
+                )}
               </UserLayout>
             ))}
           </Users>

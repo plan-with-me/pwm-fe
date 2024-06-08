@@ -1,4 +1,9 @@
-import { CalendarInfo, getCalendar } from "api/calendar";
+import {
+  CalendarInfo,
+  Permission,
+  getCalendar,
+  getCalendarPermission,
+} from "api/calendar";
 import Center from "components/Center";
 import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
@@ -71,12 +76,23 @@ export default function CalendarPage() {
     enabled: !!calendarId,
   });
 
+  const { data: permission } = useQuery<Permission>({
+    queryKey: ["permission", params.calendar_id],
+    queryFn: async () =>
+      await getCalendarPermission(Number(params.calendar_id)),
+  });
+
+  console.log(permission);
   return (
     <>
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          <Center calendarInfo={calendarInfo!} subGoals={subGoals} />
+          <Center
+            calendarInfo={calendarInfo!}
+            subGoals={subGoals}
+            isAdmin={permission?.is_admin}
+          />
           <CalendarGoals />
         </TodoWrapper>
       </Wrapper>
