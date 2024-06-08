@@ -118,7 +118,7 @@ export default function CreateTGoals() {
   const { calendar_id } = useParams();
   const [name, setName] = useState("");
   const [color, setColor] = useState("#000000");
-  const [showScope, setShowScope] = useState("me");
+  const [showScope, setShowScope] = useState("group");
 
   const navigate = useNavigate();
 
