@@ -3,6 +3,7 @@ import "./App.css";
 import Login from "pages/Login";
 import Home from "pages/Home";
 import Auth from "pages/Auth";
+import Following from "pages/Following"
 import Tgoals from "pages/TGoals/TGoals";
 import UpdateTgoals from "pages/TGoals/UpdateTGoals";
 import CreateTgoals from "pages/TGoals/CreateTGoals";
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
   { path: "/create-tgoal", element: <CreateTgoals /> },
   { path: "/setting", element: <Settings /> },
   { path: "/my", element: <My /> },
+  { path: "/following/:id", element: <Following /> },
   { path: "/lounge", element: <Lounge /> },
   { path: "/calendar/:calendar_id", element: <CalendarPage /> },
   { path: "/calendar/:calendar_id/setting", element: <CalendarSetting /> },

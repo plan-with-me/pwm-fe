@@ -66,7 +66,7 @@ export default function Profile({
           <span>{userInfo?.introduction || defaultIntroduction}</span>
         </UserInfoDiv>
       </div>
-      {location.pathname !== "/home" && (
+      {location.pathname !== "/home" && !location.pathname.startsWith("/following/") &&(
         <Link to={`${location.pathname}/setting`}>
           <img src={setting} width={28} />
         </Link>

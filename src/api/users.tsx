@@ -5,6 +5,7 @@ export type UserInfo = {
   name: string;
   image: string | null;
   introduction: string | null;
+  uid : string;
 };
 
 export type FollowInfo = {
@@ -17,6 +18,15 @@ export type FollowInfo = {
 export async function getUserInfo() {
   const data = await api
     .get("/users/me")
+    .then((response: { data: UserInfo }) => {
+      return response.data;
+    });
+  return data;
+}
+
+export async function getUserInfoById(userId: number) {
+  const data = await api
+    .get(`/users/${userId}`)
     .then((response: { data: UserInfo }) => {
       return response.data;
     });
