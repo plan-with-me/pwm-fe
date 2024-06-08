@@ -143,7 +143,6 @@ export default function CreateTGoals() {
     }
   };
 
-  
   return (
     <Wrapper>
       <TopWrapper>
