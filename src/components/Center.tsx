@@ -44,10 +44,12 @@ export default function Center({
   userInfo,
   calendarInfo,
   subGoals,
+  isAdmin,
 }: {
   userInfo?: UserInfo;
   calendarInfo?: CalendarInfo;
   subGoals?: SubGoals[];
+  isAdmin?: boolean;
 }) {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
 
@@ -67,7 +69,11 @@ export default function Center({
           <span></span>
           <span></span>
         </Logo>
-        <Profile userInfo={userInfo} calendarInfo={calendarInfo} />
+        <Profile
+          userInfo={userInfo}
+          calendarInfo={calendarInfo}
+          isAdmin={isAdmin}
+        />
         <Calendar subGoals={subGoals} />
       </Wrapper>
     </>

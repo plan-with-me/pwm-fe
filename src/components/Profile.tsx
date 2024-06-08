@@ -42,9 +42,11 @@ const UserInfoDiv = styled.div`
 export default function Profile({
   userInfo,
   calendarInfo,
+  isAdmin,
 }: {
   userInfo?: UserInfo;
   calendarInfo?: CalendarInfo;
+  isAdmin?: boolean;
 }) {
   const defaultIntroduction = "프로필에 자기소개를 입력해보세요";
   const location = useLocation();
@@ -66,7 +68,7 @@ export default function Profile({
           <span>{userInfo?.introduction || defaultIntroduction}</span>
         </UserInfoDiv>
       </div>
-      {location.pathname !== "/home" && !location.pathname.startsWith("/following/") &&(
+      {location.pathname !== "/home" && !location.pathname.startsWith("/following/") && isAdmin && (
         <Link to={`${location.pathname}/setting`}>
           <img src={setting} width={28} />
         </Link>

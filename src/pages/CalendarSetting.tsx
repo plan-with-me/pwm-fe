@@ -6,8 +6,8 @@ import check from "assets/check.png";
 import user from "assets/user-regular.svg";
 import left_arrow from "assets/angle-left-solid.svg";
 import deleteBtn from "assets/delete.png";
-import { deleteCalendar,  } from '../api/calendar';
-import { useParams, useNavigate } from 'react-router-dom';
+import { deleteCalendar } from "api/calendar";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -69,7 +69,6 @@ const SettingLink = styled(Link)`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-decoration: none;
   color: #333;
-   
 
   img {
     width: 28px;
@@ -94,7 +93,7 @@ export default function Setting() {
   const { calendar_id } = useParams();
   const navigate = useNavigate();
 
-  console.log(calendar_id)
+  console.log(calendar_id);
 
   const handleDeleteCalendar = async () => {
     try {
@@ -116,7 +115,7 @@ export default function Setting() {
         <Title>달력 설정</Title>
       </Header>
       <SettingWrapper>
-        <SettingLink to="/home">
+        <SettingLink to={`/calendar/${calendar_id}/setting/profile`}>
           <img src={calendar} alt="Account" />
           <span>프로필 편집</span>
         </SettingLink>
@@ -124,7 +123,7 @@ export default function Setting() {
           <img src={check} alt="Notifications" />
           <span>목표 설정</span>
         </SettingLink>
-        <SettingLink to="/home">
+        <SettingLink to={`/calendar/${calendar_id}/setting/users`}>
           <img src={user} alt="Notices" />
           <span>인원 관리</span>
         </SettingLink>
@@ -134,7 +133,7 @@ export default function Setting() {
         </SettingLink>
       </SettingWrapper>
       <NavbarWrapper>
-        <Navbar/>
+        <Navbar />
       </NavbarWrapper>
     </Wrapper>
   );
