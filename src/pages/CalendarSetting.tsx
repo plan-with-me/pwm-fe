@@ -110,7 +110,7 @@ export default function Setting() {
         <Title>달력 설정</Title>
       </Header>
       <SettingWrapper>
-        <SettingLink to="/home">
+        <SettingLink to={`/calendar/${calendar_id}/setting/profile`}>
           <img src={calendar} alt="Account" />
           <span>프로필 편집</span>
         </SettingLink>

@@ -32,7 +32,10 @@ const router = createBrowserRouter([
   { path: "/lounge", element: <Lounge /> },
   { path: "/calendar/:calendar_id", element: <CalendarPage /> },
   { path: "/calendar/:calendar_id/setting", element: <CalendarSetting /> },
-  { path: "/calendarProfile", element: <CalendarProfile /> },
+  {
+    path: "/calendar/:calendar_id/setting/profile",
+    element: <CalendarProfile />,
+  },
   { path: "/calendar/:calendar_id/s-tgoal", element: <STgoals /> },
   {
     path: "/calendar/:calendar_id/s-update-tgoal/:id",
