@@ -248,6 +248,7 @@ export default function Goals() {
                     text={subGoal.name}
                     status={subGoal.status}
                     refetch={refetch}
+                    date={subGoal.plan_datetime}
                   />
                 </Todo>
               ))}
