@@ -105,7 +105,7 @@ export default function Setting() {
         <Title>설정</Title>
       </Header>
       <SettingWrapper>
-        <SettingLink to="/home">
+        <SettingLink to="/my">
           <img src={user} alt="Account" />
           <span>계정</span>
         </SettingLink>
