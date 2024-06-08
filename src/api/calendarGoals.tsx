@@ -42,25 +42,22 @@ export async function updateSubGoals({
   calendar_id,
   sub_goal_id,
   name,
-  color,
+  plan_datetime,
   status,
-  show_scope,
   refetch,
 }: {
   calendar_id: number;
   sub_goal_id: number;
   name: string;
-  color?: string;
+  plan_datetime: Date;
   status: string;
-  show_scope?: string;
   refetch: () => void;
 }) {
   await api
     .put(`/calendars/${calendar_id}/sub-goals/${sub_goal_id}`, {
       name,
-      color,
+      plan_datetime,
       status,
-      show_scope,
     })
     .then((response) => {
       refetch();
@@ -89,10 +86,12 @@ export async function createTopGoals(
   show_scope: string
 ) {
   api
-    .post(
-      `/calendars/${calendar_id}/top-goals`,
-      { name, color, status, show_scope },
-    )
+    .post(`/calendars/${calendar_id}/top-goals`, {
+      name,
+      color,
+      status,
+      show_scope,
+    })
     .then();
 }
 
@@ -108,18 +107,11 @@ export async function updateTopGoals(
   updatedGoalData: Partial<TopGoals>
 ) {
   api
-    .put(
-      `/calendars/${calendar_id}/top-goals/${top_goal_id}`,
-      updatedGoalData
-    )
+    .put(`/calendars/${calendar_id}/top-goals/${top_goal_id}`, updatedGoalData)
     .then();
 }
 
-
-export async function deleteTopGoals(
-  calendar_id: number,
-  top_goal_id: number
-) {
+export async function deleteTopGoals(calendar_id: number, top_goal_id: number) {
   api.delete(`/calendars/${calendar_id}/top-goals/${top_goal_id}`, {
     params: { calendar_id, top_goal_id },
   });
