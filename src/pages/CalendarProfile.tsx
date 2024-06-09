@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 //import { useNavigate } from 'react-router-dom';
 
 
-const LoginPage = styled.div`
+const CalendarProfile = styled.div`
   @media (max-width: 700px) {
     width: 90%;
     #logo {
@@ -40,7 +40,6 @@ const LoginPage = styled.div`
   #logo {
     max-width: 500px;
     min-width: 200px;
-    
   }
 
   #input_div{
@@ -50,6 +49,7 @@ const LoginPage = styled.div`
     display: flex;
     flex-direction:column; 
     align-items: center;
+    margin-top: 300px;
   }
 
   #input_name_div, #input_introduction_div {
@@ -68,26 +68,6 @@ const LoginPage = styled.div`
   }
 
 `;
-
-
-
-const LoginText = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 1px;
-  background-color: #d9d9d9;
-  margin-top: 240px;
-  margin-bottom: 40px;
-  
-  span {
-    font-size: 20px;
-    background-color: white;
-    padding: 10px;
-  }
-`;
-
 
 const ConfirmButton = styled.button`
   padding: 10px 20px;
@@ -122,7 +102,7 @@ export default function Login() {
   useEffect(() => {
     getUserInfo().then(data => {
       setUserId(data.id || 0);
-      if (nameRef.current) nameRef.current.value = data.name;
+      //if (nameRef.current) nameRef.current.value = data.name;
       if (introductionRef.current) introductionRef.current.value = data.introduction || ''; 
       //if (data.image) setPreviewImage(data.image); // 프로필 이미지 미리보기 설정
     });
@@ -169,12 +149,8 @@ export default function Login() {
   return (
     <div>
       <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
-      <LoginPage>
+      <CalendarProfile>
         <img src={logo} width={400} id="logo" />
-        
-        <LoginText>
-          
-        </LoginText>
 
         <div id="input_div">
           <div id = "input_name_div">
@@ -192,7 +168,7 @@ export default function Login() {
           
         </div>
         
-      </LoginPage>
+      </CalendarProfile>
       
       </div>
       
