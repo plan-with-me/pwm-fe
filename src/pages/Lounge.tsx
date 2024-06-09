@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import api from "../api/config";
 import Navbar from "components/Navbar";
+import logo from "assets/logo.png";
+import defaultProfileImage from "assets/defaultProfile.png";
 import { useEffect, useRef, useState } from "react";
 import { UserInfo, getUserInfo } from "api/users";
 import { CalendarInfo } from "api/calendar";
@@ -11,7 +13,6 @@ import { CalendarInfo } from "api/calendar";
 
 
 const LoungePage = styled.div`
-  
   width: 100%;
   margin: 0 auto;
   margin-top: 50px;
@@ -19,53 +20,61 @@ const LoungePage = styled.div`
   flex-direction: column;
   align-items: center;
 
-  #menuImg{
+  #menuImg {
     margin-right: 180px;
   }
-  
-  #calendarImg{
+
+  #calendarImg {
     margin-right: 30px;
   }
 
-  #loungeImg{
+  #loungeImg {
     margin-right: 30px;
   }
 
-  #settingImg{
+  #settingImg {
     margin-right: 20px;
   }
 
-  #calendarText{
+  #calendarText {
     margin-left: 250px;
-    
   }
 
-  #loungeText{
+  #loungeText {
     margin-left: 60px;
   }
 
-  #settingText{
+  #settingText {
     margin-left: 55px;
   }
 
-  #input_div{
+  #input_div {
     width: 700px;
     height: 100px;
     min-width: 200px;
+    align-items: center;
   }
 
-  #input_name_div{
+  #input_name_div {
     margin-top: 50px;
   }
 
-  #searched_user_div{
+  #search {
+    width: 100%;
+    height: 30px;
+    background: lightgray;
+    border-radius: 10px;
+    box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
+  }
+
+  #searched_user_div {
     margin-top: 50px;
     width: 700px;
     display: flex;
-    alignItems: center;
+    align-items: center;
   }
 
-  #searched_user_img{
+  #searched_user_img {
     margin-right: 20px;
   }
 
@@ -75,17 +84,17 @@ const LoungePage = styled.div`
     margin-top: 10px;
   }
 
-  #searched_user_name_span{
+  #searched_user_name_span {
     display: block;
     margin-bottom: 20px;
-    font-weight: bold; 
+    font-weight: bold;
   }
 
-  #searched_user_introduction_span{
+  #searched_user_introduction_span {
     display: block;
   }
 
-  #follow_button{
+  #follow_button {
     display: block;
     margin-left: auto;
     margin-right: 20px;
@@ -95,7 +104,7 @@ const LoungePage = styled.div`
     background-color: white;
   }
 
-  #share_calendar_button{
+  #share_calendar_button {
     display: block;
     margin-right: 20px;
     margin-top: 20px;
@@ -110,7 +119,6 @@ const LoungePage = styled.div`
     background-color: lightgray;
     border-radius: 10px;
     padding: 20px;
-    
   }
 
   .calendar_item {
@@ -123,6 +131,66 @@ const LoungePage = styled.div`
     width: 120px;
     background-color: lightgray;
     border-radius: 10px;
+  }
+
+  @media (max-width: 768px) {
+    #input_div, #searched_user_div, #calendar_list_div {
+      width: 90%;
+    }
+
+    #search {
+      width: 100%;
+    }
+
+    #searched_user_info {
+      margin-top: 0;
+      margin-left: 10px;
+    }
+
+    #searched_user_img {
+      width: 60px;
+      height: 60px;
+    }
+
+    #follow_button, #share_calendar_button {
+      height: 35px;
+    }
+
+    #share_this_calendar_button {
+      width: 100px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #input_div, #searched_user_div, #calendar_list_div {
+      width: 100%;
+    }
+
+    #input_name_div {
+      margin-top: 20px;
+    }
+
+    #search {
+      width: 100%;
+    }
+
+    #searched_user_info {
+      margin-top: 0;
+      margin-left: 5px;
+    }
+
+    #searched_user_img {
+      width: 50px;
+      height: 50px;
+    }
+
+    #follow_button, #share_calendar_button {
+      height: 30px;
+    }
+
+    #share_this_calendar_button {
+      width: 90px;
+    }
   }
 
 
@@ -164,6 +232,7 @@ export default function Lounge() {
   }, []);
   
   console.log(userId);
+  console.log(imagesrc);
 
   const handleSearch = async (searchText: string) => {
     if (searchText) {
@@ -219,8 +288,9 @@ export default function Lounge() {
 
 
   return (
+    
       <LoungePage>
-
+        <img src={logo} width={80} />
         <div id="input_div">
           <div id = "input_name_div">
             
@@ -228,14 +298,14 @@ export default function Lounge() {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
                    onKeyPress={handleKeyPress}
-                   style={{width: '700px', height: '30px', background: 'lightgray', borderRadius: '10px'}}
+                   style={{height: '30px', background: 'lightgray', borderRadius: '10px'}}
                    placeholder=" 🔍  계정 또는 키워드 검색"/> 
             
           </div>
         </div>
         {searchResults && (
           <div id="searched_user_div">
-            <img src={imagesrc} width={80} id="searched_user_img" style={{width: '80px', height: '80px'}}/>
+            <img src={defaultProfileImage} width={80} id="searched_user_img" style={{width: '80px', height: '80px'}}/>
             <div id="searched_user_info">
               <span id="searched_user_name_span">{searchResults.name}</span>
               {/*<span id="searched_user_name_span">{searchResults.id}</span>*/}

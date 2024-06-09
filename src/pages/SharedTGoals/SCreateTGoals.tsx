@@ -117,8 +117,8 @@ const Line = styled.div`
 export default function CreateTGoals() {
   const { calendar_id } = useParams();
   const [name, setName] = useState("");
-  const [color, setColor] = useState("");
-  const [showScope, setShowScope] = useState("me");
+  const [color, setColor] = useState("#000000");
+  const [showScope, setShowScope] = useState("group");
 
   const navigate = useNavigate();
 
@@ -173,9 +173,7 @@ export default function CreateTGoals() {
           value={showScope}
           onChange={(e) => setShowScope(e.target.value)}
           >
-            <option value="me">나만 보기</option>
-            <option value="followers">팔로워 공개</option>
-            <option value="all">전체 공개</option>
+            <option value="group">그룹 공개</option>
           </select>
         </ScopeInput>
         <Line/>

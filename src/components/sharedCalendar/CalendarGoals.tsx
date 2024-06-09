@@ -198,6 +198,13 @@ export default function CalendarGoals() {
       await updateSubGoals({
         sub_goal_id: selectedTodo.id,
         name: text,
+        plan_datetime: new Date(
+          getDateFormat(
+            calendarDate.year,
+            calendarDate.month,
+            calendarDate.date
+          )
+        ),
         calendar_id: calendarId,
         status: selectedTodo.status,
         refetch,
@@ -263,6 +270,7 @@ export default function CalendarGoals() {
                     subGoalId={subGoal.id}
                     text={subGoal.name}
                     status={subGoal.status}
+                    date={subGoal.plan_datetime}
                     refetch={refetch}
                   />
                 </Todo>

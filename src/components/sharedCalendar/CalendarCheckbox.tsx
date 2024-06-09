@@ -2,6 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import check from "assets/check.svg";
 import { updateSubGoals } from "api/calendarGoals";
+import getDateFormat from "utils/getDateFormat";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
 
 const TodoBtn = styled.div<{ $color: string }>`
   input {
@@ -55,6 +58,7 @@ export default function CalendarCheckbox({
 }: CalendarCheckboxProps) {
   const initialCheckedState = status === "incomplete" ? false : true;
   const [isChecked, setIsChecked] = useState(initialCheckedState);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
 
   const todoCheck = async () => {
     const newStatus = isChecked ? "incomplete" : "complete";
@@ -64,6 +68,9 @@ export default function CalendarCheckbox({
       calendar_id: calendarId,
       sub_goal_id: id,
       name: text,
+      plan_datetime: new Date(
+        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+      ),
       status: newStatus,
       refetch: refetch,
     });

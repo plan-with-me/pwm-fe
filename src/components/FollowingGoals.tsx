@@ -2,22 +2,21 @@ import {
   SubGoals,
   TopGoals,
   createSubGoals,
-  getSubGoals,
-  getTopGoals,
+  getSubGoalsById,
+  getTopGoalsById,
   updateSubGoals,
 } from "api/goals";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Checkbox from "./Checkbox";
-import CategoryTitle from "../CategoryTitle";
+import CategoryTitle from "./CategoryTitle";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
 import { useQuery } from "@tanstack/react-query";
-import MoreModal from "./MoreModal";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
+import {useParams} from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -106,16 +105,22 @@ export default function Goals() {
   >({});
   const calendarDate = useRecoilValue(CalendarDateAtom);
   const [selectedTodo, setSelectedTodo] = useRecoilState(selectedTodoAtom);
-
+  const { id } = useParams<{ id: string }>();
+  const numericId = id ? Number(id) : undefined;
+  if (numericId === undefined || isNaN(numericId)) {
+    return <div>Invalid ID</div>;
+  }
+  
   const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
-    queryFn: async () => await getTopGoals(),
+    queryFn: async () => await getTopGoalsById(numericId),
   });
 
   const { data: subGoals, refetch } = useQuery<SubGoals[]>({
     queryKey: ["subGoals", calendarDate.year, calendarDate.month],
     queryFn: async () =>
-      await getSubGoals({
+      await getSubGoalsById({
+        user_id: numericId,
         plan_date: `${calendarDate.year}-${calendarDate.month
           .toString()
           .padStart(2, "0")}`,
@@ -211,7 +216,6 @@ export default function Goals() {
               sortedSubGoals[category.id].length > 0) ||
               category.status === "incomplete") && (
               <CategoryTitle
-                onClick={() => setOpenCategoryId(category.id)}
                 color={category.color}
                 name={category.name}
               />
@@ -219,14 +223,6 @@ export default function Goals() {
             {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id} $color={category.color}>
-                  <Checkbox
-                    id={subGoal.id}
-                    color={category.color}
-                    status={subGoal.status}
-                    text={subGoal.name}
-                    refetch={refetch}
-                  />
-
                   <div className="text">
                     {subGoal.id === selectedTodo.id ? (
                       <form id="update" onSubmit={todoUpdateSubmit}>
@@ -243,13 +239,6 @@ export default function Goals() {
                       <span>{subGoal.name}</span>
                     )}
                   </div>
-                  <MoreModal
-                    subGoalId={subGoal.id}
-                    text={subGoal.name}
-                    status={subGoal.status}
-                    refetch={refetch}
-                    date={subGoal.plan_datetime}
-                  />
                 </Todo>
               ))}
             {openCategoryId === category.id && (

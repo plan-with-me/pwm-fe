@@ -30,6 +30,12 @@ export async function getTopGoals() {
     .then((response: { data: TopGoals[] }) => response.data);
 }
 
+export async function getTopGoalsById(userId: number) {
+  return await api
+    .get(`/top-goals?user_id=${userId}`)
+    .then((response: { data: TopGoals[] }) => response.data);
+}
+
 export async function createTopGoals(
   name: string,
   color: string,
@@ -84,6 +90,19 @@ export async function getSubGoals({
     .get("/sub-goals", { params: { user_id, plan_date } })
     .then((response: { data: SubGoals[] }) => response.data);
 }
+
+export async function getSubGoalsById({
+  user_id,
+  plan_date,
+}: {
+  user_id?: number;
+  plan_date?: string;
+}) {
+  return await api
+    .get(`/sub-goals`, { params: { user_id, plan_date } })
+    .then((response: { data: SubGoals[] }) => response.data);
+}
+
 
 export async function createSubGoals(
   name: string,

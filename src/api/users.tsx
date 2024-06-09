@@ -25,6 +25,15 @@ export async function getUserInfo() {
   return data;
 }
 
+export async function getUserInfoById(userId: number) {
+  const data = await api
+    .get(`/users/${userId}`)
+    .then((response: { data: UserInfo }) => {
+      return response.data;
+    });
+  return data;
+}
+
 export async function getFollowingInfo(userId: string): Promise<FollowInfo[]> {
   try {
     const response = await api.get(

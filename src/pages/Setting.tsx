@@ -21,7 +21,13 @@ const Wrapper = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
+
+  @media (max-width: 500px) {
+    width: auto; /* 혹은 width: unset; */
+    min-width: 0;
+  }
 `;
+
 
 const Header = styled.div`
   display: flex;
@@ -105,7 +111,7 @@ export default function Setting() {
         <Title>설정</Title>
       </Header>
       <SettingWrapper>
-        <SettingLink to="/home">
+        <SettingLink to="/my">
           <img src={user} alt="Account" />
           <span>계정</span>
         </SettingLink>

@@ -5,8 +5,9 @@ import { useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import styled from "styled-components";
+import CalendarModal from "./CalendarModal";
 
-const Modal = styled.div`
+const ModalDiv = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -20,20 +21,26 @@ const Modal = styled.div`
     padding: 8px 16px;
     font-size: 12px;
     cursor: pointer;
-  }
-  #delete {
-    border-bottom: 1px solid hsla(220, 9%, 46%, 0.3);
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid hsla(220, 9%, 46%, 0.3);
+    &:first-child {
+      border-top: 0;
+    }
   }
 `;
+
 export default function MoreModal({
   subGoalId,
   text,
   status,
+  date,
   refetch,
 }: {
   subGoalId: number;
   text: string;
   status: string;
+  date: string;
   refetch: () => void;
 }) {
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
@@ -41,6 +48,7 @@ export default function MoreModal({
 
   const modalRef = useRef<HTMLDivElement>(null);
   useClickOutside(modalRef, () => setIsMoreBtnClicked(false));
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
   return (
     <>
@@ -50,7 +58,7 @@ export default function MoreModal({
         onClick={() => setIsMoreBtnClicked(!isMoreBtnClicked)}
       />
       {isMoreBtnClicked && (
-        <Modal id="modal" ref={modalRef}>
+        <ModalDiv id="modal" ref={modalRef}>
           <div
             id="delete"
             onClick={async () => await deleteSubGoals(subGoalId, refetch)}
@@ -66,8 +74,25 @@ export default function MoreModal({
           >
             수정하기
           </div>
-        </Modal>
+          <div
+            onClick={() => {
+              setIsCalendarModalOpen(true);
+              setIsMoreBtnClicked(false);
+            }}
+          >
+            날짜 바꾸기
+          </div>
+        </ModalDiv>
       )}
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        date={date}
+        id={subGoalId}
+        text={text}
+        status={status}
+        refetch={refetch}
+      />
     </>
   );
 }
