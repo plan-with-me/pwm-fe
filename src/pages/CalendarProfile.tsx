@@ -13,7 +13,7 @@ const LoginPage = styled.div`
   @media (max-width: 700px) {
     width: 90%;
     #logo {
-      width: 80%;
+      width: 70%;
     }
 
     #input_name_div, #input_introduction_div {
