@@ -110,7 +110,7 @@ interface UserInfo {
   id: number;
   name: string;
   introduction: string;
-  image?: string;
+  image?: string | null;
 }
 
 
@@ -160,6 +160,7 @@ export default function Login() {
     const payload: Partial<UserInfo> = {
       name: nameRef.current.value,
       introduction: introductionRef.current.value,
+      image: null,
     };
 
     if (imageUrl) {
