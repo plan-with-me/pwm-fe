@@ -1,7 +1,17 @@
 # 공유 Todo LIST 'Plan With ME'
 - 사진
 - 서비스 URL : [pwm.ssc.co.kr](https://pwm.ssc.co.kr)
-<br>
+
+</br>
+
+# 프로젝트 소개
+```js
+- 개인을 넘어선, 친구, 가족 등 원하는 사람과 함께 쓰는 달력형 To do list
+- 팔로우 유저간 자신의 Todo list 공유
+- 한 페이지의 Todo list를 같이 쓰는 공유 달력
+```
+
+</br>
 
 # Source Repository
 ### [PWM-FRONT (pwm-fe)](https://github.com/plan-with-me/pwm-fe)<br>
@@ -13,14 +23,7 @@
 ![Python](https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white)
 <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=black"/>
 
-</br>
 
-# 프로젝트 소개
-```js
-- 개인을 넘어선, 친구, 가족 등 원하는 사람과 함께 쓰는 달력형 To do list
-- 팔로우 유저간 자신의 Todo list 공유
-- 한 페이지의 Todo list를 같이 쓰는 공유 달력
-```
 
 </br>
 
@@ -76,8 +79,9 @@
 <img src="https://img.shields.io/badge/Rocky Linux-10B981?style=for-the-badge&logo=RockyLinux&logoColor=black"/>
 <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=black"/>
 <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=black"/>
+<br>
+<img src="https://github.com/plan-with-me/pwm-fe/blob/main/photo/1.jpg?raw=true"/>
 
-(인프라 설계도)
 ```js
   Server : Rocky OS 8.6
 
