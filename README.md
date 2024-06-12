@@ -75,10 +75,12 @@
 </br>
 
 # Infra 구성
-<img src="https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=Proxmox&logoColor=black"/>
-<img src="https://img.shields.io/badge/Rocky Linux-10B981?style=for-the-badge&logo=RockyLinux&logoColor=black"/>
-<img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=black"/>
-<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=black"/>
+<div style="display: flex; gap: 10px;">
+    <img src="https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=Proxmox&logoColor=black"/>
+    <img src="https://img.shields.io/badge/Rocky Linux-10B981?style=for-the-badge&logo=RockyLinux&logoColor=black"/>
+    <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=black"/>
+    <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=black"/>
+</div>
 <br>
 <img src="https://github.com/plan-with-me/pwm-fe/blob/main/photo/1.jpg?raw=true"/>
 
