@@ -5,8 +5,8 @@
 
 # Source Repository
 ### [PWM-FRONT (pwm-fe)](https://github.com/plan-with-me/pwm-fe)<br>
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black)
 <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white"/>
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black"/>
 
 ### [PWM-BACK (api server)](https://github.com/plan-with-me/api-server)<br>
 ![PostgrSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
