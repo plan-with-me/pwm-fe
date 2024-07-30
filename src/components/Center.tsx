@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
 import { UserInfo } from "api/users";
 import { CalendarInfo } from "api/calendar";
-import { SubGoals } from "api/goals";
+import { SubGoals, TopGoals } from "api/goals";
 
 const Wrapper = styled.div`
   display: flex;
@@ -44,11 +44,13 @@ export default function Center({
   userInfo,
   calendarInfo,
   subGoals,
+  categories,
   isAdmin,
 }: {
   userInfo?: UserInfo;
   calendarInfo?: CalendarInfo;
   subGoals?: SubGoals[];
+  categories?: TopGoals[];
   isAdmin?: boolean;
 }) {
   const [xPosition, setX] = useRecoilState(SideBarAtom);
@@ -74,7 +76,7 @@ export default function Center({
           calendarInfo={calendarInfo}
           isAdmin={isAdmin}
         />
-        <Calendar subGoals={subGoals} />
+        <Calendar subGoals={subGoals} categories={categories} />
       </Wrapper>
     </>
   );

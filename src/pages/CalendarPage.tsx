@@ -14,8 +14,8 @@ import styled from "styled-components";
 import CalendarGoals from "components/sharedCalendar/CalendarGoals";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
-import { SubGoals } from "api/goals";
-import { getSubGoals } from "api/calendarGoals";
+import { SubGoals, TopGoals } from "api/goals";
+import { getSubGoals, getTopGoals } from "api/calendarGoals";
 
 const Wrapper = styled.div`
   /* width: 100%; */
@@ -64,6 +64,11 @@ export default function CalendarPage() {
       }),
   });
 
+  const { data: categories } = useQuery<TopGoals[]>({
+    queryKey: ["shared_calendar_category", calendarId],
+    queryFn: async () => await getTopGoals(calendarId!),
+  });
+
   useEffect(() => {
     if (params.calendar_id) {
       setCalendarId(Number(params.calendar_id));
@@ -91,6 +96,7 @@ export default function CalendarPage() {
           <Center
             calendarInfo={calendarInfo!}
             subGoals={subGoals}
+            categories={categories}
             isAdmin={permission?.is_admin}
           />
           <CalendarGoals />
