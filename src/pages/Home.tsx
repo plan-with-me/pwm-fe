@@ -5,7 +5,7 @@ import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import { SubGoals } from "api/goals";
+import { getTopGoals, SubGoals, TopGoals } from "api/goals";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 
@@ -45,12 +45,21 @@ export default function Home() {
     queryKey: ["subGoals", calendarDate.year, calendarDate.month],
   });
 
+  const { data: categories } = useQuery<TopGoals[]>({
+    queryKey: ["myGoalList"],
+    queryFn: async () => await getTopGoals(),
+  });
+
   return (
     <>
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          <Center userInfo={userInfo!} subGoals={subGoals} />
+          <Center
+            userInfo={userInfo!}
+            subGoals={subGoals}
+            categories={categories}
+          />
           <Goals />
         </TodoWrapper>
       </Wrapper>

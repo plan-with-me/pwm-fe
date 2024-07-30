@@ -3,9 +3,9 @@ import right_arrow from "assets/angle-right-solid.svg";
 import left_arrow from "assets/angle-left-solid.svg";
 import { useRecoilState } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
-import { SubGoals } from "api/goals";
+import { SubGoals, TopGoals } from "api/goals";
 import { useEffect, useState } from "react";
-import allCheck from "assets/allCheck.png";
+import check from "assets/check.svg";
 
 const DateController = styled.div`
   display: flex;
@@ -25,7 +25,6 @@ const DateController = styled.div`
 `;
 
 const CalendarDate = styled.div`
-  /* width: 400px; */
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   row-gap: 8px;
@@ -33,7 +32,7 @@ const CalendarDate = styled.div`
 `;
 
 const Day = styled.div<{
-  $emtpyColor?: string;
+  $emptyColor?: string;
   $bgColor?: string;
   $textColor?: string;
 }>`
@@ -42,10 +41,10 @@ const Day = styled.div<{
   align-items: center;
   gap: 4px;
 
-  div {
-    background-color: ${(props) => props.$emtpyColor || "#d5d5d5"};
-    width: 20px;
-    height: 20px;
+  .empty {
+    background-color: ${(props) => props.$emptyColor || "#d5d5d5"};
+    width: 18px;
+    height: 18px;
     border-radius: 4px;
     cursor: pointer;
     display: flex;
@@ -63,7 +62,7 @@ const Day = styled.div<{
     }
   }
 
-  span {
+  .date {
     background-color: ${(props) => props.$bgColor};
     font-size: 12px;
     color: ${(props) => props.$textColor};
@@ -76,7 +75,66 @@ const Day = styled.div<{
   }
 `;
 
-export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
+const Palette = styled.div<{
+  $firstColor?: string;
+  $secondColor?: string;
+  $thirdColor?: string;
+  $fourthColor?: string;
+}>`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+
+  .first {
+    background-color: ${(props) => props.$firstColor};
+  }
+  .second {
+    background-color: ${(props) => props.$secondColor};
+    left: -50%;
+  }
+  .third {
+    background-color: ${(props) => props.$thirdColor};
+    top: -50%;
+  }
+  .fourth {
+    background-color: ${(props) => props.$fourthColor};
+    top: -50%;
+    left: -50%;
+  }
+  .palette {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    .circle {
+      opacity: 0.8;
+      width: 12px;
+      height: 12px;
+      position: relative;
+      border-radius: 50%;
+    }
+  }
+  .todos {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    color: white;
+    position: relative;
+    top: -18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+export default function Calendar({
+  subGoals,
+  categories,
+}: {
+  subGoals?: SubGoals[];
+  categories?: TopGoals[];
+}) {
   const today = new Date();
 
   const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
@@ -122,24 +180,44 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
   };
 
   const [todos, setTodos] = useState(new Map());
+  const [colors, setColors] = useState(new Map());
+
   useEffect(() => {
-    if (subGoals) {
+    if (subGoals && categories) {
       const newTodos = new Map();
+      const newColors = new Map();
+
       subGoals.forEach((item) => {
         const todoDate = new Date(item.plan_datetime);
         const date = todoDate.getDate();
 
+        // 날짜별로 초기화
+        if (!newTodos.has(date)) {
+          newTodos.set(date, 0);
+          newColors.set(date, []);
+        }
+
+        // 미완료된 할 일 개수 세기
         if (item.status === "incomplete") {
-          if (newTodos.has(date)) {
-            newTodos.set(date, newTodos.get(date) + 1);
-          } else newTodos.set(date, 1);
-        } else {
-          if (!newTodos.has(date)) newTodos.set(date, 0);
+          newTodos.set(date, newTodos.get(date) + 1);
+        } else if (item.status === "complete") {
+          // 한 개라도 완료된 항목이 있으면 색상 추가
+          const topGoal = categories.find(
+            (goal) => goal.id === item.top_goal_id
+          );
+          if (topGoal) {
+            const currentColors = newColors.get(date);
+            if (!currentColors.includes(topGoal.color)) {
+              newColors.set(date, [...currentColors, topGoal.color]);
+            }
+          }
         }
       });
+
       setTodos(newTodos);
+      setColors(newColors);
     }
-  }, [subGoals]);
+  }, [categories, subGoals]);
 
   return (
     <>
@@ -169,7 +247,7 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
           ].map((date, index) => (
             <Day
               key={index}
-              $emtpyColor={date ? "" : "white"}
+              $emptyColor={date ? "" : "white"}
               $bgColor={
                 date === calendarDate.date
                   ? "black"
@@ -181,17 +259,33 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
               }
               $textColor={date === calendarDate.date ? "white" : ""}
             >
-              {todos.get(date) === 0 ? (
-                <div
-                  id="complete"
+              {colors.get(date) && colors.get(date).length > 0 ? (
+                <Palette
+                  $firstColor={colors.get(date)[0]}
+                  $secondColor={colors.get(date)[1] || colors.get(date)[0]}
+                  $thirdColor={
+                    colors.get(date)[2] ||
+                    colors.get(date)[1] ||
+                    colors.get(date)[0]
+                  }
+                  $fourthColor={colors.get(date)[3] || colors.get(date)[0]}
                   onClick={() => {
                     setCalendarDate({ ...calendarDate, date });
                   }}
                 >
-                  <img src={allCheck} width={24} />
-                </div>
+                  <div className="palette">
+                    <div className="first circle"></div>
+                    <div className="second circle"></div>
+                    <div className="third circle"></div>
+                    <div className="fourth circle"></div>
+                  </div>
+                  <div className="todos">
+                    {todos.get(date) || <img src={check} width={10} />}
+                  </div>
+                </Palette>
               ) : (
                 <div
+                  className="empty"
                   onClick={() => {
                     setCalendarDate({ ...calendarDate, date });
                   }}
@@ -199,7 +293,7 @@ export default function Calendar({ subGoals }: { subGoals?: SubGoals[] }) {
                   {todos.get(date)}
                 </div>
               )}
-              <span>{date}</span>
+              <span className="date">{date}</span>
             </Day>
           ))}
         </CalendarDate>
