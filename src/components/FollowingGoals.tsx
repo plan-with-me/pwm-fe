@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -106,21 +106,24 @@ export default function Goals() {
   const calendarDate = useRecoilValue(CalendarDateAtom);
   const [selectedTodo, setSelectedTodo] = useRecoilState(selectedTodoAtom);
   const { id } = useParams<{ id: string }>();
-  const numericId = id ? Number(id) : undefined;
-  if (numericId === undefined || isNaN(numericId)) {
-    return <div>Invalid ID</div>;
-  }
-  
+  const [calendarId, setCalendarId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (id) {
+      setCalendarId(Number(id));
+    }
+  }, [id]);
+
   const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
-    queryFn: async () => await getTopGoalsById(numericId),
+    queryFn: async () => await getTopGoalsById(calendarId!),
   });
 
   const { data: subGoals, refetch } = useQuery<SubGoals[]>({
     queryKey: ["subGoals", calendarDate.year, calendarDate.month],
     queryFn: async () =>
       await getSubGoalsById({
-        user_id: numericId,
+        user_id: calendarId!,
         plan_date: `${calendarDate.year}-${calendarDate.month
           .toString()
           .padStart(2, "0")}`,
@@ -215,10 +218,7 @@ export default function Goals() {
             {((sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].length > 0) ||
               category.status === "incomplete") && (
-              <CategoryTitle
-                color={category.color}
-                name={category.name}
-              />
+              <CategoryTitle color={category.color} name={category.name} />
             )}
             {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (

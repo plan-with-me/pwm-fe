@@ -4,11 +4,12 @@ import FollowingGoals from "components/FollowingGoals";
 import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SubGoals } from "api/goals";
+import { getTopGoalsById, SubGoals, TopGoals } from "api/goals";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   width: fit-content;
@@ -36,27 +37,39 @@ const TodoWrapper = styled.div`
 
 export default function Following() {
   const { id } = useParams<{ id: string }>();
-
+  const [calendarId, setCalendarId] = useState<number | null>(null);
   const calendarDate = useRecoilValue(CalendarDateAtom);
 
+  useEffect(() => {
+    if (id) {
+      setCalendarId(Number(id));
+    }
+  }, [id]);
+
   const { data: userInfo } = useQuery<UserInfo>({
-    queryKey: ['userInfo', Number(id)],
-    queryFn: async () => await getUserInfoById(Number(id)), 
+    queryKey: ["userInfo", calendarId],
+    queryFn: async () => await getUserInfoById(calendarId!),
   });
-  
 
   const { data: subGoals } = useQuery<SubGoals[]>({
-    queryKey: ['subGoals', calendarDate.year, calendarDate.month],
+    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
   });
-  console.log(subGoals, '123')
+
+  const { data: categories } = useQuery<TopGoals[]>({
+    queryKey: ["myGoalList"],
+    queryFn: async () => await getTopGoalsById(calendarId!),
+  });
+
   return (
     <>
       <Wrapper>
         <Sidebar />
         <TodoWrapper>
-          {userInfo && (
-            <Center userInfo={userInfo} subGoals={subGoals} />
-          )}
+          <Center
+            userInfo={userInfo}
+            subGoals={subGoals}
+            categories={categories}
+          />
           <FollowingGoals />
         </TodoWrapper>
       </Wrapper>
