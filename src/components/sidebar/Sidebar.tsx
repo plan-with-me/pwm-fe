@@ -39,6 +39,11 @@ const SidebarLayout = styled.div`
 
 const ScrollArea = styled.div`
   overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
   height: calc(100dvh - 110px);
   padding-right: 20px;
 
