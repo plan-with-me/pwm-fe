@@ -3,7 +3,7 @@ import "./App.css";
 import Login from "pages/Login";
 import Home from "pages/Home";
 import Auth from "pages/Auth";
-import Following from "pages/Following"
+import Following from "pages/Following";
 import Tgoals from "pages/TGoals/TGoals";
 import UpdateTgoals from "pages/TGoals/UpdateTGoals";
 import CreateTgoals from "pages/TGoals/CreateTGoals";
@@ -20,10 +20,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";
 import CalendarUsers from "pages/Calendar/CalendarUsers";
+import Diary from "pages/Diary";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   { path: "/home", element: <Home /> },
+  { path: "/diary", element: <Diary /> },
   { path: "/auth", element: <Auth /> },
   { path: "/tgoal", element: <Tgoals /> },
   { path: "/update-tgoal/:id", element: <UpdateTgoals /> },
