@@ -8,7 +8,7 @@ import left_arrow from "assets/angle-left-solid.svg";
 import deleteBtn from "assets/delete.png";
 import { deleteCalendar } from "api/calendar";
 import { useParams, useNavigate } from "react-router-dom";
-
+ 
 const Wrapper = styled.div`
   max-width: 700px;
   margin: 0 auto;

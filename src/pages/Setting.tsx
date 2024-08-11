@@ -26,7 +26,7 @@ const Wrapper = styled.div`
     min-width: 0;
   }
 `;
-
+ 
 
 const Header = styled.div`
   display: flex;
