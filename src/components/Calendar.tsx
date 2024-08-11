@@ -26,8 +26,9 @@ const DateController = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-
       padding: 4px;
+      cursor: pointer;
+
       &:hover {
         border-radius: 50%;
         background-color: #d5d5d5;
