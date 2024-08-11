@@ -8,9 +8,8 @@ import left_arrow from "assets/angle-left-solid.svg";
 import deleteBtn from "assets/delete.png";
 import { deleteCalendar } from "api/calendar";
 import { useParams, useNavigate } from "react-router-dom";
-
+ 
 const Wrapper = styled.div`
-  width: 100%;
   max-width: 700px;
   margin: 0 auto;
   display: flex;
@@ -20,8 +19,8 @@ const Wrapper = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
 
-  @media (max-width: 500px) {
-    width: auto; /* 혹은 width: unset; */
+  @media (max-width: 440px) {
+    width: 100%; /* 혹은 width: unset; */
     min-width: 0;
   }
 `;
@@ -83,7 +82,7 @@ const SettingLink = styled(Link)`
 `;
 
 const NavbarWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
