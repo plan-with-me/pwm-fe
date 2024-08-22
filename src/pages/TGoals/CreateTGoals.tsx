@@ -4,6 +4,7 @@ import { createTopGoals, TopGoals } from "../../api/goals";
 import styled from 'styled-components';
 import left_arrow from '../../assets/angle-left-solid.svg'; // 이미지 경로
 import Navbar from "components/Navbar";
+const MAX_TAGS = 5;
 
 const Wrapper = styled.div`
   @media (min-width: 700px) {
@@ -106,6 +107,26 @@ const ColorInput = styled.div`
   }
 `;
 
+const TagsInput = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 90px;
+
+  label {
+    flex:1;
+    font-size: 24px; 
+  }
+
+  input { 
+    width: 15%;
+  }
+`;
+
+const TagList = styled.div`
+  display: flex; 
+`;
+
 const Line = styled.div`
   width: 100%;
   height: 1px;
@@ -116,7 +137,9 @@ const Line = styled.div`
 export default function CreateTGoals() {
   const [name, setName] = useState("");
   const [color, setColor] = useState("#000000");
-  const [showScope, setShowScope] = useState("me"); // show_scope 필드를 추가합니다.
+  const [showScope, setShowScope] = useState("me");
+  const [tags, setTags] = useState<string[]>([]); 
+  const [inputTag, setInputTag] = useState("");
 
   const navigate = useNavigate();
 
@@ -129,16 +152,41 @@ export default function CreateTGoals() {
         name,
         color,
         status: "incomplete",
-        show_scope: showScope
+        show_scope: showScope,
+        tags
       };
       console.log(userId)
 
-      await createTopGoals(name, color, newTopGoalData.status, showScope);
+      await createTopGoals(name, color, newTopGoalData.status, showScope, tags);
 
       navigate("/tgoal");
     } catch (error) {
       console.error("Error creating top goal:", error);
     }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputTag.trim()) {
+      e.preventDefault();
+  
+      if (tags.length >= MAX_TAGS) {
+        alert(`최대 ${MAX_TAGS}개의 태그만 추가할 수 있습니다.`);
+        return;
+      }
+  
+      const formattedTag = inputTag.trim().startsWith("#")
+        ? inputTag.trim()
+        : `#${inputTag.trim()}`;
+  
+      if (!tags.includes(formattedTag)) {
+        setTags([...tags, formattedTag]);
+        setInputTag("");
+      }
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   return (
@@ -163,7 +211,6 @@ export default function CreateTGoals() {
             placeholder="목표 입력"
           />
         </WriteInput>
-
         <ScopeInput>
           <label>공개설정</label>
           <select
@@ -185,7 +232,30 @@ export default function CreateTGoals() {
             onChange={(e) => setColor(e.target.value)}
           />
         </ColorInput> 
-        <Line/>       
+        <Line/>
+        {showScope === "all" && (
+          <>
+            <TagsInput>
+              <label>태그</label>
+              <TagList>
+                {tags.map((tag) => (
+                  <div key={tag}>
+                    {tag}
+                    <Button onClick={() => handleRemoveTag(tag)}>x</Button>
+                  </div>
+                ))}
+              </TagList>
+              <input
+                type="text"
+                value={inputTag}
+                onChange={(e) => setInputTag(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="태그 입력 후 엔터"
+              />
+            </TagsInput>
+            <Line/>
+          </>
+        )}         
       </Form>
       <Navbar/>
     </Wrapper>
