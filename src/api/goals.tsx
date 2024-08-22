@@ -6,6 +6,7 @@ export type TopGoals = {
   color: string;
   status: string;
   show_scope: string;
+  tags : string[];
 };
 
 export type SubGoals = {
@@ -40,7 +41,8 @@ export async function createTopGoals(
   name: string,
   color: string,
   status: string,
-  show_scope: string
+  show_scope: string,
+  tags: string[]
 ) {
   try {
     const response = await api.post("/top-goals", {
@@ -48,6 +50,7 @@ export async function createTopGoals(
       color,
       status,
       show_scope,
+      tags
     });
     return response.data;
   } catch (error) {

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopGoals } from "api/goals";
 import { createTopGoals } from "../../api/calendarGoals";
 import styled from 'styled-components';
-import left_arrow from '../../assets/angle-left-solid.svg'; // 이미지 경로
+import left_arrow from '../../assets/angle-left-solid.svg';
 import Navbar from "components/Navbar";
 
 const Wrapper = styled.div`
@@ -118,6 +118,7 @@ export default function CreateTGoals() {
   const { calendar_id } = useParams();
   const [name, setName] = useState("");
   const [color, setColor] = useState("#000000");
+  const [tags] = useState<string[]>([]); 
   const [showScope, setShowScope] = useState("group");
 
   const navigate = useNavigate();
@@ -131,7 +132,8 @@ export default function CreateTGoals() {
         name,
         color,
         status: "incomplete",
-        show_scope: showScope
+        show_scope: showScope,
+        tags
       };
       console.log(calendar_id)
 
