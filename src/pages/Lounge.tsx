@@ -133,6 +133,11 @@ const LoungePage = styled.div`
     border-radius: 10px;
   }
 
+  #recomended_tag {
+    margin-top: 20px;
+  }
+
+
   @media (max-width: 768px) {
     #input_div, #searched_user_div, #calendar_list_div {
       width: 90%;
@@ -239,7 +244,7 @@ export default function Lounge() {
       try {
         const response = await api.get(`/users`, { params: { email: searchText } });
         const results = response.data;
-
+        //console.log(results)
         setSearchResults(results.length > 0 ? results[0] : null);
         setimagesrc(results.image);
         
@@ -300,7 +305,9 @@ export default function Lounge() {
                    onKeyPress={handleKeyPress}
                    style={{height: '30px', background: 'lightgray', borderRadius: '10px'}}
                    placeholder=" 🔍  계정 또는 키워드 검색"/> 
-            
+          </div>
+          <div id = "recomended_tag">
+            추천 태그: #공부 #갓생 #다이어트 #운동
           </div>
         </div>
         {searchResults && (
@@ -309,6 +316,7 @@ export default function Lounge() {
             <div id="searched_user_info">
               <span id="searched_user_name_span">{searchResults.name}</span>
               {/*<span id="searched_user_name_span">{searchResults.id}</span>*/}
+              <span >{searchResults.uid}</span>
               <span id="searched_user_introduction_span">{searchResults.introduction}</span>
             </div>
 
@@ -327,6 +335,7 @@ export default function Lounge() {
           ))}
         </div>
       )}
+          
         <Navbar />
       </LoungePage>
       
