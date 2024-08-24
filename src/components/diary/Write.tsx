@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import styled from "styled-components";
 import { weatherIcons } from "assets/weather";
 import useClickOutside from "hooks/useClickOutside";
+import { createDiary } from "api/diary";
+import { Editor } from "@tinymce/tinymce-react";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -77,6 +79,19 @@ export default function Write() {
   const divRef = useRef<HTMLDivElement>(null);
   useClickOutside(divRef, () => setIsOpen(false));
 
+  async function submitDiary() {
+    await createDiary("제목", weather, { text: "내용" }, "all");
+  }
+
+  console.log(weather);
+
+  const editorRef = useRef(null);
+  const log = () => {
+    if (editorRef.current) {
+      console.log(editorRef.current.getContent());
+    }
+  };
+
   return (
     <>
       <Wrapper>
@@ -113,8 +128,48 @@ export default function Write() {
             <option value="followers">팔로워 공개</option>
             <option value="all">전체 공개</option>
           </select>
+          <button onClick={submitDiary}>저장하기</button>
         </div>
-        <textarea />
+        {/* <form>
+
+        <textarea id="my"/>
+        </form> */}
+        <Editor
+          apiKey="9lyqudukb4ap7ihr8rscq5akbbprml6rjtua8bzqap3wo54s"
+          onInit={(_evt, editor) => (editorRef.current = editor)}
+          initialValue="<p>This is the initial content of the editor.</p>"
+          init={{
+            height: 500,
+            menubar: true,
+            plugins: [
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "charmap",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "fullscreen",
+              "insertdatetime",
+              "media",
+              "table",
+              "code",
+              "help",
+              "wordcount",
+            ],
+            toolbar:
+              "undo redo | blocks | " +
+              "bold italic forecolor | alignleft aligncenter " +
+              "alignright alignjustify | bullist numlist outdent indent | " +
+              "removeformat | help",
+            content_style:
+              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+          }}
+        />
       </Wrapper>
     </>
   );

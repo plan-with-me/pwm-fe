@@ -5,6 +5,8 @@ import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Write from "components/diary/Write";
+import { getDiaries } from "api/diary";
+import { useEffect } from "react";
 
 const Wrapper = styled.div`
   width: fit-content;
@@ -35,6 +37,15 @@ export default function Diary() {
     queryKey: ["userInfo"],
     queryFn: async () => await getUserInfo(),
   });
+
+  const { data: diaries } = useQuery({
+    queryKey: ["diaries", userInfo?.id],
+    queryFn: async () => await getDiaries(userInfo?.id || 0),
+  });
+
+  useEffect(() => {
+    console.log(diaries);
+  }, [diaries]);
 
   return (
     <>
