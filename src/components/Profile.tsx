@@ -55,24 +55,38 @@ export default function Profile({
     <Wrapper>
       <div id="row">
         <ProfileImg>
-          <img
-            src={
-              userInfo?.image === undefined || userInfo.image === null
-                ? defaultProfile
-                : `https://pwm.ssc.co.kr/${userInfo.image}`
-            }
-          />
+          {userInfo && (
+            <img
+              src={
+                userInfo?.image === undefined || userInfo.image === null
+                  ? defaultProfile
+                  : `https://pwm.ssc.co.kr/${userInfo.image}`
+              }
+            />
+          )}
+
+          {calendarInfo && (
+            <img
+              src={
+                calendarInfo?.image === undefined || calendarInfo.image === null
+                  ? defaultProfile
+                  : `https://pwm.ssc.co.kr/${calendarInfo.image}`
+              }
+            />
+          )}
         </ProfileImg>
         <UserInfoDiv>
           <span>{userInfo?.name || calendarInfo?.name}</span>
           <span>{userInfo?.introduction || defaultIntroduction}</span>
         </UserInfoDiv>
       </div>
-      {location.pathname !== "/home" && !location.pathname.startsWith("/following/") && isAdmin && (
-        <Link to={`${location.pathname}/setting`}>
-          <img src={setting} width={28} />
-        </Link>
-      )}
+      {location.pathname !== "/home" &&
+        !location.pathname.startsWith("/following/") &&
+        isAdmin && (
+          <Link to={`${location.pathname}/setting`}>
+            <img src={setting} width={28} />
+          </Link>
+        )}
     </Wrapper>
   );
 }
