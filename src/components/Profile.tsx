@@ -77,7 +77,11 @@ export default function Profile({
         </ProfileImg>
         <UserInfoDiv>
           <span>{userInfo?.name || calendarInfo?.name}</span>
-          <span>{userInfo?.introduction || defaultIntroduction}</span>
+          <span>
+            {userInfo?.introduction ||
+              calendarInfo?.introduction ||
+              defaultIntroduction}
+          </span>
         </UserInfoDiv>
       </div>
       {location.pathname !== "/home" &&
