@@ -20,12 +20,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";
 import CalendarUsers from "pages/Calendar/CalendarUsers";
-import Diary from "pages/Diary";
+import DiaryPage from "pages/DiaryPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   { path: "/home", element: <Home /> },
-  { path: "/diary", element: <Diary /> },
+  { path: "/diary", element: <DiaryPage /> },
   { path: "/auth", element: <Auth /> },
   { path: "/tgoal", element: <Tgoals /> },
   { path: "/update-tgoal/:id", element: <UpdateTgoals /> },

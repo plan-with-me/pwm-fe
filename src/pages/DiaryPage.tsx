@@ -5,8 +5,12 @@ import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Write from "components/diary/Write";
-import { getDiaries } from "api/diary";
+import { Diary, getDiaries } from "api/diary";
 import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import getDateFormat from "utils/getDateFormat";
+import DiaryContent from "components/diary/DiaryContent";
 
 const Wrapper = styled.div`
   width: fit-content;
@@ -32,20 +36,30 @@ const TodoWrapper = styled.div`
   }
 `;
 
-export default function Diary() {
+export default function DiaryPage() {
+  const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
+
   const { data: userInfo } = useQuery<UserInfo>({
     queryKey: ["userInfo"],
     queryFn: async () => await getUserInfo(),
   });
 
-  const { data: diaries } = useQuery({
-    queryKey: ["diaries", userInfo?.id],
-    queryFn: async () => await getDiaries(userInfo?.id || 0),
+  const { data: diary } = useQuery<Diary[]>({
+    queryKey: [
+      "diary",
+      userInfo?.id,
+      getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date),
+    ],
+    queryFn: async () =>
+      await getDiaries(
+        userInfo?.id || 0,
+        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+      ),
   });
 
   useEffect(() => {
-    console.log(diaries);
-  }, [diaries]);
+    console.log(diary, diary?.length);
+  }, [diary]);
 
   return (
     <>
@@ -53,7 +67,14 @@ export default function Diary() {
         <Sidebar />
         <TodoWrapper>
           <Center userInfo={userInfo!} />
-          <Write />
+
+          {diary && diary.length > 0 ? (
+            <DiaryContent diary={diary[0]} />
+          ) : (
+            <Write />
+          )}
+
+          {/* <Write /> */}
         </TodoWrapper>
       </Wrapper>
       <Navbar />

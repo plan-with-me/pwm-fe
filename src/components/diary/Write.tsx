@@ -75,22 +75,32 @@ export default function Write() {
   const [weather, setWeather] = useState(weatherIcons[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [scope, setScope] = useState("me");
+  const [title, setTitle] = useState("");
+  const [value, setValue] = useState("");
 
   const divRef = useRef<HTMLDivElement>(null);
   useClickOutside(divRef, () => setIsOpen(false));
 
   async function submitDiary() {
-    await createDiary("제목", weather, { text: "내용" }, "all");
+    const response = await createDiary({
+      title,
+      icon: weather,
+      content: { content: value },
+      show_scope: scope,
+    });
+    console.log(response);
   }
 
-  console.log(weather);
+  // const editorRef = useRef(null);
+  // const log = () => {
+  //   if (editorRef.current) {
+  //     console.log(editorRef.current.getContent());
+  //   }
+  // };
 
-  const editorRef = useRef(null);
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-    }
-  };
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
 
   return (
     <>
@@ -134,10 +144,21 @@ export default function Write() {
 
         <textarea id="my"/>
         </form> */}
+        <input
+          type="text"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        ></input>
         <Editor
           apiKey="9lyqudukb4ap7ihr8rscq5akbbprml6rjtua8bzqap3wo54s"
-          onInit={(_evt, editor) => (editorRef.current = editor)}
-          initialValue="<p>This is the initial content of the editor.</p>"
+          // onInit={(_evt, editor) => (editorRef.current = editor)}
+          initialValue=""
+          value={value}
+          onEditorChange={(newValue) => {
+            setValue(newValue);
+            // setText(editor.getContent({format: 'text'}));
+          }}
+          // onChange={(e) => setContent(e.target.value)}
           init={{
             height: 500,
             menubar: true,
