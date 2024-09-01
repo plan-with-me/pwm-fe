@@ -26,6 +26,7 @@ const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   { path: "/home", element: <Home /> },
   { path: "/diary", element: <DiaryPage /> },
+  { path: "/diary/write", element: <DiaryPage /> },
   { path: "/auth", element: <Auth /> },
   { path: "/tgoal", element: <Tgoals /> },
   { path: "/update-tgoal/:id", element: <UpdateTgoals /> },

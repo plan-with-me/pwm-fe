@@ -6,6 +6,7 @@ import { weatherIcons } from "assets/weather";
 import useClickOutside from "hooks/useClickOutside";
 import { createDiary } from "api/diary";
 import { Editor } from "@tinymce/tinymce-react";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -77,18 +78,28 @@ export default function Write() {
   const [scope, setScope] = useState("me");
   const [title, setTitle] = useState("");
   const [value, setValue] = useState("");
+  const navigate = useNavigate();
 
   const divRef = useRef<HTMLDivElement>(null);
   useClickOutside(divRef, () => setIsOpen(false));
 
   async function submitDiary() {
-    const response = await createDiary({
-      title,
-      icon: weather,
-      content: { content: value },
-      show_scope: scope,
-    });
-    console.log(response);
+    const diaryTitle = title.trim();
+    const diaryContent = value.trim();
+
+    if (diaryTitle !== "" && diaryContent !== "") {
+      const response = await createDiary({
+        title: diaryTitle,
+        icon: weather,
+        content: { content: diaryContent },
+        show_scope: scope,
+      });
+      console.log(response);
+      alert("일기 작성이 완료됐습니다.");
+      navigate("/diary");
+    } else {
+      alert("제목 또는 내용을 작성해주세요.");
+    }
   }
 
   // const editorRef = useRef(null);

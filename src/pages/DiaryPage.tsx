@@ -11,6 +11,7 @@ import { useRecoilState } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
 import DiaryContent from "components/diary/DiaryContent";
+import { useLocation } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: fit-content;
@@ -57,10 +58,11 @@ export default function DiaryPage() {
       ),
   });
 
-  useEffect(() => {
-    console.log(diary, diary?.length);
-  }, [diary]);
+  // useEffect(() => {
+  //   console.log(diary, diary?.length);
+  // }, [diary]);
 
+  const location = useLocation();
   return (
     <>
       <Wrapper>
@@ -68,13 +70,13 @@ export default function DiaryPage() {
         <TodoWrapper>
           <Center userInfo={userInfo!} />
 
-          {diary && diary.length > 0 ? (
+          {/* {diary && diary.length > 0 ? (
             <DiaryContent diary={diary[0]} />
           ) : (
             <Write />
-          )}
-
-          {/* <Write /> */}
+          )} */}
+          {location.pathname === "/diary/write" && <Write />}
+          {location.pathname === "/diary" && <DiaryContent />}
         </TodoWrapper>
       </Wrapper>
       <Navbar />
