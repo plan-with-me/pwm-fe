@@ -97,7 +97,9 @@ export default function DiaryContent() {
             {diary[0].content.content && parse(diary[0].content.content)}
           </div>
           <div>
-            <button>수정하기</button>
+            <button onClick={() => navigate(`edit/${diary[0].id}`)}>
+              수정하기
+            </button>
             <button>삭제하기</button>
           </div>
         </Wrapper>

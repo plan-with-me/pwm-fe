@@ -4,9 +4,12 @@ import { CalendarDateAtom } from "store/CalendarDateAtom";
 import styled from "styled-components";
 import { weatherIcons } from "assets/weather";
 import useClickOutside from "hooks/useClickOutside";
-import { createDiary } from "api/diary";
+import { Diary, editDiary, getDiaries } from "api/diary";
 import { Editor } from "@tinymce/tinymce-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getUserInfo, UserInfo } from "api/users";
+import { useQuery } from "@tanstack/react-query";
+import getDateFormat from "utils/getDateFormat";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -71,7 +74,7 @@ const WeatherPalette = styled.div`
   right: 60px;
 `;
 
-export default function Write() {
+export default function Edit() {
   const calendarDate = useRecoilValue(CalendarDateAtom);
   const [weather, setWeather] = useState(weatherIcons[0]);
   const [isOpen, setIsOpen] = useState(false);
@@ -79,23 +82,43 @@ export default function Write() {
   const [title, setTitle] = useState("");
   const [value, setValue] = useState("");
   const navigate = useNavigate();
+  const params = useParams();
 
   const divRef = useRef<HTMLDivElement>(null);
   useClickOutside(divRef, () => setIsOpen(false));
+
+  const { data: userInfo } = useQuery<UserInfo>({
+    queryKey: ["userInfo"],
+    queryFn: async () => await getUserInfo(),
+  });
+
+  const { data: diary } = useQuery<Diary[]>({
+    queryKey: [
+      "diary",
+      userInfo?.id,
+      getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date),
+    ],
+    queryFn: async () =>
+      await getDiaries(
+        userInfo?.id || 0,
+        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+      ),
+  });
 
   async function submitDiary() {
     const diaryTitle = title.trim();
     const diaryContent = value.trim();
 
     if (diaryTitle !== "" && diaryContent !== "") {
-      const response = await createDiary({
+      const response = await editDiary({
+        id: Number(params.diaryId),
         title: diaryTitle,
         icon: weather,
         content: { content: diaryContent },
         show_scope: scope,
       });
       if (response) {
-        alert("일기 작성이 완료됐습니다.");
+        alert("일기 수정이 완료됐습니다.");
         navigate("/diary");
       } else {
         alert("에러가 발생했습니다. 다시 시도해 주세요.");
@@ -113,8 +136,18 @@ export default function Write() {
   // };
 
   useEffect(() => {
-    console.log(value);
-  }, [value]);
+    if (diary) {
+      for (const item of diary) {
+        if (item.id === Number(params.diaryId)) {
+          setTitle(item.title);
+          setValue(item.content.content);
+          setWeather(item.icon);
+          setScope(item.show_scope);
+          break;
+        }
+      }
+    }
+  }, [diary, params.diaryId]);
 
   return (
     <>
@@ -166,7 +199,6 @@ export default function Write() {
         <Editor
           apiKey="9lyqudukb4ap7ihr8rscq5akbbprml6rjtua8bzqap3wo54s"
           // onInit={(_evt, editor) => (editorRef.current = editor)}
-          initialValue=""
           value={value}
           onEditorChange={(newValue) => {
             setValue(newValue);

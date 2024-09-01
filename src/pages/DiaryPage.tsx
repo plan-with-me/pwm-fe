@@ -5,13 +5,14 @@ import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Write from "components/diary/Write";
-import { Diary, getDiaries } from "api/diary";
-import { useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { CalendarDateAtom } from "store/CalendarDateAtom";
-import getDateFormat from "utils/getDateFormat";
+// import { Diary, getDiaries } from "api/diary";
+// import { useEffect } from "react";
+// import { useRecoilState } from "recoil";
+// import { CalendarDateAtom } from "store/CalendarDateAtom";
+// import getDateFormat from "utils/getDateFormat";
 import DiaryContent from "components/diary/DiaryContent";
 import { useLocation } from "react-router-dom";
+import Edit from "components/diary/Edit";
 
 const Wrapper = styled.div`
   width: fit-content;
@@ -38,25 +39,25 @@ const TodoWrapper = styled.div`
 `;
 
 export default function DiaryPage() {
-  const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
+  // const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
 
   const { data: userInfo } = useQuery<UserInfo>({
     queryKey: ["userInfo"],
     queryFn: async () => await getUserInfo(),
   });
 
-  const { data: diary } = useQuery<Diary[]>({
-    queryKey: [
-      "diary",
-      userInfo?.id,
-      getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date),
-    ],
-    queryFn: async () =>
-      await getDiaries(
-        userInfo?.id || 0,
-        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
-      ),
-  });
+  // const { data: diary } = useQuery<Diary[]>({
+  //   queryKey: [
+  //     "diary",
+  //     userInfo?.id,
+  //     getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date),
+  //   ],
+  //   queryFn: async () =>
+  //     await getDiaries(
+  //       userInfo?.id || 0,
+  //       getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+  //     ),
+  // });
 
   // useEffect(() => {
   //   console.log(diary, diary?.length);
@@ -76,6 +77,7 @@ export default function DiaryPage() {
             <Write />
           )} */}
           {location.pathname === "/diary/write" && <Write />}
+          {location.pathname.startsWith("/diary/edit") && <Edit />}
           {location.pathname === "/diary" && <DiaryContent />}
         </TodoWrapper>
       </Wrapper>
