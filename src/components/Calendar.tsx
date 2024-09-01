@@ -6,16 +6,41 @@ import { CalendarDateAtom } from "store/CalendarDateAtom";
 import { SubGoals, TopGoals } from "api/goals";
 import { useEffect, useState } from "react";
 import check from "assets/check.svg";
+import weather from "assets/weather/weather1.png";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DateController = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  .date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    div {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px;
+      cursor: pointer;
+
+      &:hover {
+        border-radius: 50%;
+        background-color: #d5d5d5;
+      }
+    }
+  }
+
   span {
     font-weight: 600;
   }
-  div {
+
+  .arrow {
     display: flex;
     gap: 20px;
     img {
@@ -219,14 +244,27 @@ export default function Calendar({
     }
   }, [categories, subGoals]);
 
+  const location = useLocation();
+  const navigate = useNavigate();
   return (
     <>
       <div>
         <DateController>
-          <span>
-            {calendarDate.year}년 {calendarDate.month}월
-          </span>
-          <div>
+          <div className="date">
+            <span>
+              {calendarDate.year}년 {calendarDate.month}월
+            </span>
+            <div>
+              {location.pathname === "/home" && (
+                <img
+                  src={weather}
+                  width={36}
+                  onClick={() => navigate("/diary")}
+                />
+              )}
+            </div>
+          </div>
+          <div className="arrow">
             <img src={left_arrow} onClick={goToPreviousMonth} width={12} />
             <img src={right_arrow} onClick={goToNextMonth} width={12} />
           </div>
