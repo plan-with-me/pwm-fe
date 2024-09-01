@@ -128,13 +128,6 @@ export default function Edit() {
     }
   }
 
-  // const editorRef = useRef(null);
-  // const log = () => {
-  //   if (editorRef.current) {
-  //     console.log(editorRef.current.getContent());
-  //   }
-  // };
-
   useEffect(() => {
     if (diary) {
       for (const item of diary) {
@@ -187,10 +180,7 @@ export default function Edit() {
           </select>
           <button onClick={submitDiary}>저장하기</button>
         </div>
-        {/* <form>
 
-        <textarea id="my"/>
-        </form> */}
         <input
           type="text"
           value={title}
@@ -198,13 +188,10 @@ export default function Edit() {
         ></input>
         <Editor
           apiKey="9lyqudukb4ap7ihr8rscq5akbbprml6rjtua8bzqap3wo54s"
-          // onInit={(_evt, editor) => (editorRef.current = editor)}
           value={value}
           onEditorChange={(newValue) => {
             setValue(newValue);
-            // setText(editor.getContent({format: 'text'}));
           }}
-          // onChange={(e) => setContent(e.target.value)}
           init={{
             height: 500,
             menubar: true,

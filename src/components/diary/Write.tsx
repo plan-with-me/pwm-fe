@@ -105,13 +105,6 @@ export default function Write() {
     }
   }
 
-  // const editorRef = useRef(null);
-  // const log = () => {
-  //   if (editorRef.current) {
-  //     console.log(editorRef.current.getContent());
-  //   }
-  // };
-
   useEffect(() => {
     console.log(value);
   }, [value]);
@@ -154,10 +147,7 @@ export default function Write() {
           </select>
           <button onClick={submitDiary}>저장하기</button>
         </div>
-        {/* <form>
 
-        <textarea id="my"/>
-        </form> */}
         <input
           type="text"
           value={title}
@@ -165,14 +155,10 @@ export default function Write() {
         ></input>
         <Editor
           apiKey="9lyqudukb4ap7ihr8rscq5akbbprml6rjtua8bzqap3wo54s"
-          // onInit={(_evt, editor) => (editorRef.current = editor)}
-          initialValue=""
           value={value}
           onEditorChange={(newValue) => {
             setValue(newValue);
-            // setText(editor.getContent({format: 'text'}));
           }}
-          // onChange={(e) => setContent(e.target.value)}
           init={{
             height: 500,
             menubar: true,
