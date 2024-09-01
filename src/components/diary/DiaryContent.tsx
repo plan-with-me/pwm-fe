@@ -1,9 +1,9 @@
-import { Diary, getDiaries } from "api/diary";
+import deleteDiary, { Diary, getDiaries } from "api/diary";
 import styled from "styled-components";
 import parse from "html-react-parser";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import getDateFormat from "utils/getDateFormat";
 import { getUserInfo, UserInfo } from "api/users";
 import { useNavigate } from "react-router-dom";
@@ -56,9 +56,9 @@ const Wrapper = styled.div`
   }
 `;
 
-// export default function DiaryContent({ diary }: { diary: Diary }) {
 export default function DiaryContent() {
   const calendarDate = useRecoilValue(CalendarDateAtom);
+  const navigate = useNavigate();
 
   const { data: userInfo } = useQuery<UserInfo>({
     queryKey: ["userInfo"],
@@ -78,8 +78,20 @@ export default function DiaryContent() {
       ),
   });
 
-  const navigate = useNavigate();
-  // console.log(diary.content.content);
+  function confirmAndDeleteDiary(diary: Diary[]) {
+    return async () => {
+      if (confirm("일기를 삭제할까요??")) {
+        const response = await deleteDiary(diary[0].id);
+        if (response) {
+          alert("일기를 삭제했습니다.");
+          queryClient.invalidateQueries({ queryKey: ["diary"] });
+        } else {
+          alert("에러가 발생했습니다. 다시 시도해주세요.");
+        }
+      }
+    };
+  }
+  const queryClient = useQueryClient();
   return (
     <>
       {diary && diary?.length > 0 ? (
@@ -100,7 +112,7 @@ export default function DiaryContent() {
             <button onClick={() => navigate(`edit/${diary[0].id}`)}>
               수정하기
             </button>
-            <button>삭제하기</button>
+            <button onClick={confirmAndDeleteDiary(diary)}>삭제하기</button>
           </div>
         </Wrapper>
       ) : (

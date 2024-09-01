@@ -53,3 +53,12 @@ export async function editDiary({
     return false;
   }
 }
+
+export default async function deleteDiary(diaryId: number) {
+  try {
+    return await api.delete(`/diaries/${diaryId}`);
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
