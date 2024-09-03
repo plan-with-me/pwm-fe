@@ -11,11 +11,13 @@ import {
 import baseProfile from 'assets/baseProfile.png';
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { SideBarAtom } from 'store/SideBarAtom';
 
 const FollowWrapper = styled.div`
   width: 100%;
   padding: 10px 0px;
-  box-sizing: border-box;
+  box-sizing: border-box;  
 `;
 
 const FollowingWrapper = styled.div`
@@ -145,6 +147,7 @@ export default function FollowList() {
   const [followingInfo, setFollowingInfo] = useState<FollowInfo[]>([]);
   const [followerInfo, setFollowerInfo] = useState<FollowInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [xPosition, setX] = useRecoilState(SideBarAtom);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -214,6 +217,7 @@ export default function FollowList() {
   };
 
   const handleItemClick = (id: number) => {
+    setX(-360);
     navigate(`/following/${id}`);
   };
 
