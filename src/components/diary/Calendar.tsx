@@ -183,6 +183,7 @@ export default function Calendar() {
                 className="empty"
                 onClick={() => {
                   setCalendarDate({ ...calendarDate, date });
+                  navigate("/diary");
                 }}
               ></div>
 
