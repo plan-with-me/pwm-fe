@@ -12,6 +12,9 @@ const Wrapper = styled.div`
   width: 400px;
   height: calc(100dvh - 189px);
   margin: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
   @media (max-width: 1240px) {
     margin-top: 85px;
@@ -20,15 +23,13 @@ const Wrapper = styled.div`
   @media (max-width: 880px) {
     margin-top: 40px;
   }
-  /* border: 1px solid black; */
-  display: flex;
 
-  flex-direction: column;
-  gap: 20px;
+  @media (max-width: 440px) {
+    width: calc(100% - 40px);
+  }
 
   .date-weather {
     display: flex;
-    /* justify-content: center; */
     align-items: center;
     gap: 8px;
     position: relative;
@@ -67,8 +68,29 @@ const WeatherPalette = styled.div`
   gap: 8px;
   position: absolute;
   top: 0px;
-  /* left: 100px; */
   right: 60px;
+  z-index: 10;
+`;
+
+const Scope = styled.select`
+  height: 28px;
+`;
+
+const Submit = styled.button`
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  height: 28px;
+  cursor: pointer;
+  border-radius: 4px;
+`;
+
+const Title = styled.input`
+  height: 28px;
+  padding: 4px;
+  border: 2px solid #eee;
+  border-radius: 8px;
 `;
 
 export default function Write() {
@@ -136,7 +158,7 @@ export default function Write() {
               ))}
             </WeatherPalette>
           )}
-          <select
+          <Scope
             id="scope"
             value={scope}
             onChange={(e) => setScope(e.target.value)}
@@ -144,15 +166,16 @@ export default function Write() {
             <option value="me">나만 보기</option>
             <option value="followers">팔로워 공개</option>
             <option value="all">전체 공개</option>
-          </select>
-          <button onClick={submitDiary}>저장하기</button>
+          </Scope>
+          <Submit onClick={submitDiary}>저장하기</Submit>
         </div>
 
-        <input
+        <Title
           type="text"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-        ></input>
+          placeholder="제목"
+        ></Title>
         <Editor
           apiKey="9lyqudukb4ap7ihr8rscq5akbbprml6rjtua8bzqap3wo54s"
           value={value}
