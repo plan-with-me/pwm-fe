@@ -12,6 +12,9 @@ const Wrapper = styled.div`
   width: 400px;
   height: calc(100dvh - 189px);
   margin: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
   @media (max-width: 1240px) {
     margin-top: 85px;
@@ -20,11 +23,10 @@ const Wrapper = styled.div`
   @media (max-width: 880px) {
     margin-top: 40px;
   }
-  /* border: 1px solid black; */
-  display: flex;
 
-  flex-direction: column;
-  gap: 20px;
+  @media (max-width: 440px) {
+    width: calc(100% - 40px);
+  }
 
   .date-weather {
     display: flex;
@@ -49,11 +51,37 @@ const Wrapper = styled.div`
     }
   }
 
+  .title {
+    font-size: 20px;
+  }
+
+  .btn {
+    display: flex;
+    gap: 8px;
+  }
+
   textarea {
     width: 100%;
     height: 500px;
     resize: none;
   }
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const Button = styled.button`
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  width: fit-content;
+  height: 28px;
+  cursor: pointer;
+  border-radius: 4px;
 `;
 
 export default function DiaryContent() {
@@ -104,15 +132,15 @@ export default function DiaryContent() {
               <img src={diary[0].icon} alt="" width={36} />
             </div>
           </div>
-          <div>{diary[0].title}</div>
-          <div>
+          <div className="title">{diary[0].title}</div>
+          <div className="content">
             {diary[0].content.content && parse(diary[0].content.content)}
           </div>
-          <div>
-            <button onClick={() => navigate(`edit/${diary[0].id}`)}>
+          <div className="btn">
+            <Button onClick={() => navigate(`edit/${diary[0].id}`)}>
               수정하기
-            </button>
-            <button onClick={confirmAndDeleteDiary(diary)}>삭제하기</button>
+            </Button>
+            <Button onClick={confirmAndDeleteDiary(diary)}>삭제하기</Button>
           </div>
         </Wrapper>
       ) : (
@@ -122,10 +150,10 @@ export default function DiaryContent() {
               {calendarDate.year}년 {calendarDate.month}월 {calendarDate.date}일
             </span>
           </div>
-          <div>
-            <h3>오늘의 일기가 없어요</h3>
-            <button onClick={() => navigate("write")}>일기 작성하기</button>
-          </div>
+          <Content>
+            <div>아직 일기를 작성하지 않았어요</div>
+            <Button onClick={() => navigate("write")}>일기 작성하기</Button>
+          </Content>
         </Wrapper>
       )}
     </>
