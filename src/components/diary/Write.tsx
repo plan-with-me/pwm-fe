@@ -7,6 +7,7 @@ import useClickOutside from "hooks/useClickOutside";
 import { createDiary } from "api/diary";
 import { Editor } from "@tinymce/tinymce-react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -101,6 +102,7 @@ export default function Write() {
   const [title, setTitle] = useState("");
   const [value, setValue] = useState("");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const divRef = useRef<HTMLDivElement>(null);
   useClickOutside(divRef, () => setIsOpen(false));
@@ -119,6 +121,7 @@ export default function Write() {
       if (response) {
         alert("일기 작성이 완료됐습니다.");
         navigate("/diary");
+        queryClient.invalidateQueries({ queryKey: ["diaries", "me"] });
       } else {
         alert("에러가 발생했습니다. 다시 시도해 주세요.");
       }

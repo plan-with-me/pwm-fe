@@ -114,6 +114,7 @@ export default function DiaryContent() {
         if (response) {
           alert("일기를 삭제했습니다.");
           queryClient.invalidateQueries({ queryKey: ["diary"] });
+          queryClient.invalidateQueries({ queryKey: ["diaries", "me"] });
         } else {
           alert("에러가 발생했습니다. 다시 시도해주세요.");
         }

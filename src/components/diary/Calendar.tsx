@@ -216,7 +216,7 @@ export default function Calendar() {
                       navigate("/diary");
                     }}
                   >
-                    <img src={weatherIcon} alt="Weather icon" width={32} />
+                    <img src={weatherIcon} alt="Weather icon" width={36} />
                   </div>
                 ) : (
                   <div
