@@ -7,8 +7,13 @@ export interface DiaryProps {
   show_scope: string;
 }
 
-export interface Diary extends DiaryProps {
+export interface EditDiaryProps extends DiaryProps {
   id: number;
+}
+
+export interface Diary extends EditDiaryProps {
+  created_at: string;
+  updated_at: string;
 }
 
 interface Content {
@@ -43,7 +48,7 @@ export async function editDiary({
   icon,
   content,
   show_scope,
-}: Diary) {
+}: EditDiaryProps) {
   try {
     return await api
       .put(`/diaries/${id}`, { title, icon, content, show_scope })

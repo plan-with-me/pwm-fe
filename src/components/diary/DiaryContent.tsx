@@ -87,6 +87,7 @@ const Button = styled.button`
 export default function DiaryContent() {
   const calendarDate = useRecoilValue(CalendarDateAtom);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: userInfo } = useQuery<UserInfo>({
     queryKey: ["userInfo"],
@@ -119,7 +120,7 @@ export default function DiaryContent() {
       }
     };
   }
-  const queryClient = useQueryClient();
+
   return (
     <>
       {diary && diary?.length > 0 ? (

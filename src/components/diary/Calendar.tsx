@@ -5,6 +5,8 @@ import { useRecoilState } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import pin from "assets/pin.svg";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Diary, getDiaries } from "api/diary";
 
 const DateController = styled.div`
   display: flex;
@@ -89,11 +91,25 @@ const Day = styled.div<{
     align-items: center;
     border-radius: 50%;
   }
+
+  .weather {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export default function Calendar() {
   const today = new Date();
   const [calendarDate, setCalendarDate] = useRecoilState(CalendarDateAtom);
+  const navigate = useNavigate();
+
+  const { data: diaries } = useQuery<Diary[]>({
+    queryKey: ["diaries", "me"],
+    queryFn: async () => await getDiaries(),
+  });
 
   // 해당 월의 첫 번째 날의 요일을 구합니다.
   const firstDayOfMonth = new Date(
@@ -120,6 +136,7 @@ export default function Calendar() {
     } else {
       setCalendarDate({ ...calendarDate, month: calendarDate.month - 1 });
     }
+    navigate("/diary");
   };
 
   // 다음 달로 이동하는 함수
@@ -133,9 +150,19 @@ export default function Calendar() {
     } else {
       setCalendarDate({ ...calendarDate, month: calendarDate.month + 1 });
     }
+    navigate("/diary");
   };
 
-  const navigate = useNavigate();
+  const getWeatherIcon = (date: number) => {
+    const diaryForDate = diaries?.find(
+      (diary) =>
+        new Date(diary.created_at).getFullYear() === calendarDate.year &&
+        new Date(diary.created_at).getMonth() + 1 === calendarDate.month &&
+        new Date(diary.created_at).getDate() === date
+    );
+    return diaryForDate ? diaryForDate.icon : null;
+  };
+
   return (
     <>
       <div>
@@ -164,32 +191,47 @@ export default function Calendar() {
             ...Array(lastDateOfMonth)
               .fill(null)
               .map((_, index) => index + 1),
-          ].map((date, index) => (
-            <Day
-              key={index}
-              $emptyColor={date ? "" : "white"}
-              $bgColor={
-                date === calendarDate.date
-                  ? "black"
-                  : date === today.getDate() &&
-                    calendarDate.month === today.getMonth() + 1 &&
-                    calendarDate.year === today.getFullYear()
-                  ? "lightgrey"
-                  : ""
-              }
-              $textColor={date === calendarDate.date ? "white" : ""}
-            >
-              <div
-                className="empty"
-                onClick={() => {
-                  setCalendarDate({ ...calendarDate, date });
-                  navigate("/diary");
-                }}
-              ></div>
+          ].map((date, index) => {
+            const weatherIcon = getWeatherIcon(date);
+            return (
+              <Day
+                key={index}
+                $emptyColor={date ? "" : "white"}
+                $bgColor={
+                  date === calendarDate.date
+                    ? "black"
+                    : date === today.getDate() &&
+                      calendarDate.month === today.getMonth() + 1 &&
+                      calendarDate.year === today.getFullYear()
+                    ? "lightgrey"
+                    : ""
+                }
+                $textColor={date === calendarDate.date ? "white" : ""}
+              >
+                {weatherIcon ? (
+                  <div
+                    className="weather"
+                    onClick={() => {
+                      setCalendarDate({ ...calendarDate, date });
+                      navigate("/diary");
+                    }}
+                  >
+                    <img src={weatherIcon} alt="Weather icon" width={32} />
+                  </div>
+                ) : (
+                  <div
+                    className="empty"
+                    onClick={() => {
+                      setCalendarDate({ ...calendarDate, date });
+                      navigate("/diary");
+                    }}
+                  ></div>
+                )}
 
-              <span className="date">{date}</span>
-            </Day>
-          ))}
+                <span className="date">{date}</span>
+              </Day>
+            );
+          })}
         </CalendarDate>
       </div>
     </>
