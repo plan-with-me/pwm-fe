@@ -108,7 +108,7 @@ export default function Calendar() {
 
   const { data: diaries } = useQuery<Diary[]>({
     queryKey: ["diaries", "me"],
-    queryFn: async () => await getDiaries(),
+    queryFn: () => getDiaries(),
   });
 
   // 해당 월의 첫 번째 날의 요일을 구합니다.

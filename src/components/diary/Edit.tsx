@@ -139,6 +139,11 @@ export default function Edit() {
         icon: weather,
         content: { content: diaryContent },
         show_scope: scope,
+        date: getDateFormat(
+          calendarDate.year,
+          calendarDate.month,
+          calendarDate.date
+        ),
       });
       if (response) {
         alert("일기 수정이 완료됐습니다.");

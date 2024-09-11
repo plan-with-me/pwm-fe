@@ -8,6 +8,7 @@ import { createDiary } from "api/diary";
 import { Editor } from "@tinymce/tinymce-react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import getDateFormat from "utils/getDateFormat";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -117,7 +118,13 @@ export default function Write() {
         icon: weather,
         content: { content: diaryContent },
         show_scope: scope,
+        date: getDateFormat(
+          calendarDate.year,
+          calendarDate.month,
+          calendarDate.date
+        ),
       });
+
       if (response) {
         alert("일기 작성이 완료됐습니다.");
         navigate("/diary");
