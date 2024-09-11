@@ -2,10 +2,12 @@ import { deleteSubGoals } from "api/calendarGoals";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
 import { useRef, useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import styled from "styled-components";
 import SharedCalendarModal from "./CalendarModal";
+import { useQueryClient } from "@tanstack/react-query";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
 
 const ModalDiv = styled.div`
   position: absolute;
@@ -36,14 +38,12 @@ export default function MoreModal({
   text,
   status,
   date,
-  refetch,
 }: {
   calendarId: number;
   subGoalId: number;
   text: string;
   status: string;
   date: string;
-  refetch: () => void;
 }) {
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
   const setSelectedTodo = useSetRecoilState(selectedTodoAtom);
@@ -51,6 +51,21 @@ export default function MoreModal({
   const modalRef = useRef<HTMLDivElement>(null);
   useClickOutside(modalRef, () => setIsMoreBtnClicked(false));
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
+  const queryClient = useQueryClient();
+
+  async function deleteSubmit() {
+    const response = await deleteSubGoals(calendarId, subGoalId);
+    response &&
+      queryClient.invalidateQueries({
+        queryKey: [
+          "shared_calendar_subGoals",
+          calendarId,
+          calendarDate.year,
+          calendarDate.month,
+        ],
+      });
+  }
 
   return (
     <>
@@ -61,12 +76,7 @@ export default function MoreModal({
       />
       {isMoreBtnClicked && (
         <ModalDiv id="modal" ref={modalRef}>
-          <div
-            id="delete"
-            onClick={async () =>
-              await deleteSubGoals(calendarId, subGoalId, refetch)
-            }
-          >
+          <div id="delete" onClick={deleteSubmit}>
             삭제하기
           </div>
           <div
@@ -96,7 +106,6 @@ export default function MoreModal({
         id={subGoalId}
         text={text}
         status={status}
-        refetch={refetch}
       />
     </>
   );

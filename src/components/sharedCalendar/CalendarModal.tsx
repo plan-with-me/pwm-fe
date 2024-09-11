@@ -5,6 +5,9 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { updateSubGoals } from "api/calendarGoals";
 import getDateFormat from "utils/getDateFormat";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CalendarModalProps {
   isOpen: boolean;
@@ -14,7 +17,6 @@ interface CalendarModalProps {
   id: number;
   text: string;
   status: string;
-  refetch: () => void;
 }
 
 const Wrapper = styled.div`
@@ -107,7 +109,6 @@ export default function SharedCalendarModal({
   id,
   text,
   status,
-  refetch,
 }: CalendarModalProps) {
   const getCustomModalStyle = () => ({
     overlay: {
@@ -144,6 +145,8 @@ export default function SharedCalendarModal({
 
   const today = new Date();
   const planDate = new Date(date);
+  const originalCalendarDate = useRecoilValue(CalendarDateAtom);
+  const queryClient = useQueryClient();
 
   const [calendarDate, setCalendarDate] = useState({
     year: planDate.getFullYear(),
@@ -192,7 +195,7 @@ export default function SharedCalendarModal({
   };
 
   const changeDateHandler = async () => {
-    await updateSubGoals({
+    const response = await updateSubGoals({
       calendar_id: calendarId,
       sub_goal_id: id,
       name: text,
@@ -200,8 +203,19 @@ export default function SharedCalendarModal({
         getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
       ),
       status,
-      refetch,
     });
+
+    response &&
+      queryClient.invalidateQueries({
+        queryKey: [
+          "shared_calendar_subGoals",
+          calendarId,
+          originalCalendarDate.year,
+          originalCalendarDate.month,
+        ],
+      });
+
+    onClose();
   };
 
   return (

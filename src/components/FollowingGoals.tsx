@@ -1,22 +1,18 @@
 import {
   SubGoals,
   TopGoals,
-  createSubGoals,
   getSubGoalsById,
   getTopGoalsById,
-  updateSubGoals,
 } from "api/goals";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import CategoryTitle from "./CategoryTitle";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
 import { useQuery } from "@tanstack/react-query";
-import { selectedTodoAtom } from "store/SelectedTodoAtom";
-import more from "assets/more.svg";
-import useClickOutside from "hooks/useClickOutside";
 import { useParams } from "react-router-dom";
+import check from "assets/check.svg";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -51,28 +47,6 @@ const Category = styled.div`
   margin-bottom: 20px;
 `;
 
-const WriteForm = styled.form<{ $color: string }>`
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  width: 344px;
-  input {
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid ${(props) => props.$color};
-    padding: 4px;
-  }
-`;
-
-const Box = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: #d5d5d5;
-  border-radius: 4px;
-  cursor: pointer;
-  content: "";
-`;
-
 const Todo = styled.div<{ $color: string }>`
   display: flex;
   align-items: center;
@@ -96,15 +70,44 @@ const Todo = styled.div<{ $color: string }>`
   }
 `;
 
+const Checkbox = styled.div<{ $color: string }>`
+  input {
+    display: none;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      position: relative;
+      right: 15px;
+      margin-right: -10px;
+    }
+  }
+
+  label::before {
+    width: 20px;
+    height: 20px;
+    background-color: #d5d5d5;
+    content: "";
+    display: inline-block;
+    border-radius: 4px;
+    vertical-align: middle;
+  }
+
+  input:checked + label:before {
+    content: "";
+    background-color: ${(props) => props.$color};
+  }
+`;
+
 export default function Goals() {
-  const [todoText, setTodoText] = useState("");
-  const [updateTodo, setUpdateTodo] = useState("");
-  const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
   const [sortedSubGoals, setSortedSubGoals] = useState<
     Record<number, SubGoals[]>
   >({});
   const calendarDate = useRecoilValue(CalendarDateAtom);
-  const [selectedTodo, setSelectedTodo] = useRecoilState(selectedTodoAtom);
   const { id } = useParams<{ id: string }>();
   const [calendarId, setCalendarId] = useState<number | null>(null);
 
@@ -115,12 +118,12 @@ export default function Goals() {
   }, [id]);
 
   const { data: categories } = useQuery<TopGoals[]>({
-    queryKey: ["myGoalList"],
+    queryKey: ["myGoalList", calendarId],
     queryFn: async () => await getTopGoalsById(calendarId!),
   });
 
-  const { data: subGoals, refetch } = useQuery<SubGoals[]>({
-    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+  const { data: subGoals } = useQuery<SubGoals[]>({
+    queryKey: ["subGoals", calendarId, calendarDate.year, calendarDate.month],
     queryFn: async () =>
       await getSubGoalsById({
         user_id: calendarId!,
@@ -153,62 +156,6 @@ export default function Goals() {
     setSortedSubGoals(sortedSubGoalsMap);
   }, [categories, subGoals, calendarDate]);
 
-  useEffect(() => {
-    if (selectedTodo.id) {
-      setUpdateTodo(selectedTodo.text);
-    }
-  }, [selectedTodo]);
-
-  // 하위 목표 등록
-  const todoSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const text = todoText.trim();
-
-    if (text && openCategoryId) {
-      await createSubGoals(
-        text,
-        new Date(
-          getDateFormat(
-            calendarDate.year,
-            calendarDate.month,
-            calendarDate.date
-          )
-        ),
-        "incomplete",
-        openCategoryId,
-        refetch
-      );
-      setTodoText("");
-    }
-  };
-
-  // 하위 목표 업데이트
-  const todoUpdateSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const text = updateTodo.trim();
-
-    if (text && selectedTodo.id) {
-      await updateSubGoals(
-        selectedTodo.id,
-        text,
-        new Date(
-          getDateFormat(
-            calendarDate.year,
-            calendarDate.month,
-            calendarDate.date
-          )
-        ),
-        selectedTodo.status,
-        refetch
-      );
-
-      setSelectedTodo({ id: null, text: "", status: "" });
-    }
-  };
-
-  const formRef = useRef<HTMLFormElement>(null);
-  useClickOutside(formRef, () => setOpenCategoryId(null));
-
   return (
     <Wrapper>
       {categories &&
@@ -223,42 +170,25 @@ export default function Goals() {
             {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id} $color={category.color}>
+                  <Checkbox $color={category.color}>
+                    <form>
+                      <input
+                        type="checkbox"
+                        checked={subGoal.status === "incomplete" ? false : true}
+                        readOnly
+                      />
+                      <label>
+                        {subGoal.status === "incomplete"
+                          ? false
+                          : true && <img src={check} width={10} />}
+                      </label>
+                    </form>
+                  </Checkbox>
                   <div className="text">
-                    {subGoal.id === selectedTodo.id ? (
-                      <form id="update" onSubmit={todoUpdateSubmit}>
-                        <input
-                          placeholder="할 일 입력"
-                          value={updateTodo}
-                          onChange={(event) => {
-                            setUpdateTodo(event.target.value);
-                          }}
-                          autoFocus={true}
-                        />
-                      </form>
-                    ) : (
-                      <span>{subGoal.name}</span>
-                    )}
+                    <span>{subGoal.name}</span>
                   </div>
                 </Todo>
               ))}
-            {openCategoryId === category.id && (
-              <Todo $color={category.color}>
-                <Box />
-                <WriteForm
-                  onSubmit={todoSubmit}
-                  $color={category.color}
-                  ref={formRef}
-                >
-                  <input
-                    placeholder="할 일 입력"
-                    value={todoText}
-                    onChange={(event) => setTodoText(event.target.value)}
-                    autoFocus={true}
-                  />
-                </WriteForm>
-                <img src={more} width={20} />
-              </Todo>
-            )}
           </Category>
         ))}
     </Wrapper>
