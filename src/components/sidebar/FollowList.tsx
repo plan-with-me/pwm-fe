@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
-import { 
+import { useState, useEffect } from "react";
+import {
   getFollowingInfo,
   getFollowerInfo,
   deleteFollower,
   FollowInfo,
   acceptFollower,
   getUserInfo,
-  UserInfo
-} from '../../api/users';
-import baseProfile from 'assets/baseProfile.png';
+  UserInfo,
+} from "api/users";
+import baseProfile from "assets/baseProfile.png";
 import styled from "styled-components";
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { SideBarAtom } from 'store/SideBarAtom';
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { SideBarAtom } from "store/SideBarAtom";
 
 const FollowWrapper = styled.div`
   width: 100%;
   padding: 10px 0px;
-  box-sizing: border-box;  
+  box-sizing: border-box;
 `;
 
 const FollowingWrapper = styled.div`
@@ -55,7 +55,7 @@ const FollowingWrapper = styled.div`
 
       div#name {
         flex-grow: 1;
-        
+
         h2 {
           margin: 0;
           font-size: 18px;
@@ -104,7 +104,7 @@ const FollowerWrapper = styled.div`
 
       div {
         flex-grow: 1;
-        
+
         h2 {
           margin: 0;
           font-size: 18px;
@@ -141,7 +141,6 @@ const FollowerWrapper = styled.div`
   }
 `;
 
-
 export default function FollowList() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [followingInfo, setFollowingInfo] = useState<FollowInfo[]>([]);
@@ -155,8 +154,7 @@ export default function FollowList() {
       try {
         const userInfo = await getUserInfo();
         setUser(userInfo);
-        console.log(userInfo, "1"); 
-
+        console.log(userInfo, "1");
       } catch (error) {
         setError("Failed to fetch user info");
       }
@@ -217,7 +215,7 @@ export default function FollowList() {
   };
 
   const handleItemClick = (id: number) => {
-    setX(-360);
+    setX(-xPosition);
     navigate(`/following/${id}`);
   };
 
@@ -233,12 +231,15 @@ export default function FollowList() {
             <h1 id="header"> 팔로잉 </h1>
             {Array.isArray(followingInfo) && followingInfo.length > 0 ? (
               <ul>
-                {followingInfo.map(follow => (
-                  <li key={follow.id} onClick={() => handleItemClick(follow.id)}>
-                    <img 
+                {followingInfo.map((follow) => (
+                  <li
+                    key={follow.id}
+                    onClick={() => handleItemClick(follow.id)}
+                  >
+                    <img
                       id="profile"
-                      src={follow.image ? follow.image : baseProfile} 
-                      alt={follow.name} 
+                      src={follow.image ? follow.image : baseProfile}
+                      alt={follow.name}
                     />
                     <div id="name">
                       <h2>{follow.name}</h2>
@@ -253,29 +254,33 @@ export default function FollowList() {
           </FollowingWrapper>
 
           <FollowerWrapper>
-          <h1> 팔로우 요청 </h1>
-          {Array.isArray(followerInfo) && followerInfo.length > 0 ? (
-            <ul>
-              {followerInfo.map(follow => (
-                <li key={follow.id}>
-                  <img
-                    id= "profile"
-                    src={follow.image ? follow.image : baseProfile} 
-                    alt={follow.name} 
-                  />
-                  <div>
-                    <h2>{follow.name}</h2>
-                  </div>
-                  <button onClick={() => handleAcceptFollower(follow.id)}>Accept</button>
-                  <button onClick={() => handleDeleteFollower(follow.id)}>Delete</button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No followers found.</p>
-          )}
-          </FollowerWrapper>          
-        </div>        
+            <h1> 팔로우 요청 </h1>
+            {Array.isArray(followerInfo) && followerInfo.length > 0 ? (
+              <ul>
+                {followerInfo.map((follow) => (
+                  <li key={follow.id}>
+                    <img
+                      id="profile"
+                      src={follow.image ? follow.image : baseProfile}
+                      alt={follow.name}
+                    />
+                    <div>
+                      <h2>{follow.name}</h2>
+                    </div>
+                    <button onClick={() => handleAcceptFollower(follow.id)}>
+                      Accept
+                    </button>
+                    <button onClick={() => handleDeleteFollower(follow.id)}>
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No followers found.</p>
+            )}
+          </FollowerWrapper>
+        </div>
       )}
     </FollowWrapper>
   );
