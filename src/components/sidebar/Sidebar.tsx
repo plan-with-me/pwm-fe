@@ -105,8 +105,8 @@ export default function Sidebar() {
   const [isAddBtnClicked, setIsAddBtnClicked] = useRecoilState(AddBtnAtom);
   const [isDimmedRenderd, setIsDimmedRendered] = useState(false);
 
-  const { data: calenders, refetch } = useQuery<CalendarInfo[]>({
-    queryKey: ["myCalendarList", isAddBtnClicked],
+  const { data: calenders } = useQuery<CalendarInfo[]>({
+    queryKey: ["myCalendarList"],
     queryFn: async () => await getCalendars({}),
   });
 
@@ -150,7 +150,7 @@ export default function Sidebar() {
               ))}
 
               {isAddBtnClicked ? (
-                <CalendarForm refetch={refetch} />
+                <CalendarForm />
               ) : (
                 <AddCalendarBtn
                   onClick={() => setIsAddBtnClicked(!isAddBtnClicked)}
