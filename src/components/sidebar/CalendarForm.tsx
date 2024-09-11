@@ -6,6 +6,7 @@ import { useSetRecoilState } from "recoil";
 import { AddBtnAtom } from "store/AddBtnAtom";
 import { useNavigate } from "react-router-dom";
 import { SideBarAtom } from "store/SideBarAtom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Form = styled.form`
   display: flex;
@@ -19,12 +20,13 @@ const Form = styled.form`
   }
 `;
 
-export default function CalendarForm({ refetch }: { refetch: () => void }) {
+export default function CalendarForm() {
   const [calendarName, setCalendarName] = useState("");
   const setIsAddBtnClicked = useSetRecoilState(AddBtnAtom);
   const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
   const setX = useSetRecoilState(SideBarAtom);
+  const queryClient = useQueryClient();
 
   const calendarSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,8 +37,9 @@ export default function CalendarForm({ refetch }: { refetch: () => void }) {
       navigate(`/calendar/${data.id}`);
       setX(-360);
     }
+
     setIsAddBtnClicked(false);
-    refetch();
+    queryClient.invalidateQueries({ queryKey: ["myCalendarList"] });
   };
 
   useEffect(() => {
