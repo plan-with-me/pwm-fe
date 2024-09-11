@@ -11,7 +11,7 @@ import {
 import baseProfile from "assets/baseProfile.png";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { SideBarAtom } from "store/SideBarAtom";
 
 const FollowWrapper = styled.div`
@@ -146,7 +146,7 @@ export default function FollowList() {
   const [followingInfo, setFollowingInfo] = useState<FollowInfo[]>([]);
   const [followerInfo, setFollowerInfo] = useState<FollowInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [xPosition, setX] = useRecoilState(SideBarAtom);
+  const setX = useSetRecoilState(SideBarAtom);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -215,7 +215,7 @@ export default function FollowList() {
   };
 
   const handleItemClick = (id: number) => {
-    setX(-xPosition);
+    setX(-360);
     navigate(`/following/${id}`);
   };
 
