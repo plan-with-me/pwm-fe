@@ -6,11 +6,10 @@ export async function createSubGoals(
   plan_datetime: Date,
   status: string,
   calendar_id: number,
-  top_goal_id: number,
-  refetch: () => void
+  top_goal_id: number
 ) {
-  api
-    .post(
+  try {
+    await api.post(
       `/calendars/${calendar_id}/sub-goals`,
       {
         name,
@@ -18,10 +17,14 @@ export async function createSubGoals(
         status,
       },
       { params: { calendar_id, top_goal_id } }
-    )
-    .then(() => {
-      refetch();
-    });
+    );
+
+    return true;
+  } catch (error) {
+    console.log(error);
+
+    return false;
+  }
 }
 
 export async function getSubGoals({
@@ -44,38 +47,38 @@ export async function updateSubGoals({
   name,
   plan_datetime,
   status,
-  refetch,
 }: {
   calendar_id: number;
   sub_goal_id: number;
   name: string;
   plan_datetime: Date;
   status: string;
-  refetch: () => void;
 }) {
-  await api
-    .put(`/calendars/${calendar_id}/sub-goals/${sub_goal_id}`, {
+  try {
+    await api.put(`/calendars/${calendar_id}/sub-goals/${sub_goal_id}`, {
       name,
       plan_datetime,
       status,
-    })
-    .then((response) => {
-      refetch();
-      console.log(response.data);
-    })
-    .catch((error) => console.log(error));
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
-export async function deleteSubGoals(
-  calendar_id: number,
-  sub_goal_id: number,
-  refetch: () => void
-) {
-  api
-    .delete(`/calendars/${calendar_id}/sub-goals/${sub_goal_id}`, {
+export async function deleteSubGoals(calendar_id: number, sub_goal_id: number) {
+  try {
+    await api.delete(`/calendars/${calendar_id}/sub-goals/${sub_goal_id}`, {
       params: { calendar_id, sub_goal_id },
-    })
-    .then(() => refetch());
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
 export async function createTopGoals(
@@ -85,20 +88,22 @@ export async function createTopGoals(
   status: string,
   show_scope: string
 ) {
-  api
+  await api
     .post(`/calendars/${calendar_id}/top-goals`, {
       name,
       color,
       status,
       show_scope,
     })
-    .then();
+    .catch((error) => console.log(error));
 }
 
 export async function getTopGoals(calendar_id: number) {
-  return api.get(`/calendars/${calendar_id}/top-goals`).then((response) => {
-    return response.data;
-  });
+  return await api
+    .get(`/calendars/${calendar_id}/top-goals`)
+    .then((response: { data: TopGoals[] }) => {
+      return response.data;
+    });
 }
 
 export async function updateTopGoals(
@@ -106,13 +111,15 @@ export async function updateTopGoals(
   top_goal_id: number,
   updatedGoalData: Partial<TopGoals>
 ) {
-  api
+  await api
     .put(`/calendars/${calendar_id}/top-goals/${top_goal_id}`, updatedGoalData)
-    .then();
+    .catch((error) => console.log(error));
 }
 
 export async function deleteTopGoals(calendar_id: number, top_goal_id: number) {
-  api.delete(`/calendars/${calendar_id}/top-goals/${top_goal_id}`, {
-    params: { calendar_id, top_goal_id },
-  });
+  await api
+    .delete(`/calendars/${calendar_id}/top-goals/${top_goal_id}`, {
+      params: { calendar_id, top_goal_id },
+    })
+    .catch((error) => console.log(error));
 }

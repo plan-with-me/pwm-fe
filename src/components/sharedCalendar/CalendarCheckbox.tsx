@@ -5,6 +5,7 @@ import { updateSubGoals } from "api/calendarGoals";
 import getDateFormat from "utils/getDateFormat";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TodoBtn = styled.div<{ $color: string }>`
   input {
@@ -45,7 +46,6 @@ interface CalendarCheckboxProps {
   color: string;
   status: string;
   text: string;
-  refetch: () => void;
 }
 
 export default function CalendarCheckbox({
@@ -54,17 +54,17 @@ export default function CalendarCheckbox({
   color,
   status,
   text,
-  refetch,
 }: CalendarCheckboxProps) {
   const initialCheckedState = status === "incomplete" ? false : true;
   const [isChecked, setIsChecked] = useState(initialCheckedState);
   const calendarDate = useRecoilValue(CalendarDateAtom);
+  const queryClient = useQueryClient();
 
   const todoCheck = async () => {
     const newStatus = isChecked ? "incomplete" : "complete";
     setIsChecked(!isChecked);
 
-    await updateSubGoals({
+    const response = await updateSubGoals({
       calendar_id: calendarId,
       sub_goal_id: id,
       name: text,
@@ -72,8 +72,17 @@ export default function CalendarCheckbox({
         getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
       ),
       status: newStatus,
-      refetch: refetch,
     });
+
+    response &&
+      queryClient.invalidateQueries({
+        queryKey: [
+          "shared_calendar_subGoals",
+          calendarId,
+          calendarDate.year,
+          calendarDate.month,
+        ],
+      });
   };
 
   return (
