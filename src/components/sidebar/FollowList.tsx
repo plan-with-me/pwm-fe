@@ -237,7 +237,11 @@ export default function FollowList() {
                   <li key={follow.id} onClick={() => handleItemClick(follow.id)}>
                     <img 
                       id="profile"
-                      src={follow.image ? follow.image : baseProfile} 
+                      src={
+                        follow?.image === undefined || follow.image === null
+                          ? baseProfile
+                          : `https://pwm.ssc.co.kr/${follow.image}`
+                      } 
                       alt={follow.name} 
                     />
                     <div id="name">
