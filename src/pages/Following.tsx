@@ -6,7 +6,12 @@ import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { getTopGoalsById, SubGoals, TopGoals } from "api/goals";
+import {
+  getSubGoalsById,
+  getTopGoalsById,
+  SubGoals,
+  TopGoals,
+} from "api/goals";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import { useEffect, useState } from "react";
@@ -52,11 +57,18 @@ export default function Following() {
   });
 
   const { data: subGoals } = useQuery<SubGoals[]>({
-    queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+    queryKey: ["subGoals", calendarId, calendarDate.year, calendarDate.month],
+    queryFn: async () =>
+      await getSubGoalsById({
+        user_id: calendarId!,
+        plan_date: `${calendarDate.year}-${calendarDate.month
+          .toString()
+          .padStart(2, "0")}`,
+      }),
   });
 
   const { data: categories } = useQuery<TopGoals[]>({
-    queryKey: ["myGoalList"],
+    queryKey: ["myGoalList", calendarId],
     queryFn: async () => await getTopGoalsById(calendarId!),
   });
 

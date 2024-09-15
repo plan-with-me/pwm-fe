@@ -13,7 +13,7 @@ import CategoryTitle from "../CategoryTitle";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import MoreModal from "./MoreModal";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import more from "assets/more.svg";
@@ -106,13 +106,14 @@ export default function Goals() {
   >({});
   const calendarDate = useRecoilValue(CalendarDateAtom);
   const [selectedTodo, setSelectedTodo] = useRecoilState(selectedTodoAtom);
+  const queryClient = useQueryClient();
 
   const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["myGoalList"],
     queryFn: async () => await getTopGoals(),
   });
 
-  const { data: subGoals, refetch } = useQuery<SubGoals[]>({
+  const { data: subGoals } = useQuery<SubGoals[]>({
     queryKey: ["subGoals", calendarDate.year, calendarDate.month],
     queryFn: async () =>
       await getSubGoals({
@@ -157,7 +158,7 @@ export default function Goals() {
     const text = todoText.trim();
 
     if (text && openCategoryId) {
-      await createSubGoals(
+      const response = await createSubGoals(
         text,
         new Date(
           getDateFormat(
@@ -167,10 +168,14 @@ export default function Goals() {
           )
         ),
         "incomplete",
-        openCategoryId,
-        refetch
+        openCategoryId
       );
       setTodoText("");
+
+      response &&
+        queryClient.invalidateQueries({
+          queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+        });
     }
   };
 
@@ -180,7 +185,7 @@ export default function Goals() {
     const text = updateTodo.trim();
 
     if (text && selectedTodo.id) {
-      await updateSubGoals(
+      const response = await updateSubGoals(
         selectedTodo.id,
         text,
         new Date(
@@ -190,11 +195,15 @@ export default function Goals() {
             calendarDate.date
           )
         ),
-        selectedTodo.status,
-        refetch
+        selectedTodo.status
       );
 
       setSelectedTodo({ id: null, text: "", status: "" });
+
+      response &&
+        queryClient.invalidateQueries({
+          queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+        });
     }
   };
 
@@ -224,7 +233,6 @@ export default function Goals() {
                     color={category.color}
                     status={subGoal.status}
                     text={subGoal.name}
-                    refetch={refetch}
                   />
 
                   <div className="text">
@@ -247,7 +255,6 @@ export default function Goals() {
                     subGoalId={subGoal.id}
                     text={subGoal.name}
                     status={subGoal.status}
-                    refetch={refetch}
                     date={subGoal.plan_datetime}
                   />
                 </Todo>

@@ -2,10 +2,12 @@ import { deleteSubGoals } from "api/goals";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
 import { useRef, useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import styled from "styled-components";
 import CalendarModal from "./CalendarModal";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ModalDiv = styled.div`
   position: absolute;
@@ -35,13 +37,11 @@ export default function MoreModal({
   text,
   status,
   date,
-  refetch,
 }: {
   subGoalId: number;
   text: string;
   status: string;
   date: string;
-  refetch: () => void;
 }) {
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
   const setSelectedTodo = useSetRecoilState(selectedTodoAtom);
@@ -49,6 +49,8 @@ export default function MoreModal({
   const modalRef = useRef<HTMLDivElement>(null);
   useClickOutside(modalRef, () => setIsMoreBtnClicked(false));
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const calendarDate = useRecoilValue(CalendarDateAtom);
+  const queryClient = useQueryClient();
 
   return (
     <>
@@ -61,7 +63,14 @@ export default function MoreModal({
         <ModalDiv id="modal" ref={modalRef}>
           <div
             id="delete"
-            onClick={async () => await deleteSubGoals(subGoalId, refetch)}
+            onClick={async () => {
+              const response = await deleteSubGoals(subGoalId);
+
+              response &&
+                queryClient.invalidateQueries({
+                  queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+                });
+            }}
           >
             삭제하기
           </div>
@@ -91,7 +100,6 @@ export default function MoreModal({
         id={subGoalId}
         text={text}
         status={status}
-        refetch={refetch}
       />
     </>
   );

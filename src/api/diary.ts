@@ -5,10 +5,16 @@ export interface DiaryProps {
   icon: string;
   content: Content;
   show_scope: string;
+  date: string;
 }
 
-export interface Diary extends DiaryProps {
+export interface EditDiaryProps extends DiaryProps {
   id: number;
+}
+
+export interface Diary extends EditDiaryProps {
+  created_at: string;
+  updated_at: string;
 }
 
 interface Content {
@@ -20,11 +26,12 @@ export async function createDiary({
   icon,
   content,
   show_scope,
+  date,
 }: DiaryProps) {
   try {
-    return await api
-      .post("/diaries", { title, icon, content, show_scope })
-      .then((response) => response.data);
+    await api.post("/diaries", { title, icon, content, show_scope, date });
+
+    return true;
   } catch (error) {
     console.log(error);
     return false;
@@ -32,9 +39,18 @@ export async function createDiary({
 }
 
 export async function getDiaries(userId?: number, date?: string) {
-  return await api
-    .get("/diaries", { params: { userId, date } })
-    .then((response) => response.data);
+  try {
+    const data = await api
+      .get<Diary[]>("/diaries", {
+        params: { userId, date },
+      })
+      .then((response) => response.data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 }
 
 export async function editDiary({
@@ -43,11 +59,12 @@ export async function editDiary({
   icon,
   content,
   show_scope,
-}: Diary) {
+  date,
+}: EditDiaryProps) {
   try {
-    return await api
-      .put(`/diaries/${id}`, { title, icon, content, show_scope })
-      .then((response) => response.data);
+    await api.put(`/diaries/${id}`, { title, icon, content, show_scope, date });
+
+    return true;
   } catch (error) {
     console.log(error);
     return false;
@@ -56,7 +73,9 @@ export async function editDiary({
 
 export default async function deleteDiary(diaryId: number) {
   try {
-    return await api.delete(`/diaries/${diaryId}`);
+    await api.delete(`/diaries/${diaryId}`);
+
+    return true;
   } catch (error) {
     console.log(error);
     return false;
