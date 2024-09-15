@@ -238,7 +238,11 @@ export default function FollowList() {
                   >
                     <img
                       id="profile"
-                      src={follow.image ? follow.image : baseProfile}
+                      src={
+                        follow?.image === undefined || follow.image === null
+                          ? baseProfile
+                          : `https://pwm.ssc.co.kr/${follow.image}`
+                      } 
                       alt={follow.name}
                     />
                     <div id="name">
