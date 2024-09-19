@@ -6,7 +6,7 @@ import {
 } from "api/goals";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import CategoryTitle from "./CategoryTitle";
+import CategoryTitle from "../CategoryTitle";
 import { useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
