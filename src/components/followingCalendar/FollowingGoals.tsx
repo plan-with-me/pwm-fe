@@ -12,7 +12,7 @@ import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import check from "assets/check.svg";
+import FollowingTodo from "./FollowingTodo";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -45,62 +45,6 @@ const Category = styled.div`
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
-`;
-
-const Todo = styled.div<{ $color: string }>`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-
-  .text {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  #update {
-    width: 100%;
-    input {
-      width: calc(100% - 8px);
-      border: none;
-      border-bottom: 2px solid ${(props) => props.$color};
-      padding: 4px;
-    }
-  }
-`;
-
-const Checkbox = styled.div<{ $color: string }>`
-  input {
-    display: none;
-  }
-
-  label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-      position: relative;
-      right: 15px;
-      margin-right: -10px;
-    }
-  }
-
-  label::before {
-    width: 20px;
-    height: 20px;
-    background-color: #d5d5d5;
-    content: "";
-    display: inline-block;
-    border-radius: 4px;
-    vertical-align: middle;
-  }
-
-  input:checked + label:before {
-    content: "";
-    background-color: ${(props) => props.$color};
-  }
 `;
 
 export default function Goals() {
@@ -157,40 +101,28 @@ export default function Goals() {
   }, [categories, subGoals, calendarDate]);
 
   return (
-    <Wrapper>
-      {categories &&
-        categories.map((category: TopGoals) => (
-          <Category key={category.id}>
-            {/* 종료한 목표 중 하위 목표가 있는 상위 목표만 표시 + 종료하지 않은 목표 표시 */}
-            {((sortedSubGoals[category.id] &&
-              sortedSubGoals[category.id].length > 0) ||
-              category.status === "incomplete") && (
-              <CategoryTitle color={category.color} name={category.name} />
-            )}
-            {sortedSubGoals[category.id] &&
-              sortedSubGoals[category.id].map((subGoal: SubGoals) => (
-                <Todo key={subGoal.id} $color={category.color}>
-                  <Checkbox $color={category.color}>
-                    <form>
-                      <input
-                        type="checkbox"
-                        checked={subGoal.status === "incomplete" ? false : true}
-                        readOnly
-                      />
-                      <label>
-                        {subGoal.status === "incomplete"
-                          ? false
-                          : true && <img src={check} width={10} />}
-                      </label>
-                    </form>
-                  </Checkbox>
-                  <div className="text">
-                    <span>{subGoal.name}</span>
-                  </div>
-                </Todo>
-              ))}
-          </Category>
-        ))}
-    </Wrapper>
+    <>
+      <Wrapper>
+        {categories &&
+          categories.map((category: TopGoals) => (
+            <Category key={category.id}>
+              {/* 종료한 목표 중 하위 목표가 있는 상위 목표만 표시 + 종료하지 않은 목표 표시 */}
+              {((sortedSubGoals[category.id] &&
+                sortedSubGoals[category.id].length > 0) ||
+                category.status === "incomplete") && (
+                <CategoryTitle color={category.color} name={category.name} />
+              )}
+              {sortedSubGoals[category.id] &&
+                sortedSubGoals[category.id].map((subGoal: SubGoals) => (
+                  <FollowingTodo
+                    subGoal={subGoal}
+                    category={category}
+                    key={subGoal.id}
+                  />
+                ))}
+            </Category>
+          ))}
+      </Wrapper>
+    </>
   );
 }
