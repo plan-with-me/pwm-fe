@@ -8,8 +8,6 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import CategoryTitle from "../CategoryTitle";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-import CalendarCheckbox from "./CalendarCheckbox";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
 import getDateFormat from "utils/getDateFormat";
@@ -19,6 +17,7 @@ import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import MoreModal from "./MoreModal";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
+import Checkbox from "components/userCalendar/Checkbox";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -238,6 +237,35 @@ export default function CalendarGoals() {
   const formRef = useRef<HTMLFormElement>(null);
   useClickOutside(formRef, () => setOpenCategoryId(null));
 
+  const todoCheck = async (
+    calendarId: number,
+    id: number,
+    status: string,
+    text: string
+  ) => {
+    const newStatus = status === "incomplete" ? "complete" : "incomplete";
+
+    const response = await updateSubGoals({
+      calendar_id: calendarId,
+      sub_goal_id: id,
+      name: text,
+      plan_datetime: new Date(
+        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+      ),
+      status: newStatus,
+    });
+
+    response &&
+      queryClient.invalidateQueries({
+        queryKey: [
+          "shared_calendar_subGoals",
+          calendarId,
+          calendarDate.year,
+          calendarDate.month,
+        ],
+      });
+  };
+
   return (
     <Wrapper>
       {categories &&
@@ -262,13 +290,17 @@ export default function CalendarGoals() {
             {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id} $color={category.color}>
-                  <CalendarCheckbox
-                    key={`${subGoal.id}-${subGoal.status}`}
-                    calendarId={calendarId!}
-                    id={subGoal.id}
+                  <Checkbox
                     color={category.color}
                     status={subGoal.status}
-                    text={subGoal.name}
+                    todoCheck={() =>
+                      todoCheck(
+                        calendarId!,
+                        subGoal.id,
+                        subGoal.status,
+                        subGoal.name
+                      )
+                    }
                   />
                   <div className="text">
                     {subGoal.id === selectedTodo.id ? (

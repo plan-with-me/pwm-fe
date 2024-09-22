@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import api from "../../api/config";
 import defaultProfileImage from "assets/defaultProfile.png";
 import CategoryTitle from "components/CategoryTitle";
 import Checkbox from "components/userCalendar/Checkbox";
 
-
-
-const LoungePage = styled.div`  
+const LoungePage = styled.div`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -136,9 +134,10 @@ const LoungePage = styled.div`
     margin-top: 20px;
   }
 
-
   @media (max-width: 768px) {
-    #input_div, #searched_user_div, #calendar_list_div {
+    #input_div,
+    #searched_user_div,
+    #calendar_list_div {
       width: 90%;
     }
 
@@ -156,7 +155,8 @@ const LoungePage = styled.div`
       height: 60px;
     }
 
-    #follow_button, #share_calendar_button {
+    #follow_button,
+    #share_calendar_button {
       height: 35px;
     }
 
@@ -166,7 +166,9 @@ const LoungePage = styled.div`
   }
 
   @media (max-width: 480px) {
-    #input_div, #searched_user_div, #calendar_list_div {
+    #input_div,
+    #searched_user_div,
+    #calendar_list_div {
       width: 100%;
     }
 
@@ -188,7 +190,8 @@ const LoungePage = styled.div`
       height: 50px;
     }
 
-    #follow_button, #share_calendar_button {
+    #follow_button,
+    #share_calendar_button {
       height: 30px;
     }
 
@@ -233,8 +236,8 @@ const FirstRow = styled.div`
 const ProfileImg = styled.div`
   width: 60px;
   height: 60px;
-  margin-right: 20px; 
-  flex-shrink: 0;   
+  margin-right: 20px;
+  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;
@@ -248,7 +251,7 @@ const UserInfoDiv = styled.div`
   flex-direction: column;
   text-align: left;
   flex-grow: 0;
-  
+
   span:first-child {
     font-weight: bold;
     font-size: 1.2rem;
@@ -321,25 +324,32 @@ type UserWithGoals = {
   }[];
 };
 
-
 export default function Lounge() {
-  const [searchText, setSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>("");
   const [searchResults, setSearchResults] = useState<UserWithGoals[]>([]);
 
   const handleSearch = async (searchText: string) => {
     if (searchText) {
       try {
-        const response = await api.get(`/lounge/users`, { params: { tag: searchText, limit: 20 } });
-        const results = Array.isArray(response.data) ? response.data : [response.data];
+        const response = await api.get(`/lounge/users`, {
+          params: { tag: searchText, limit: 20 },
+        });
+        const results = Array.isArray(response.data)
+          ? response.data
+          : [response.data];
 
-        const filteredResults = results.filter(user => 
-          user.top_goals && user.top_goals.some((goal: { sub_goals: any[] }) => goal.sub_goals.length > 0)
+        const filteredResults = results.filter(
+          (user) =>
+            user.top_goals &&
+            user.top_goals.some(
+              (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
+            )
         );
 
         setSearchResults(filteredResults);
         console.log(filteredResults);
       } catch (error) {
-        console.error('사용자 검색 중 오류 발생:', error);
+        console.error("사용자 검색 중 오류 발생:", error);
         setSearchResults([]);
       }
     } else {
@@ -348,18 +358,17 @@ export default function Lounge() {
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleSearch(searchText);
     }
   };
 
   useEffect(() => {
-    api.get(`/lounge/users`, { params: {  } })
-      .then(data => {
-        console.log(data.data)
-        setSearchResults(data.data)
-      })
-  }, [])
+    api.get(`/lounge/users`, { params: {} }).then((data) => {
+      console.log(data.data);
+      setSearchResults(data.data);
+    });
+  }, []);
 
   return (
     <LoungePage>
@@ -375,54 +384,53 @@ export default function Lounge() {
 
       {searchResults.length > 0 && (
         <SearchedUserDiv>
-        {searchResults.map((user) => (
-          <UserItem key={user.id}>
-            <FirstRow>
-              <ProfileImg>
-                <img
-                  src={
-                    user?.image === undefined || user.image === null
-                      ? defaultProfileImage
-                      : `https://pwm.ssc.co.kr/${user.image}`
-                  }
-                  id="searched_user_img"
-                  alt={`${user.name}'s profile`}
-                />
-              </ProfileImg>
-              <UserInfoDiv>
-                <span>{user.name}</span>
-                <span>{user.introduction}</span>
-              </UserInfoDiv>
-            </FirstRow>
-  
-            {user.top_goals && user.top_goals.length > 0 && (
-              <GoalSection>
-                <CategoryTitle
-                      color={user.top_goals[0].color}
-                      name={user.top_goals[0].name}
-                    />
-                <TagSpan>{user.top_goals[0].tags.join(", ")}</TagSpan>
-              </GoalSection>
-            )}
-  
-            {user.top_goals && user.top_goals.length > 0 && (
-              <SubGoalList>
-                {user.top_goals[0].sub_goals.map((subGoal) => (
-                  <SubGoalItem key={subGoal.id}>
-                    <Checkbox
-                      id={subGoal.id}
-                      color={user.top_goals[0].color}
-                      status={subGoal.status}
-                      text={subGoal.name}
-                    />
-                    <span>{subGoal.name}</span>
-                  </SubGoalItem>
-                ))}
-              </SubGoalList>
-            )}
-          </UserItem>
-        ))}
-      </SearchedUserDiv>
+          {searchResults.map((user) => (
+            <UserItem key={user.id}>
+              <FirstRow>
+                <ProfileImg>
+                  <img
+                    src={
+                      user?.image === undefined || user.image === null
+                        ? defaultProfileImage
+                        : `https://pwm.ssc.co.kr/${user.image}`
+                    }
+                    id="searched_user_img"
+                    alt={`${user.name}'s profile`}
+                  />
+                </ProfileImg>
+                <UserInfoDiv>
+                  <span>{user.name}</span>
+                  <span>{user.introduction}</span>
+                </UserInfoDiv>
+              </FirstRow>
+
+              {user.top_goals && user.top_goals.length > 0 && (
+                <GoalSection>
+                  <CategoryTitle
+                    color={user.top_goals[0].color}
+                    name={user.top_goals[0].name}
+                  />
+                  <TagSpan>{user.top_goals[0].tags.join(", ")}</TagSpan>
+                </GoalSection>
+              )}
+
+              {user.top_goals && user.top_goals.length > 0 && (
+                <SubGoalList>
+                  {user.top_goals[0].sub_goals.map((subGoal) => (
+                    <SubGoalItem key={subGoal.id}>
+                      <Checkbox
+                        color={user.top_goals[0].color}
+                        status={subGoal.status}
+                        disabled={true}
+                      />
+                      <span>{subGoal.name}</span>
+                    </SubGoalItem>
+                  ))}
+                </SubGoalList>
+              )}
+            </UserItem>
+          ))}
+        </SearchedUserDiv>
       )}
     </LoungePage>
   );
