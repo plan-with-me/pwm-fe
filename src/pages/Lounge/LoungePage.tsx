@@ -3,7 +3,7 @@ import styled from "styled-components";
 import api from "../../api/config";
 import defaultProfileImage from "assets/defaultProfile.png";
 import CategoryTitle from "components/CategoryTitle";
-import Checkbox from "components/userCalendar/Checkbox";
+import Checkbox from "components/Checkbox";
 
 const LoungePage = styled.div`
   width: 100%;

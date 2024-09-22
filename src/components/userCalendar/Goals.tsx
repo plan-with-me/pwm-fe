@@ -8,7 +8,7 @@ import {
 } from "api/goals";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Checkbox from "./Checkbox";
+import Checkbox from "components/Checkbox";
 import CategoryTitle from "../CategoryTitle";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
