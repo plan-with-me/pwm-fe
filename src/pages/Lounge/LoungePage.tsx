@@ -3,9 +3,13 @@ import styled from "styled-components";
 import api from "../../api/config";
 import Navbar from "components/Navbar";
 import defaultProfileImage from "assets/defaultProfile.png";
+import CategoryTitle from "components/CategoryTitle";
+import Checkbox from "components/userCalendar/Checkbox";
 
-const LoungePage = styled.div`
-  width: 100%;
+
+
+const LoungePage = styled.div`  
+width: 100%;
   margin: 0 auto;
   margin-top: 20px;
   display: flex;
@@ -189,32 +193,100 @@ const LoungePage = styled.div`
       width: 90px;
     }
   }
-
-
 `;
 
 const SearchedUserDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-top: 0px;
   width: 100%;
   max-width: 700px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   max-height: 500px;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0px 20px;
 `;
 
 const UserItem = styled.div`
+  display: flex;
+  flex-direction: column; /* 수직 정렬 */
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 80%;
+  background-color: #ffffff;
+`;
+
+const FirstRow = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
+`;
+
+const ProfileImg = styled.div`
+  width: 60px;
+  height: 60px;
+  margin-right: 20px; 
+  flex-shrink: 0;   
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+`;
+
+const UserInfoDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  flex-grow: 0;
+  
+  span:first-child {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  span:last-child {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.3rem;
+  }
+`;
+
+const GoalSection = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column; /* 수직 정렬 */
+  align-items: flex-start; /* 왼쪽 정렬 */
+`;
+
+const TagSpan = styled.span`
+  font-size: 0.9rem;
+  color: #666;
+  margin: 10px 0px;
+`;
+
+const SubGoalList = styled.ul`
+  margin-top: 0.5rem;
+  padding-left: 1rem; /* 여백 추가 */
+  display: flex;
+  flex-direction: column; /* 수직 정렬 */
+  align-items: flex-start; /* 왼쪽 정렬 */
+`;
+
+const SubGoalItem = styled.li`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-radius: 10px;
+  margin-bottom: 0.5rem;
+
+  span {
+    margin-left: 0.5rem;
+  }
 `;
 
 type UserWithGoals = {
@@ -222,6 +294,7 @@ type UserWithGoals = {
   name: string;
   image: string;
   introduction: string;
+  uid: number;
   top_goals: {
     id: number;
     name: string;
@@ -246,8 +319,6 @@ type UserWithGoals = {
 };
 
 
-
-
 export default function Lounge() {
   const [searchText, setSearchText] = useState<string>('');
   const [searchResults, setSearchResults] = useState<UserWithGoals[]>([]);
@@ -257,8 +328,13 @@ export default function Lounge() {
       try {
         const response = await api.get(`/lounge/users`, { params: { tag: searchText, limit: 20 } });
         const results = Array.isArray(response.data) ? response.data : [response.data];
-        setSearchResults(results);
-        console.log(results);
+
+        const filteredResults = results.filter(user => 
+          user.top_goals && user.top_goals.some((goal: { sub_goals: any[] }) => goal.sub_goals.length > 0)
+        );
+
+        setSearchResults(filteredResults);
+        console.log(filteredResults);
       } catch (error) {
         console.error('사용자 검색 중 오류 발생:', error);
         setSearchResults([]);
@@ -288,49 +364,54 @@ export default function Lounge() {
 
       {searchResults.length > 0 && (
         <SearchedUserDiv>
-          {searchResults.map(user => (
-            <React.Fragment key={user.id}>
-              <UserItem>
-                <img 
+        {searchResults.map((user) => (
+          <UserItem key={user.id}>
+            <FirstRow>
+              <ProfileImg>
+                <img
                   src={
                     user?.image === undefined || user.image === null
                       ? defaultProfileImage
                       : `https://pwm.ssc.co.kr/${user.image}`
                   }
-                  id="searched_user_img"  
+                  id="searched_user_img"
                   alt={`${user.name}'s profile`}
-                  style={{ width: '80px', height: '80px' }}
                 />
-                <div id="searched_user_info">
-                  <span id="searched_user_name_span">{user.name}</span>
-                  <span>{user.introduction}</span>
-                </div>
-                
-
-                {user.top_goals && user.top_goals.length > 0 && (
-                  <div id="top_goal_info">
-                    <span>Top Goal: {user.top_goals[0].name}</span>
-                    <span>Tags: {user.top_goals[0].tags.join(', ')}</span>
-                  </div>
-                )}
-
-                {user.top_goals && user.top_goals.length > 0 && (
-                  <div id="sub_goals_info">
-                    <span>Sub Goals:</span>
-                      <ul>
-                        {user.top_goals[0].sub_goals.map((subGoal) => (
-                          <li key={subGoal.id}>
-                            <span>{subGoal.name}</span>
-                            <span> - {subGoal.status === 'complete' ? '완료' : '미완료'}</span>
-                          </li>
-                        ))}
-                      </ul>
-                  </div>
-                )}
-              </UserItem>                  
-            </React.Fragment>
-          ))}
-        </SearchedUserDiv>
+              </ProfileImg>
+              <UserInfoDiv>
+                <span>{user.name}</span>
+                <span>{user.introduction}</span>
+              </UserInfoDiv>
+            </FirstRow>
+  
+            {user.top_goals && user.top_goals.length > 0 && (
+              <GoalSection>
+                <CategoryTitle
+                      color={user.top_goals[0].color}
+                      name={user.top_goals[0].name}
+                    />
+                <TagSpan>{user.top_goals[0].tags.join(", ")}</TagSpan>
+              </GoalSection>
+            )}
+  
+            {user.top_goals && user.top_goals.length > 0 && (
+              <SubGoalList>
+                {user.top_goals[0].sub_goals.map((subGoal) => (
+                  <SubGoalItem key={subGoal.id}>
+                    <Checkbox
+                      id={subGoal.id}
+                      color={user.top_goals[0].color}
+                      status={subGoal.status}
+                      text={subGoal.name}
+                    />
+                    <span>{subGoal.name}</span>
+                  </SubGoalItem>
+                ))}
+              </SubGoalList>
+            )}
+          </UserItem>
+        ))}
+      </SearchedUserDiv>
       )}
       <Navbar />
     </LoungePage>
