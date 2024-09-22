@@ -8,7 +8,7 @@ import { Diary, editDiary, getDiaries } from "api/diary";
 import { Editor } from "@tinymce/tinymce-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserInfo, UserInfo } from "api/users";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import getDateFormat from "utils/getDateFormat";
 
 const Wrapper = styled.div`
@@ -105,6 +105,7 @@ export default function Edit() {
   const [value, setValue] = useState("");
   const navigate = useNavigate();
   const params = useParams();
+  const queryClient = useQueryClient();
 
   const divRef = useRef<HTMLDivElement>(null);
   useClickOutside(divRef, () => setIsOpen(false));
@@ -138,10 +139,16 @@ export default function Edit() {
         icon: weather,
         content: { content: diaryContent },
         show_scope: scope,
+        date: getDateFormat(
+          calendarDate.year,
+          calendarDate.month,
+          calendarDate.date
+        ),
       });
       if (response) {
         alert("일기 수정이 완료됐습니다.");
         navigate("/diary");
+        queryClient.invalidateQueries({ queryKey: ["diaries", "me"] });
       } else {
         alert("에러가 발생했습니다. 다시 시도해 주세요.");
       }

@@ -5,6 +5,9 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { updateSubGoals } from "api/goals";
 import getDateFormat from "utils/getDateFormat";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
 
 interface CalendarModalProps {
   isOpen: boolean;
@@ -13,7 +16,6 @@ interface CalendarModalProps {
   id: number;
   text: string;
   status: string;
-  refetch: () => void;
 }
 
 const Wrapper = styled.div`
@@ -105,7 +107,6 @@ export default function CalendarModal({
   id,
   text,
   status,
-  refetch,
 }: CalendarModalProps) {
   const getCustomModalStyle = () => ({
     overlay: {
@@ -142,6 +143,8 @@ export default function CalendarModal({
 
   const today = new Date();
   const planDate = new Date(date);
+  const originalCalendarDate = useRecoilValue(CalendarDateAtom);
+  const queryClient = useQueryClient();
 
   const [calendarDate, setCalendarDate] = useState({
     year: planDate.getFullYear(),
@@ -190,15 +193,25 @@ export default function CalendarModal({
   };
 
   const changeDateHandler = async () => {
-    await updateSubGoals(
+    const response = await updateSubGoals(
       id,
       text,
       new Date(
         getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
       ),
-      status,
-      refetch
+      status
     );
+
+    response &&
+      queryClient.invalidateQueries({
+        queryKey: [
+          "subGoals",
+          originalCalendarDate.year,
+          originalCalendarDate.month,
+        ],
+      });
+
+    onClose();
   };
 
   return (
@@ -255,7 +268,7 @@ export default function CalendarModal({
             ))}
           </CalendarDate>
           <DateForm>
-            <input type="button" value={"확인"} onClick={changeDateHandler} />
+            <input type="button" value="확인" onClick={changeDateHandler} />
           </DateForm>
         </Wrapper>
       </Modal>

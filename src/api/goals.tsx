@@ -6,7 +6,7 @@ export type TopGoals = {
   color: string;
   status: string;
   show_scope: string;
-  tags : string[];
+  tags: string[];
 };
 
 export type SubGoals = {
@@ -50,7 +50,7 @@ export async function createTopGoals(
       color,
       status,
       show_scope,
-      tags
+      tags,
     });
     return response.data;
   } catch (error) {
@@ -106,46 +106,54 @@ export async function getSubGoalsById({
     .then((response: { data: SubGoals[] }) => response.data);
 }
 
-
 export async function createSubGoals(
   name: string,
   plan_datetime: Date,
   status: string,
-  top_goal_id: number,
-  refetch: () => void
+  top_goal_id: number
 ) {
-  api
-    .post(
+  try {
+    await api.post(
       "/sub-goals",
       { name, plan_datetime, status },
       { params: { top_goal_id } }
-    )
-    .then(() => {
-      refetch();
-    });
+    );
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
-export async function deleteSubGoals(sub_goal_id: number, refetch: () => void) {
-  api.delete(`/sub-goals/${sub_goal_id}`).then(() => refetch());
+export async function deleteSubGoals(sub_goal_id: number) {
+  try {
+    await api.delete(`/sub-goals/${sub_goal_id}`);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
 export async function updateSubGoals(
   sub_goal_id: number,
   name: string,
   plan_datetime: Date,
-  status: string,
-  refetch: () => void
+  status: string
 ) {
-  api
-    .put(`/sub-goals/${sub_goal_id}`, { name, plan_datetime, status })
-    .then(() => {
-      // console.log(response.data);
-      refetch();
-    });
+  try {
+    await api.put(`/sub-goals/${sub_goal_id}`, { name, plan_datetime, status });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
 export async function getAchievementRates(userId?: number) {
-  return api
+  return await api
     .get("/top-goals/achievement-rates", { params: { userId } })
     .then((response: { data: Achievement[] }) => response.data);
 }

@@ -7,7 +7,7 @@ import {
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import CategoryTitle from "../CategoryTitle";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import CalendarCheckbox from "./CalendarCheckbox";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -109,6 +109,7 @@ export default function CalendarGoals() {
   >({});
   const [calendarId, setCalendarId] = useState<number | null>(null);
   const params = useParams<{ calendar_id: string }>();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (params.calendar_id) {
@@ -121,7 +122,7 @@ export default function CalendarGoals() {
     queryFn: async () => await getTopGoals(calendarId!),
   });
 
-  const { data: subGoals, refetch } = useQuery<SubGoals[]>({
+  const { data: subGoals } = useQuery<SubGoals[]>({
     queryKey: [
       "shared_calendar_subGoals",
       calendarId,
@@ -165,7 +166,7 @@ export default function CalendarGoals() {
     const text = todoText.trim();
 
     if (text && openCategoryId) {
-      await createSubGoals(
+      const response = await createSubGoals(
         text,
         new Date(
           getDateFormat(
@@ -176,10 +177,19 @@ export default function CalendarGoals() {
         ),
         "incomplete",
         calendarId!,
-        openCategoryId,
-        refetch
+        openCategoryId
       );
       setTodoText("");
+
+      response &&
+        queryClient.invalidateQueries({
+          queryKey: [
+            "shared_calendar_subGoals",
+            calendarId,
+            calendarDate.year,
+            calendarDate.month,
+          ],
+        });
     }
   };
 
@@ -189,13 +199,13 @@ export default function CalendarGoals() {
     }
   }, [selectedTodo]);
 
-  // 하위 목표 등록
+  // 하위 목표 수정
   const todoUpdateSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const text = updateTodo.trim();
 
     if (text && selectedTodo.id && calendarId) {
-      await updateSubGoals({
+      const response = await updateSubGoals({
         sub_goal_id: selectedTodo.id,
         name: text,
         plan_datetime: new Date(
@@ -207,10 +217,19 @@ export default function CalendarGoals() {
         ),
         calendar_id: calendarId,
         status: selectedTodo.status,
-        refetch,
       });
 
       setSelectedTodo({ id: null, text: "", status: "" });
+
+      response &&
+        queryClient.invalidateQueries({
+          queryKey: [
+            "shared_calendar_subGoals",
+            calendarId,
+            calendarDate.year,
+            calendarDate.month,
+          ],
+        });
     }
   };
 
@@ -247,7 +266,6 @@ export default function CalendarGoals() {
                     color={category.color}
                     status={subGoal.status}
                     text={subGoal.name}
-                    refetch={refetch}
                   />
                   <div className="text">
                     {subGoal.id === selectedTodo.id ? (
@@ -271,7 +289,6 @@ export default function CalendarGoals() {
                     text={subGoal.name}
                     status={subGoal.status}
                     date={subGoal.plan_datetime}
-                    refetch={refetch}
                   />
                 </Todo>
               ))}
