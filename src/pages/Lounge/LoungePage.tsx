@@ -9,12 +9,16 @@ import Checkbox from "components/userCalendar/Checkbox";
 
 
 const LoungePage = styled.div`  
-width: 100%;
-  margin: 0 auto;
-  margin-top: 20px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  margin: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   #menuImg {
     margin-right: 180px;
@@ -197,15 +201,15 @@ width: 100%;
 
 const SearchedUserDiv = styled.div`
   display: flex;
+  height: 100%;
   flex-direction: column;
   gap: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
   margin-top: 0px;
   width: 100%;
   max-width: 700px;
   align-items: center;
-  max-height: 500px;
-  overflow-y: auto;
-  overflow-x: hidden;
   box-sizing: border-box;
   padding: 0px 20px;
 `;
@@ -421,7 +425,6 @@ export default function Lounge() {
         ))}
       </SearchedUserDiv>
       )}
-      <Navbar />
     </LoungePage>
   );
 }
