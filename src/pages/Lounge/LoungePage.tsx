@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import api from "../../api/config";
-import Navbar from "components/Navbar";
 import defaultProfileImage from "assets/defaultProfile.png";
 import CategoryTitle from "components/CategoryTitle";
 import Checkbox from "components/userCalendar/Checkbox";
