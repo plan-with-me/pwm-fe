@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import api from "../../api/config";
 import Navbar from "components/Navbar";
@@ -349,6 +349,14 @@ export default function Lounge() {
       handleSearch(searchText);
     }
   };
+
+  useEffect(() => {
+    api.get(`/lounge/users`, { params: {  } })
+      .then(data => {
+        console.log(data.data)
+        setSearchResults(data.data)
+      })
+  }, [])
 
   return (
     <LoungePage>
