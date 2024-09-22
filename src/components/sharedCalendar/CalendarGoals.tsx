@@ -17,7 +17,7 @@ import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import MoreModal from "./MoreModal";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
-import Checkbox from "components/userCalendar/Checkbox";
+import Checkbox from "components/Checkbox";
 
 const Wrapper = styled.div`
   width: 400px;
