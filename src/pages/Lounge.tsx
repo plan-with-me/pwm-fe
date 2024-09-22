@@ -9,7 +9,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin: 20px;
+  margin-bottom : 120px;
 `;
 
 const ToggleButton = styled.button`
