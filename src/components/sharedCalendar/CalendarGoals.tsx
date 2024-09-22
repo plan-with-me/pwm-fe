@@ -120,6 +120,7 @@ export default function CalendarGoals() {
   const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["shared_calendar_category", calendarId],
     queryFn: async () => await getTopGoals(calendarId!),
+    refetchInterval: 1000,
   });
 
   const { data: subGoals } = useQuery<SubGoals[]>({
@@ -136,6 +137,7 @@ export default function CalendarGoals() {
           .toString()
           .padStart(2, "0")}`,
       }),
+    refetchInterval: 1000,
   });
 
   useEffect(() => {
@@ -261,6 +263,7 @@ export default function CalendarGoals() {
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id} $color={category.color}>
                   <CalendarCheckbox
+                    key={`${subGoal.id}-${subGoal.status}`}
                     calendarId={calendarId!}
                     id={subGoal.id}
                     color={category.color}

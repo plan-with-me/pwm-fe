@@ -62,11 +62,13 @@ export default function CalendarPage() {
           .toString()
           .padStart(2, "0")}`,
       }),
+    refetchInterval: 1000,
   });
 
   const { data: categories } = useQuery<TopGoals[]>({
     queryKey: ["shared_calendar_category", calendarId],
     queryFn: async () => await getTopGoals(calendarId!),
+    refetchInterval: 1000,
   });
 
   useEffect(() => {
@@ -79,12 +81,14 @@ export default function CalendarPage() {
     queryKey: ["calendarInfo", calendarId],
     queryFn: async () => await getCalendar(calendarId!),
     enabled: !!calendarId,
+    refetchInterval: 1000,
   });
 
   const { data: permission } = useQuery<Permission>({
     queryKey: ["permission", params.calendar_id],
     queryFn: async () =>
       await getCalendarPermission(Number(params.calendar_id)),
+    refetchInterval: 1000,
   });
 
   console.log(permission);
