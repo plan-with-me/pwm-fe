@@ -1,6 +1,6 @@
 import { UserInfo, getUserInfoById } from "api/users";
 import Center from "components/Center";
-import FollowingGoals from "components/FollowingGoals";
+import FollowingGoals from "components/followingCalendar/FollowingGoals";
 import Navbar from "components/Navbar";
 import Sidebar from "components/sidebar/Sidebar";
 import { useQuery } from "@tanstack/react-query";
