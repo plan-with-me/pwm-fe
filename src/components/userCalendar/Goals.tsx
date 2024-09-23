@@ -8,7 +8,7 @@ import {
 } from "api/goals";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Checkbox from "./Checkbox";
+import Checkbox from "components/Checkbox";
 import CategoryTitle from "../CategoryTitle";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
@@ -210,6 +210,24 @@ export default function Goals() {
   const formRef = useRef<HTMLFormElement>(null);
   useClickOutside(formRef, () => setOpenCategoryId(null));
 
+  const todoCheck = async (id: number, text: string, status: string) => {
+    const newStatus = status === "incomplete" ? "complete" : "incomplete";
+    const response = await updateSubGoals(
+      id,
+      text,
+      new Date(
+        getDateFormat(calendarDate.year, calendarDate.month, calendarDate.date)
+      ),
+      newStatus
+    );
+
+    if (response) {
+      queryClient.invalidateQueries({
+        queryKey: ["subGoals", calendarDate.year, calendarDate.month],
+      });
+    }
+  };
+
   return (
     <Wrapper>
       {categories &&
@@ -229,10 +247,11 @@ export default function Goals() {
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
                 <Todo key={subGoal.id} $color={category.color}>
                   <Checkbox
-                    id={subGoal.id}
                     color={category.color}
                     status={subGoal.status}
-                    text={subGoal.name}
+                    todoCheck={() =>
+                      todoCheck(subGoal.id, subGoal.name, subGoal.status)
+                    }
                   />
 
                   <div className="text">
