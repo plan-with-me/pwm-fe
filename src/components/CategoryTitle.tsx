@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import PinIcon from "./PinIcon";
 
-const Title = styled.div<{ $color: string }>`
+const Title = styled.div`
   width: fit-content;
   background-color: #d5d5d5;
   font-size: 20px;
@@ -10,13 +11,6 @@ const Title = styled.div<{ $color: string }>`
   display: flex;
   align-items: center;
   gap: 8px;
-
-  div {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: ${(props) => props.$color || "black"};
-  }
 `;
 
 export default function CategoryTitle({
@@ -29,8 +23,8 @@ export default function CategoryTitle({
   onClick?: () => void;
 }) {
   return (
-    <Title $color={color} onClick={onClick}>
-      <div />
+    <Title onClick={onClick}>
+      <PinIcon innerColor={color} />
       <span>{name}</span>
     </Title>
   );
