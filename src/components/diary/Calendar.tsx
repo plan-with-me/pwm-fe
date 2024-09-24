@@ -156,9 +156,9 @@ export default function Calendar() {
   const getWeatherIcon = (date: number) => {
     const diaryForDate = diaries?.find(
       (diary) =>
-        new Date(diary.created_at).getFullYear() === calendarDate.year &&
-        new Date(diary.created_at).getMonth() + 1 === calendarDate.month &&
-        new Date(diary.created_at).getDate() === date
+        new Date(diary.date).getFullYear() === calendarDate.year &&
+        new Date(diary.date).getMonth() + 1 === calendarDate.month &&
+        new Date(diary.date).getDate() === date
     );
     return diaryForDate ? diaryForDate.icon : null;
   };
