@@ -254,15 +254,24 @@ export default function Calendar({
             <span>
               {calendarDate.year}년 {calendarDate.month}월
             </span>
-            <div>
-              {location.pathname === "/home" && (
+            {location.pathname === "/home" && (
+              <div>
                 <img
                   src={weather}
                   width={36}
                   onClick={() => navigate("/diary")}
                 />
-              )}
-            </div>
+              </div>
+            )}
+            {location.pathname.startsWith("/following") && (
+              <div>
+                <img
+                  src={weather}
+                  width={36}
+                  onClick={() => navigate("diary")}
+                />
+              </div>
+            )}
           </div>
           <div className="arrow">
             <img src={left_arrow} onClick={goToPreviousMonth} width={12} />
