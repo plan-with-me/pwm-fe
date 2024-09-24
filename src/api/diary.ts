@@ -38,11 +38,11 @@ export async function createDiary({
   }
 }
 
-export async function getDiaries(userId?: number, date?: string) {
+export async function getDiaries(user_id?: number, date?: string) {
   try {
     const data = await api
       .get<Diary[]>("/diaries", {
-        params: { userId, date },
+        params: { user_id, date },
       })
       .then((response) => response.data);
 
