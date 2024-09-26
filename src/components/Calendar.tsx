@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import right_arrow from "assets/angle-right-solid.svg";
 import left_arrow from "assets/angle-left-solid.svg";
+import heart from "assets/heart.svg";
 import { useRecoilState } from "recoil";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
-import { SubGoals, TopGoals } from "api/goals";
+import { Reaction, SubGoals, TopGoals } from "api/goals";
 import { useEffect, useState } from "react";
 import check from "assets/check.svg";
 import weather from "assets/weather/weather1.png";
@@ -20,7 +21,12 @@ const DateController = styled.div`
     align-items: center;
     gap: 8px;
 
-    div {
+    .heart {
+      display: flex;
+      gap: 4px;
+    }
+
+    .weather {
       width: 16px;
       height: 16px;
       display: flex;
@@ -206,6 +212,7 @@ export default function Calendar({
 
   const [todos, setTodos] = useState(new Map());
   const [colors, setColors] = useState(new Map());
+  const [reaction, setReaction] = useState<Reaction[]>([]);
 
   useEffect(() => {
     if (subGoals && categories) {
@@ -241,6 +248,9 @@ export default function Calendar({
 
       setTodos(newTodos);
       setColors(newColors);
+
+      const newReactions = subGoals.flatMap((item) => item.reactions);
+      setReaction(newReactions);
     }
   }, [categories, subGoals]);
 
@@ -254,8 +264,12 @@ export default function Calendar({
             <span>
               {calendarDate.year}년 {calendarDate.month}월
             </span>
+            <div className="heart">
+              <img src={heart} width={16} />
+              {reaction.length}
+            </div>
             {location.pathname === "/home" && (
-              <div>
+              <div className="weather">
                 <img
                   src={weather}
                   width={36}
