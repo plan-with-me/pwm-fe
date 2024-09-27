@@ -13,6 +13,8 @@ import getDateFormat from "utils/getDateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import FollowingTodo from "./FollowingTodo";
+import EmojiContainer from "components/EmojiContainer";
+import { ReactionType } from "api/reaction";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -114,11 +116,18 @@ export default function Goals() {
               )}
               {sortedSubGoals[category.id] &&
                 sortedSubGoals[category.id].map((subGoal: SubGoals) => (
-                  <FollowingTodo
-                    subGoal={subGoal}
-                    category={category}
-                    key={subGoal.id}
-                  />
+                  <>
+                    <FollowingTodo
+                      subGoal={subGoal}
+                      category={category}
+                      key={subGoal.id}
+                    />
+                    <EmojiContainer
+                      reactions={subGoal.reactions.filter(
+                        (item) => item.type === ReactionType.EMOTICON
+                      )}
+                    />
+                  </>
                 ))}
             </Category>
           ))}
