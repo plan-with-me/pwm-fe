@@ -1,5 +1,11 @@
 import api from "./config";
 
+export type Reaction = {
+  type: string;
+  content: string;
+  count: number;
+};
+
 export type TopGoals = {
   id: number;
   name: string;
@@ -15,6 +21,7 @@ export type SubGoals = {
   name: string;
   plan_datetime: string;
   status: string;
+  reactions: Reaction[];
 };
 
 export type Achievement = {

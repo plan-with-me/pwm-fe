@@ -18,6 +18,8 @@ import MoreModal from "./MoreModal";
 import { selectedTodoAtom } from "store/SelectedTodoAtom";
 import more from "assets/more.svg";
 import useClickOutside from "hooks/useClickOutside";
+import EmojiContainer from "components/EmojiContainer";
+import { ReactionType } from "api/reaction";
 
 const Wrapper = styled.div`
   width: 400px;
@@ -245,38 +247,46 @@ export default function Goals() {
             )}
             {sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].map((subGoal: SubGoals) => (
-                <Todo key={subGoal.id} $color={category.color}>
-                  <Checkbox
-                    color={category.color}
-                    status={subGoal.status}
-                    todoCheck={() =>
-                      todoCheck(subGoal.id, subGoal.name, subGoal.status)
-                    }
-                  />
+                <>
+                  <Todo key={subGoal.id} $color={category.color}>
+                    <Checkbox
+                      color={category.color}
+                      status={subGoal.status}
+                      todoCheck={() =>
+                        todoCheck(subGoal.id, subGoal.name, subGoal.status)
+                      }
+                    />
 
-                  <div className="text">
-                    {subGoal.id === selectedTodo.id ? (
-                      <form id="update" onSubmit={todoUpdateSubmit}>
-                        <input
-                          placeholder="할 일 입력"
-                          value={updateTodo}
-                          onChange={(event) => {
-                            setUpdateTodo(event.target.value);
-                          }}
-                          autoFocus={true}
-                        />
-                      </form>
-                    ) : (
-                      <span>{subGoal.name}</span>
+                    <div className="text">
+                      {subGoal.id === selectedTodo.id ? (
+                        <form id="update" onSubmit={todoUpdateSubmit}>
+                          <input
+                            placeholder="할 일 입력"
+                            value={updateTodo}
+                            onChange={(event) => {
+                              setUpdateTodo(event.target.value);
+                            }}
+                            autoFocus={true}
+                          />
+                        </form>
+                      ) : (
+                        <span>{subGoal.name}</span>
+                      )}
+                    </div>
+
+                    <MoreModal
+                      subGoalId={subGoal.id}
+                      text={subGoal.name}
+                      status={subGoal.status}
+                      date={subGoal.plan_datetime}
+                    />
+                  </Todo>
+                  <EmojiContainer
+                    reactions={subGoal.reactions.filter(
+                      (item) => item.type === ReactionType.EMOTICON
                     )}
-                  </div>
-                  <MoreModal
-                    subGoalId={subGoal.id}
-                    text={subGoal.name}
-                    status={subGoal.status}
-                    date={subGoal.plan_datetime}
                   />
-                </Todo>
+                </>
               ))}
             {openCategoryId === category.id && (
               <Todo $color={category.color}>
