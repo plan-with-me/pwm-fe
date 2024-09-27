@@ -10,6 +10,7 @@ const Emoji = styled.div`
   font-size: 20px;
   display: flex;
   align-items: center;
+  gap: 4px;
 
   .count {
     font-size: 16px;
