@@ -266,7 +266,7 @@ export default function Calendar({
             </span>
             <div className="heart">
               <img src={heart} width={16} />
-              {reaction.length}
+              {reaction.reduce((a: number, b) => a + b.count, 0)}
             </div>
             {location.pathname === "/home" && (
               <div className="weather">
