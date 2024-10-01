@@ -1,12 +1,16 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { postReaction, ReactionType } from "api/reaction";
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
+import { useRecoilValue } from "recoil";
+import { CalendarDateAtom } from "store/CalendarDateAtom";
 import styled from "styled-components";
 
 interface CommentModalProps {
   isOpen: boolean;
   onClose: () => void;
   subGoalId: number;
+  calendarId: number;
 }
 
 const Comment = styled.div`
@@ -42,6 +46,7 @@ export default function CommentModal({
   isOpen,
   onClose,
   subGoalId,
+  calendarId,
 }: CommentModalProps) {
   const getCustomModalStyle = () => ({
     overlay: {
@@ -65,6 +70,8 @@ export default function CommentModal({
   });
 
   const [modalStyle, setModalStyle] = useState(getCustomModalStyle());
+  const calendarDate = useRecoilValue(CalendarDateAtom);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleResize = () => {
@@ -83,6 +90,9 @@ export default function CommentModal({
     );
     console.log(response);
 
+    queryClient.invalidateQueries({
+      queryKey: ["subGoals", calendarId, calendarDate.year, calendarDate.month],
+    });
     onClose();
   }
 

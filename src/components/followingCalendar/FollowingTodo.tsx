@@ -63,9 +63,11 @@ const Checkbox = styled.div<{ $color: string }>`
 export default function FollowingTodo({
   subGoal,
   category,
+  calendarId,
 }: {
   subGoal: SubGoals;
   category: TopGoals;
+  calendarId: number;
 }) {
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
@@ -94,6 +96,7 @@ export default function FollowingTodo({
         isOpen={isCalendarModalOpen}
         onClose={() => setIsCalendarModalOpen(false)}
         subGoalId={subGoal.id}
+        calendarId={calendarId}
       ></CommentModal>
     </>
   );
