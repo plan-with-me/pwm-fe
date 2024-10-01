@@ -120,6 +120,7 @@ export default function Goals() {
                     <FollowingTodo
                       subGoal={subGoal}
                       category={category}
+                      calendarId={calendarId!}
                       key={subGoal.id}
                     />
                     <EmojiContainer
