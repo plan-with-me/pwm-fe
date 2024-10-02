@@ -22,6 +22,7 @@ import { RecoilRoot } from "recoil";
 import CalendarUsers from "pages/Calendar/CalendarUsers";
 import DiaryPage from "pages/DiaryPage";
 import FollowingDiary from "pages/FollowingDiary";
+import SearchUser from "pages/SearchUser";
 
 const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
   },
   { path: "/calendar/:calendar_id/s-create-tgoal", element: <SCreateTgoals /> },
   { path: "/calendar/:calendar_id/setting/users", element: <CalendarUsers /> },
+  { path: "/search/:id", element:<SearchUser/>}
 ]);
 
 const queryClient = new QueryClient();

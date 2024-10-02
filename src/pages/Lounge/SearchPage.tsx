@@ -271,6 +271,7 @@ export default function Lounge() {
       try {
         const response = await api.get(`/users`, { params: { email: searchText, limit: 20 } });
         setSearchResults(Array.isArray(response.data) ? response.data : [response.data]);
+        console.log(response.data)
       } catch (error) {
         console.error('사용자 검색 중 오류 발생:', error);
         setSearchResults([]);
@@ -291,6 +292,18 @@ export default function Lounge() {
       ...prevState,
       [userId]: !prevState[userId]
     }));
+  };
+
+  const handleFollow = async (userId:number) => {
+    if (userId) {
+      try {
+        await api.post(`/users/${userId}/follows`);
+        alert("팔로우 요청이 성공적으로 완료되었습니다.");
+      } catch (error) {
+        console.error("팔로우 요청 중 오류 발생:", error);
+        alert("팔로우 요청에 실패했습니다.");
+      }
+    }
   };
 
   const handleShareCalendar = async (calendarId: number, userId: number) => {
@@ -335,7 +348,7 @@ export default function Lounge() {
                   <span>{user.uid}</span>
                   <span id="searched_user_introduction_span">{user.introduction}</span>
                 </div>
-                <button id="follow_button"> 팔로우 </button>
+                <button id="follow_button" onClick={()=>handleFollow(user.id)}> 팔로우 </button>
                 <button id="share_calendar_button" onClick={() => toggleCalendarList(user.id)}>
                   공유 달력 추가
                 </button>

@@ -4,6 +4,7 @@ import api from "../../api/config";
 import defaultProfileImage from "assets/defaultProfile.png";
 import CategoryTitle from "components/CategoryTitle";
 import Checkbox from "components/Checkbox";
+import { useNavigate } from 'react-router-dom';
 
 const LoungePage = styled.div`
   width: 100%;
@@ -327,7 +328,11 @@ type UserWithGoals = {
 export default function Lounge() {
   const [searchText, setSearchText] = useState<string>("");
   const [searchResults, setSearchResults] = useState<UserWithGoals[]>([]);
-
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true); // 더 로드할 데이터가 있는지 여부
+  const navigate = useNavigate();
+  
   const handleSearch = async (searchText: string) => {
     if (searchText) {
       try {
@@ -337,15 +342,22 @@ export default function Lounge() {
         const results = Array.isArray(response.data)
           ? response.data
           : [response.data];
-
-        const filteredResults = results.filter(
-          (user) =>
-            user.top_goals &&
-            user.top_goals.some(
-              (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
-            )
-        );
-
+  
+        const filteredResults = results
+          .filter(
+            (user) =>
+              user.top_goals &&
+              user.top_goals.some(
+                (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
+              )
+          )
+          .map((user) => {
+            return {
+              ...user,
+              top_goals: user.top_goals.slice(0, 1),
+            };
+          });
+  
         setSearchResults(filteredResults);
         console.log(filteredResults);
       } catch (error) {
@@ -356,10 +368,59 @@ export default function Lounge() {
       setSearchResults([]);
     }
   };
+  
+  const loadMoreData = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get(`/lounge/users`, {
+        params: { tag: searchText, limit: 20, page },
+      });
+  
+      const results = Array.isArray(response.data) ? response.data : [response.data];
+  
+      const filteredResults = results
+        .filter(
+          (user) =>
+            user.top_goals &&
+            user.top_goals.some(
+              (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
+            )
+        )
+        .map((user) => {
+          return {
+            ...user,
+            top_goals: user.top_goals.slice(0, 1),
+          };
+        });
+  
+      if (filteredResults.length === 0) {
+        setHasMore(false);
+      } else {
+        setSearchResults((prevResults) => [...prevResults, ...filteredResults]);
+        setPage((prevPage) => prevPage + 1);
+      }
+    } catch (error) {
+      console.error("사용자 검색 중 오류 발생:", error);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSearch(searchText);
+    }
+  };
+
+
+  const handleScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const scrollHeight = document.documentElement.scrollHeight;
+  
+    if (scrollHeight - scrollTop <= windowHeight + 100 && hasMore && !loading) {
+      loadMoreData();
     }
   };
 
@@ -369,6 +430,15 @@ export default function Lounge() {
       setSearchResults(data.data);
     });
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+  
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [searchText, hasMore, loading, page]);
+  
 
   return (
     <LoungePage>
@@ -385,7 +455,7 @@ export default function Lounge() {
       {searchResults.length > 0 && (
         <SearchedUserDiv>
           {searchResults.map((user) => (
-            <UserItem key={user.id}>
+            <UserItem key={user.id} onClick={() => navigate(`/search/${user.id}`)}>
               <FirstRow>
                 <ProfileImg>
                   <img
