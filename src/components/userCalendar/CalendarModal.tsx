@@ -216,7 +216,12 @@ export default function CalendarModal({
 
   return (
     <>
-      <Modal isOpen={isOpen} style={modalStyle} onRequestClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        ariaHideApp={false}
+        style={modalStyle}
+        onRequestClose={onClose}
+      >
         <Wrapper>
           <DateController>
             <div id="title">날짜 바꾸기</div>

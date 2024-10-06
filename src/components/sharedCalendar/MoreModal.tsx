@@ -8,6 +8,7 @@ import styled from "styled-components";
 import SharedCalendarModal from "./CalendarModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { CalendarDateAtom } from "store/CalendarDateAtom";
+import CopySubGoalModal from "./CopySubGoalModal";
 
 const ModalDiv = styled.div`
   position: absolute;
@@ -51,6 +52,7 @@ export default function MoreModal({
   const modalRef = useRef<HTMLDivElement>(null);
   useClickOutside(modalRef, () => setIsMoreBtnClicked(false));
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const calendarDate = useRecoilValue(CalendarDateAtom);
   const queryClient = useQueryClient();
 
@@ -96,6 +98,14 @@ export default function MoreModal({
           >
             날짜 바꾸기
           </div>
+          <div
+            onClick={() => {
+              setIsGoalModalOpen(true);
+              setIsMoreBtnClicked(false);
+            }}
+          >
+            내 달력에 추가
+          </div>
         </ModalDiv>
       )}
       <SharedCalendarModal
@@ -106,6 +116,12 @@ export default function MoreModal({
         id={subGoalId}
         text={text}
         status={status}
+      />
+      <CopySubGoalModal
+        isOpen={isGoalModalOpen}
+        onClose={() => setIsGoalModalOpen(false)}
+        calendarId={calendarId}
+        id={subGoalId}
       />
     </>
   );
