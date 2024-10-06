@@ -98,7 +98,12 @@ export default function CommentModal({
 
   return (
     <>
-      <Modal isOpen={isOpen} style={modalStyle} onRequestClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        ariaHideApp={false}
+        style={modalStyle}
+        onRequestClose={onClose}
+      >
         <Comment>
           <EmojiContainer>
             {emojiList.map((codePoint, index) => (

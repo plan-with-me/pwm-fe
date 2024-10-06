@@ -41,6 +41,26 @@ export async function getSubGoals({
     .then((response: { data: SubGoals[] }) => response.data);
 }
 
+export async function copySubGoal({
+  calendar_id,
+  sub_goal_id,
+  my_top_goal_id,
+}: {
+  calendar_id: number;
+  sub_goal_id: number;
+  my_top_goal_id: number;
+}) {
+  try {
+    await api.post(
+      `/calendars/${calendar_id}/sub-goals/${sub_goal_id}?my_top_goal_id=${my_top_goal_id}`
+    );
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function updateSubGoals({
   calendar_id,
   sub_goal_id,
