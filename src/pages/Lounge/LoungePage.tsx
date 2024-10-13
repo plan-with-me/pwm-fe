@@ -296,6 +296,24 @@ const SubGoalItem = styled.li`
   }
 `;
 
+const RecommendedTags = styled.div`
+  
+`;
+
+const TagButton = styled.button`
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
 type UserWithGoals = {
   id: number;
   name: string;
@@ -330,9 +348,36 @@ export default function Lounge() {
   const [searchResults, setSearchResults] = useState<UserWithGoals[]>([]);
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true); // 더 로드할 데이터가 있는지 여부
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const navigate = useNavigate();
-  
+  const [randomTags, setRandomTags] = useState<string[]>([]);
+
+  const fetchRandomTags = async () => {
+    try {
+      const response = await api.get('/lounge/random-tags');
+      console.log("API 응답:", response.data);
+      
+      if (response.data && Array.isArray(response.data.tags)) {
+        setRandomTags(response.data.tags);
+      } else {
+        console.error("예상치 못한 데이터 형식:", response.data);
+        setRandomTags([]);
+      }
+    } catch (error) {
+      console.error("랜덤 태그 가져오기 실패:", error);
+      setRandomTags([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchRandomTags();
+  }, []);
+
+  const handleTagClick = (tag: string) => {
+    setSearchText(tag);
+    handleSearch(tag);
+  };
+
   const handleSearch = async (searchText: string) => {
     if (searchText) {
       try {
@@ -386,17 +431,22 @@ export default function Lounge() {
               (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
             )
         )
-        .map((user) => {
-          return {
-            ...user,
-            top_goals: user.top_goals.slice(0, 1),
-          };
-        });
+        .map((user) => ({
+          ...user,
+          top_goals: user.top_goals.slice(0, 1),
+        }));
   
       if (filteredResults.length === 0) {
         setHasMore(false);
       } else {
-        setSearchResults((prevResults) => [...prevResults, ...filteredResults]);
+        // 중복 제거 로직
+        const uniqueResults = [
+          ...new Map(
+            [...searchResults, ...filteredResults].map(item => [item.id, item])
+          ).values()
+        ];
+  
+        setSearchResults(uniqueResults);
         setPage((prevPage) => prevPage + 1);
       }
     } catch (error) {
@@ -406,6 +456,7 @@ export default function Lounge() {
       setLoading(false);
     }
   };
+  
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -423,13 +474,6 @@ export default function Lounge() {
       loadMoreData();
     }
   };
-
-  useEffect(() => {
-    api.get(`/lounge/users`, { params: {} }).then((data) => {
-      console.log(data.data);
-      setSearchResults(data.data);
-    });
-  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -451,6 +495,14 @@ export default function Lounge() {
           placeholder=" 🔍 찾으시는 피드의 태그를 검색하세요."
         />
       </div>
+      <RecommendedTags>
+        <h3>추천 태그:</h3>
+        {randomTags.map((tag, index) => (
+          <TagButton key={index} onClick={() => handleTagClick(tag)}>
+            {tag}
+          </TagButton>
+        ))}
+      </RecommendedTags>
 
       {searchResults.length > 0 && (
         <SearchedUserDiv>
