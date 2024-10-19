@@ -233,81 +233,83 @@ export default function Goals() {
   return (
     <Wrapper>
       {categories &&
-        categories.map((category: TopGoals) => (
-          <Category key={category.id}>
-            {/* 종료한 목표 중 하위 목표가 있는 상위 목표만 표시 + 종료하지 않은 목표 표시 */}
-            {((sortedSubGoals[category.id] &&
+        categories.map(
+          (category: TopGoals) =>
+            ((sortedSubGoals[category.id] &&
               sortedSubGoals[category.id].length > 0) ||
               category.status === "incomplete") && (
-              <CategoryTitle
-                onClick={() => setOpenCategoryId(category.id)}
-                color={category.color}
-                name={category.name}
-              />
-            )}
-            {sortedSubGoals[category.id] &&
-              sortedSubGoals[category.id].map((subGoal: SubGoals) => (
-                <>
-                  <Todo key={subGoal.id} $color={category.color}>
-                    <Checkbox
-                      color={category.color}
-                      status={subGoal.status}
-                      todoCheck={() =>
-                        todoCheck(subGoal.id, subGoal.name, subGoal.status)
-                      }
-                    />
+              <Category key={category.id}>
+                {/* 종료한 목표 중 하위 목표가 있는 상위 목표만 표시 + 종료하지 않은 목표 표시 */}
+                <CategoryTitle
+                  onClick={() => setOpenCategoryId(category.id)}
+                  color={category.color}
+                  name={category.name}
+                />
 
-                    <div className="text">
-                      {subGoal.id === selectedTodo.id ? (
-                        <form id="update" onSubmit={todoUpdateSubmit}>
-                          <input
-                            placeholder="할 일 입력"
-                            value={updateTodo}
-                            onChange={(event) => {
-                              setUpdateTodo(event.target.value);
-                            }}
-                            autoFocus={true}
-                          />
-                        </form>
-                      ) : (
-                        <span>{subGoal.name}</span>
-                      )}
-                    </div>
+                {sortedSubGoals[category.id] &&
+                  sortedSubGoals[category.id].map((subGoal: SubGoals) => (
+                    <>
+                      <Todo key={subGoal.id} $color={category.color}>
+                        <Checkbox
+                          color={category.color}
+                          status={subGoal.status}
+                          todoCheck={() =>
+                            todoCheck(subGoal.id, subGoal.name, subGoal.status)
+                          }
+                        />
 
-                    <MoreModal
-                      subGoalId={subGoal.id}
-                      text={subGoal.name}
-                      status={subGoal.status}
-                      date={subGoal.plan_datetime}
-                    />
+                        <div className="text">
+                          {subGoal.id === selectedTodo.id ? (
+                            <form id="update" onSubmit={todoUpdateSubmit}>
+                              <input
+                                placeholder="할 일 입력"
+                                value={updateTodo}
+                                onChange={(event) => {
+                                  setUpdateTodo(event.target.value);
+                                }}
+                                autoFocus={true}
+                              />
+                            </form>
+                          ) : (
+                            <span>{subGoal.name}</span>
+                          )}
+                        </div>
+
+                        <MoreModal
+                          subGoalId={subGoal.id}
+                          text={subGoal.name}
+                          status={subGoal.status}
+                          date={subGoal.plan_datetime}
+                        />
+                      </Todo>
+                      <EmojiContainer
+                        reactions={subGoal.reactions.filter(
+                          (item) => item.type === ReactionType.EMOTICON
+                        )}
+                      />
+                    </>
+                  ))}
+                {openCategoryId === category.id && (
+                  <Todo $color={category.color}>
+                    <Box />
+                    <WriteForm
+                      onSubmit={todoSubmit}
+                      $color={category.color}
+                      ref={formRef}
+                    >
+                      <input
+                        placeholder="할 일 입력"
+                        value={todoText}
+                        onChange={(event) => setTodoText(event.target.value)}
+                        autoFocus={true}
+                      />
+                    </WriteForm>
+                    <img src={more} width={20} />
                   </Todo>
-                  <EmojiContainer
-                    reactions={subGoal.reactions.filter(
-                      (item) => item.type === ReactionType.EMOTICON
-                    )}
-                  />
-                </>
-              ))}
-            {openCategoryId === category.id && (
-              <Todo $color={category.color}>
-                <Box />
-                <WriteForm
-                  onSubmit={todoSubmit}
-                  $color={category.color}
-                  ref={formRef}
-                >
-                  <input
-                    placeholder="할 일 입력"
-                    value={todoText}
-                    onChange={(event) => setTodoText(event.target.value)}
-                    autoFocus={true}
-                  />
-                </WriteForm>
-                <img src={more} width={20} />
-              </Todo>
-            )}
-          </Category>
-        ))}
+                )}
+              </Category>
+            )
+        )}
     </Wrapper>
   );
 }
