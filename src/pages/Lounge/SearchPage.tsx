@@ -43,7 +43,7 @@ const SearchPage = styled.div`
   }
 
   #input_div {
-    width: 700px;
+    width: 550px;
     height: 100px;
     min-width: 200px;
     align-items: center;
@@ -374,8 +374,7 @@ export default function Lounge() {
             </React.Fragment>
           ))}
         </SearchedUserDiv>
-      )}
-      
+      )}      
       <Navbar />
     </SearchPage>
   );

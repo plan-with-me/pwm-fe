@@ -47,7 +47,7 @@ const LoungePage = styled.div`
   }
 
   #input_div {
-    width: 700px;
+    width:  550px;
     height: 100px;
     min-width: 200px;
     align-items: center;
@@ -314,48 +314,116 @@ const TagButton = styled.button`
   }
 `;
 
+const LoadMoreButton = styled.button`
+  background-color: #cccccc;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+`;
+
 type UserWithGoals = {
-  id: number;
-  name: string;
-  image: string;
-  introduction: string;
-  uid: number;
-  top_goals: {
+  user:{
     id: number;
+    created_at: string;
+    updated_at: string;
     name: string;
-    tags: string[];
+    introduction: string;
+    image: string;
+    uid: number; 
+  },
+  top_goal: {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    name: string;
     color: string;
     status: string;
     show_scope: string;
-    created_at: string;
-    updated_at: string;
     user_id: number;
+    tags: string[];
     sub_goals: {
       id: number;
-      name: string;
-      status: string;
-      plan_datetime: string;
       created_at: string;
       updated_at: string;
       top_goal_id: number;
+      name: string;
+      plan_datetime: string;
+      status: string;
       user_id: number;
+      reactions: string[];
     }[];
-  }[];
+  };
 };
+
+type Feed = {
+  user: {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    introduction: string;
+    image: string;
+    uid: string;
+  };
+  top_goal: {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    color: string;
+    status: string;
+    show_scope: string;
+    user_id: number;
+    tags: string[];
+  };
+}
 
 export default function Lounge() {
   const [searchText, setSearchText] = useState<string>("");
   const [searchResults, setSearchResults] = useState<UserWithGoals[]>([]);
-  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
   const navigate = useNavigate();
   const [randomTags, setRandomTags] = useState<string[]>([]);
+  const [feeds, setFeeds] = useState<Feed[]>([]);
+
+  useEffect(() => {
+    const fetchInitialFeeds = async () => {
+      try {
+        const response = await api.post('/lounge/feeds', {
+          "exclude_ids": []
+        });
+        setFeeds(response.data);
+        console.log('응답 데이터:', response.data);
+      } catch (error) {
+        console.error('초기 피드 가져오기 실패:', error);
+      }
+    };
+    fetchInitialFeeds();
+  }, []);
+  
+  useEffect(() => {
+    console.log('현재 feeds 상태:', feeds);
+  }, [feeds]);
+
+  const fetchFeeds = async () => {
+    try {
+      const excludeIds = feeds.map((feed) => feed.top_goal.id);
+      const response = await api.post('/lounge/feeds', {
+        "exclude_ids": excludeIds
+      });
+      setFeeds(response.data);
+      console.log('Feeds API 응답:', response.data);
+    } catch (error) {
+      console.error('Feeds 가져오기 실패:', error);
+    }
+  };
 
   const fetchRandomTags = async () => {
     try {
       const response = await api.get('/lounge/random-tags');
-      console.log("API 응답:", response.data);
+      console.log("API `응답:", response.data);
       
       if (response.data && Array.isArray(response.data.tags)) {
         setRandomTags(response.data.tags);
@@ -377,112 +445,39 @@ export default function Lounge() {
     setSearchText(tag);
     handleSearch(tag);
   };
-
-  const handleSearch = async (searchText: string) => {
-    if (searchText) {
-      try {
-        const response = await api.get(`/lounge/users`, {
-          params: { tag: searchText, limit: 20 },
-        });
-        const results = Array.isArray(response.data)
-          ? response.data
-          : [response.data];
-  
-        const filteredResults = results
-          .filter(
-            (user) =>
-              user.top_goals &&
-              user.top_goals.some(
-                (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
-              )
-          )
-          .map((user) => {
-            return {
-              ...user,
-              top_goals: user.top_goals.slice(0, 1),
-            };
-          });
-  
-        setSearchResults(filteredResults);
-        console.log(filteredResults);
-      } catch (error) {
-        console.error("사용자 검색 중 오류 발생:", error);
-        setSearchResults([]);
+  const handleSearch = async(searchText: string) => {
+    if(searchText){
+      try{
+        const response = await api.get(`/lounge/feeds/search?tag=${searchText}`, {
+          params: { limit: 20 },
+        }); 
+        setSearchResults(response.data)
+        console.log(response.data)
+      } catch(error){
+          console.error("사용자 검색 중 오류 발생:", error);
+          setSearchResults([]);
       }
-    } else {
+    }else {
       setSearchResults([]);
     }
-  };
-  
-  const loadMoreData = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get(`/lounge/users`, {
-        params: { tag: searchText, limit: 20, page },
-      });
-  
-      const results = Array.isArray(response.data) ? response.data : [response.data];
-  
-      const filteredResults = results
-        .filter(
-          (user) =>
-            user.top_goals &&
-            user.top_goals.some(
-              (goal: { sub_goals: any[] }) => goal.sub_goals.length > 0
-            )
-        )
-        .map((user) => ({
-          ...user,
-          top_goals: user.top_goals.slice(0, 1),
-        }));
-  
-      if (filteredResults.length === 0) {
-        setHasMore(false);
-      } else {
-        // 중복 제거 로직
-        const uniqueResults = [
-          ...new Map(
-            [...searchResults, ...filteredResults].map(item => [item.id, item])
-          ).values()
-        ];
-  
-        setSearchResults(uniqueResults);
-        setPage((prevPage) => prevPage + 1);
-      }
-    } catch (error) {
-      console.error("사용자 검색 중 오류 발생:", error);
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-
+  }
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSearch(searchText);
     }
   };
 
-
-  const handleScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
-  
-    if (scrollHeight - scrollTop <= windowHeight + 100 && hasMore && !loading) {
-      loadMoreData();
-    }
+  const loadMoreData = async () => {
+    setLoading(true);
+    await handleSearch(searchText);
+    setLoading(false);
   };
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-  
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [searchText, hasMore, loading, page]);
-  
+  const loadMoreFeed = async () => {
+    setLoading(true);
+    await fetchFeeds();
+    setLoading(false);
+  };
 
   return (
     <LoungePage>
@@ -496,52 +491,47 @@ export default function Lounge() {
         />
       </div>
       <RecommendedTags>
-        <h3>추천 태그:</h3>
+        <h3>추천 태그</h3>
         {randomTags.map((tag, index) => (
           <TagButton key={index} onClick={() => handleTagClick(tag)}>
             {tag}
           </TagButton>
         ))}
       </RecommendedTags>
-
-      {searchResults.length > 0 && (
+      
+      {searchResults.length > 0 ? (
         <SearchedUserDiv>
-          {searchResults.map((user) => (
-            <UserItem key={user.id} onClick={() => navigate(`/search/${user.id}`)}>
+          {searchResults.map((search) => (
+            <UserItem key={search.top_goal.id} onClick={() => navigate(`/search/${search.user.id}`)}>
               <FirstRow>
                 <ProfileImg>
                   <img
                     src={
-                      user?.image === undefined || user.image === null
+                      search.user.image === undefined || search.user.image === null
                         ? defaultProfileImage
-                        : `https://pwm.ssc.co.kr/${user.image}`
+                        : `https://pwm.ssc.co.kr/${search.user.image}`
                     }
                     id="searched_user_img"
-                    alt={`${user.name}'s profile`}
+                    alt={`${search.user.name}'s profile`}
                   />
                 </ProfileImg>
                 <UserInfoDiv>
-                  <span>{user.name}</span>
-                  <span>{user.introduction}</span>
+                  <span>{search.user.name}</span>
+                  <span>{search.user.introduction}</span>
                 </UserInfoDiv>
-              </FirstRow>
-
-              {user.top_goals && user.top_goals.length > 0 && (
+              </FirstRow>  
                 <GoalSection>
                   <CategoryTitle
-                    color={user.top_goals[0].color}
-                    name={user.top_goals[0].name}
+                    color={search.top_goal.color}
+                    name={search.top_goal.name}
                   />
-                  <TagSpan>{user.top_goals[0].tags.join(", ")}</TagSpan>
+                  <TagSpan>{search.top_goal.tags.join(", ")}</TagSpan>
                 </GoalSection>
-              )}
-
-              {user.top_goals && user.top_goals.length > 0 && (
                 <SubGoalList>
-                  {user.top_goals[0].sub_goals.map((subGoal) => (
+                  {search.top_goal.sub_goals.map((subGoal) => (
                     <SubGoalItem key={subGoal.id}>
                       <Checkbox
-                        color={user.top_goals[0].color}
+                        color={search.top_goal.color}
                         status={subGoal.status}
                         disabled={true}
                       />
@@ -549,11 +539,50 @@ export default function Lounge() {
                     </SubGoalItem>
                   ))}
                 </SubGoalList>
-              )}
             </UserItem>
           ))}
+          <LoadMoreButton onClick={loadMoreFeed} disabled={loading}>
+            {loading ? "더보기" : "더보기"}
+          </LoadMoreButton>
+        </SearchedUserDiv>
+        
+      ) : (
+        <SearchedUserDiv>
+          {feeds.map((feed) => (
+            <UserItem key={feed.top_goal.id} onClick={() => navigate(`/search/${feed.user.id}`)}>
+              <FirstRow>
+                <ProfileImg>
+                  <img
+                      src={
+                        feed.user.image === undefined || feed.user.image === null
+                          ? defaultProfileImage
+                          : `https://pwm.ssc.co.kr/${feed.user.image}`
+                      }
+                      id="searched_user_img"
+                      alt={`${feed.user.name}'s profile`}
+                    />
+                </ProfileImg>
+                <UserInfoDiv>
+                  <span>{feed.user.name}</span>
+                  <span>{feed.user.introduction}</span>
+                </UserInfoDiv>      
+              </FirstRow>
+              <GoalSection>
+                  <CategoryTitle
+                    color={feed.top_goal.color}
+                    name={feed.top_goal.name}
+                  />
+                  <TagSpan>{feed.top_goal.tags.join(", ")}</TagSpan>
+              </GoalSection>              
+            </UserItem>
+          ))}
+          <LoadMoreButton onClick={loadMoreData} disabled={loading}>
+            {loading ? "더보기" : "더보기"}
+          </LoadMoreButton>
+        
         </SearchedUserDiv>
       )}
     </LoungePage>
   );
+  
 }
