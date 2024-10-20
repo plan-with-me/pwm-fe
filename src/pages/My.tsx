@@ -110,7 +110,7 @@ interface UserInfo {
   id: number;
   name: string;
   introduction: string;
-  image?: string;
+  image?: string | null;
 }
 
 
@@ -160,6 +160,7 @@ export default function Login() {
     const payload: Partial<UserInfo> = {
       name: nameRef.current.value,
       introduction: introductionRef.current.value,
+      image: null,
     };
 
     if (imageUrl) {
@@ -191,9 +192,6 @@ export default function Login() {
       console.log("No file selected"); // 파일 선택이 안된 경우 로그로 출력
     }
   };
-
-
-
   
 
   return (
@@ -222,7 +220,6 @@ export default function Login() {
             <input ref={introductionRef}  style={{borderStyle: 'none' , width: '80%'}}/>
             <hr></hr>
           </div>
-
           
         </div>
         
