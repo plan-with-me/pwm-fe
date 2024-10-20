@@ -50,8 +50,8 @@ export async function updateCalendar({
 }: {
   calendar_id: number;
   name: string;
-  introduction?: string;
-  image?: string;
+  introduction?: string | null;
+  image?: string | null;
 }) {
   await api
     .put(`/calendars/${calendar_id}`, { name, introduction, image })
