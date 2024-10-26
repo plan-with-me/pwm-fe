@@ -352,7 +352,6 @@ type UserWithGoals = {
       plan_datetime: string;
       status: string;
       user_id: number;
-      reactions: string[];
     }[];
   };
 };
@@ -366,7 +365,7 @@ type Feed = {
     introduction: string;
     image: string;
     uid: string;
-  };
+  },
   top_goal: {
     id: number;
     created_at: string;
@@ -377,7 +376,17 @@ type Feed = {
     show_scope: string;
     user_id: number;
     tags: string[];
-  };
+    sub_goals: {
+      id: number;
+      created_at: string;
+      updated_at: string;
+      top_goal_id: number;
+      name: string;
+      plan_datetime: string;
+      status: string;
+      user_id: number;
+    }[];
+  }
 }
 
 export default function Lounge() {
@@ -387,43 +396,56 @@ export default function Lounge() {
   const navigate = useNavigate();
   const [randomTags, setRandomTags] = useState<string[]>([]);
   const [feeds, setFeeds] = useState<Feed[]>([]);
-
+  const [exclude_ids, setExclude] = useState<number[]>([]);
+  const [exclude_search, setExcludeSearch] = useState<number[]>([]);
+  
+  
   useEffect(() => {
-    const fetchInitialFeeds = async () => {
+    const handleInitialFeeds = async () => {
       try {
         const response = await api.post('/lounge/feeds', {
           "exclude_ids": []
         });
-        setFeeds(response.data);
-        console.log('응답 데이터:', response.data);
+        const initialFeed = response.data;
+        const excludeIds = initialFeed.map((feed: Feed) => feed.top_goal.id);
+        setFeeds(initialFeed);
+        setExclude(excludeIds);
       } catch (error) {
         console.error('초기 피드 가져오기 실패:', error);
       }
     };
-    fetchInitialFeeds();
+    handleInitialFeeds();
   }, []);
-  
-  useEffect(() => {
-    console.log('현재 feeds 상태:', feeds);
-  }, [feeds]);
 
-  const fetchFeeds = async () => {
-    try {
-      const excludeIds = feeds.map((feed) => feed.top_goal.id);
-      const response = await api.post('/lounge/feeds', {
-        "exclude_ids": excludeIds
-      });
-      setFeeds(response.data);
-      console.log('Feeds API 응답:', response.data);
-    } catch (error) {
-      console.error('Feeds 가져오기 실패:', error);
+  const handleFeeds = async () => {
+    if (exclude_ids.length > 0) {
+      try {
+        const response = await api.post('/lounge/feeds', {
+          "exclude_ids": exclude_ids
+        });
+        const newFeeds = response.data;
+
+        const mergedFeeds = [...feeds, ...newFeeds].filter(
+          (feed, index, self) => self.findIndex(f => f.top_goal.id === feed.top_goal.id) === index
+        );
+
+        setFeeds(mergedFeeds);
+        const newExcludeIds = newFeeds.map((feed: Feed) => feed.top_goal.id);
+        setExclude(prevExcludeIds => [...prevExcludeIds, ...newExcludeIds]);
+      } catch (error) {
+        console.error('추가 피드 가져오기 실패:', error);
+      }
     }
   };
+  
+  useEffect(() => {
+    const excludeIds = feeds.map((feed) => feed.top_goal.id);
+    setExclude(excludeIds)
+  }, [feeds]);
 
   const fetchRandomTags = async () => {
     try {
       const response = await api.get('/lounge/random-tags');
-      console.log("API `응답:", response.data);
       
       if (response.data && Array.isArray(response.data.tags)) {
         setRandomTags(response.data.tags);
@@ -445,22 +467,63 @@ export default function Lounge() {
     setSearchText(tag);
     handleSearch(tag);
   };
-  const handleSearch = async(searchText: string) => {
-    if(searchText){
-      try{
-        const response = await api.get(`/lounge/feeds/search?tag=${searchText}`, {
-          params: { limit: 20 },
-        }); 
-        setSearchResults(response.data)
-        console.log(response.data)
-      } catch(error){
-          console.error("사용자 검색 중 오류 발생:", error);
+
+  useEffect(() => {
+    const handleInisialSearch = async (searchText: string) => {
+      if (searchText) {
+        try {
+          const response = await api.post('/lounge/feeds/search', {
+            "exclude_ids":"",
+            "tag":searchText 
+          });
+          setSearchResults(response.data);
+          console.log(response.data);
+          setExcludeSearch(exclude_search);
+        } catch (error) {
+          console.error('사용자 검색 중 오류 발생:', error);
           setSearchResults([]);
+        }
+      } else {
+        setSearchResults([]);
       }
-    }else {
-      setSearchResults([]);
-    }
-  }
+    };
+    handleInisialSearch(searchText);
+  }, [searchText]); 
+
+    const handleSearch = async (searchText: string) => {
+      if (!searchText) {
+        setSearchResults([]); // 검색어가 없으면 결과를 초기화
+        return;
+      }
+    
+      try {
+        const response = await api.post('/lounge/feeds/search', {
+          "exclude_ids": exclude_search,
+          "tag": searchText
+        });
+        const newSearchResults = response.data;
+    
+        const mergedSearchResults = [...searchResults, ...newSearchResults].filter(
+          (result, index, self) =>
+            self.findIndex(r => r.top_goal.id === result.top_goal.id) === index
+        );
+    
+        setSearchResults(mergedSearchResults);
+    
+        const newExcludeIds = newSearchResults.map((result: Feed) => result.top_goal.id);
+        setExcludeSearch(prevExcludeIds => [...prevExcludeIds, ...newExcludeIds]);
+    
+      } catch (error) {
+        console.error('검색 결과 가져오기 실패:', error);
+        setSearchResults([]);
+      }
+    };
+  
+  useEffect(() => {
+    const exclude_search = searchResults.map((searchResults) => searchResults.top_goal.id);
+    setExclude(exclude_search)
+  }, [searchResults]);
+
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSearch(searchText);
@@ -469,13 +532,11 @@ export default function Lounge() {
 
   const loadMoreData = async () => {
     setLoading(true);
-    await handleSearch(searchText);
-    setLoading(false);
-  };
-
-  const loadMoreFeed = async () => {
-    setLoading(true);
-    await fetchFeeds();
+    if (searchText) {
+      await handleSearch(searchText);
+    } else {
+      await handleFeeds();
+    }
     setLoading(false);
   };
 
@@ -541,7 +602,7 @@ export default function Lounge() {
                 </SubGoalList>
             </UserItem>
           ))}
-          <LoadMoreButton onClick={loadMoreFeed} disabled={loading}>
+          <LoadMoreButton onClick={loadMoreData} disabled={loading}>
             {loading ? "더보기" : "더보기"}
           </LoadMoreButton>
         </SearchedUserDiv>
@@ -573,7 +634,19 @@ export default function Lounge() {
                     name={feed.top_goal.name}
                   />
                   <TagSpan>{feed.top_goal.tags.join(", ")}</TagSpan>
-              </GoalSection>              
+              </GoalSection>
+              <SubGoalList>
+                  {feed.top_goal.sub_goals.map((subGoal) => (
+                    <SubGoalItem key={subGoal.id}>
+                      <Checkbox
+                        color={feed.top_goal.color}
+                        status={subGoal.status}
+                        disabled={true}
+                      />
+                      <span>{subGoal.name}</span>
+                    </SubGoalItem>
+                  ))} 
+                </SubGoalList>              
             </UserItem>
           ))}
           <LoadMoreButton onClick={loadMoreData} disabled={loading}>
